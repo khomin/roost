@@ -1,0 +1,15 @@
+info:
+  name: delete-camera
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: "{{url}}/v1/camera/b72f09c0-51d4-46fb-be45-dfa82035108e"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,37 @@
+opencollection: 1.0.0
+
+info:
+  name: roost
+config:
+  protobuf:
+    protoFiles:
+      - type: file
+        path: ../../proto/v1/wallet.proto
+      - type: file
+        path: ../../../proto/wallet/v1/wallet.proto
+      - type: file
+        path: ../../../proto/user/v1/user.proto
+      - type: file
+        path: ../../../proto/alert/v1/alert.proto
+      - type: file
+        path: ../../../proto/price/v1/price.proto
+    importPaths:
+      - path: ../../proto/v1
+      - path: ../../../proto
+      - path: ../../../proto/wallet/v1
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

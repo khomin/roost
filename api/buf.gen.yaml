@@ -1,0 +1,34 @@
+version: v2
+plugins:
+  # go Protobuf message structs
+  - remote: buf.build/protocolbuffers/go
+    out: ../apps/gateway/gen
+    opt: paths=source_relative
+
+  # go gRPC server and client interfaces
+  - remote: buf.build/grpc/go
+    out: ../apps/gateway/gen
+    opt:
+     - paths=source_relative
+     - require_unimplemented_servers=false
+
+  # gRPC-Gateway REST proxy handlers
+  - remote: buf.build/grpc-ecosystem/gateway:v2.29.0
+    out: ../apps/gateway/gen
+    opt: paths=source_relative
+
+  # openAPI v3 Specs (Swagger)
+  - remote: buf.build/grpc-ecosystem/openapiv2
+    out: ../apps/gateway/internal/docs/openapiv2
+
+  # typeScript message types
+  - remote: buf.build/bufbuild/es
+    out: ../apps/web/src/gen
+    opt:
+      - target=ts
+
+  # typeScript service clients for React (Connect-ES)
+  - remote: buf.build/connectrpc/es
+    out: ../apps/web/src/gen
+    opt: 
+      - target=ts

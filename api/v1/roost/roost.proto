@@ -1,0 +1,169 @@
+syntax = "proto3";
+
+package roost.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "rooster/gen/roost/v1;roostv1";
+
+service RoostService {
+  rpc ListCameras (ListCamerasRequest) returns (ListCamerasResponse) {
+    option (google.api.http) = {
+      get: "/v1/cameras"
+    };
+  }
+  rpc GetCamera (GetCameraRequest) returns (Camera) {
+    option (google.api.http) = {
+      get: "/v1/cameras/{id}"
+    };
+  }
+  rpc CreateCamera(CreateCameraRequest) returns (Camera) {
+    option (google.api.http) = {
+      post: "/v1/cameras"
+      body: "*"
+    };
+  }
+  rpc UpdateCamera(UpdateCameraRequest) returns (Camera) {
+    option (google.api.http) = {
+      patch: "/v1/cameras/{id}"
+      body: "*"
+    };
+  }
+  rpc DeleteCamera(DeleteCameraRequest) returns (DeleteCameraResponse) {
+    option (google.api.http) = {
+      delete: "/v1/cameras/{id}"
+    };
+  }
+  rpc SignalWebRTC (WebRTCSignalRequest) returns (WebRTCSignalResponse) {
+    option (google.api.http) = {
+      get: "/v1/cameras/signal"
+    };
+  }
+  rpc GetSnapshot (GetSnapshotRequest) returns (GetSnapshotResponse) {
+    option (google.api.http) = {
+      get: "/v1/cameras/snapshot"
+    };
+  }
+  rpc SubscribeLiveEvents (SubscribeEventsRequest) returns (stream LiveEvent) {
+    option (google.api.http) = {
+      get: "/v1/cameras/events"
+    };
+  }
+  rpc ListRecordings (ListRecordingsRequest) returns (ListRecordingsResponse) {
+    option (google.api.http) = {
+      get: "/v1/cameras/recordings"
+    };
+  }
+  rpc GetRecordingDownloadUrl (GetRecordingDownloadUrlRequest) returns (GetRecordingDownloadUrlResponse) {
+    option (google.api.http) = {
+      get: "/v1/cameras/recordings/url"
+    };
+  }
+}
+
+message Camera {
+  string     id           = 1;
+  string     name         = 2;
+  CameraType type         = 3;
+  bool       is_online    = 4;
+  bool       is_recording = 5;
+  int32      width        = 6;
+  int32      height       = 7;
+  int32      fps          = 8;
+}
+
+message ListCamerasRequest {}
+
+message ListCamerasResponse {
+  repeated Camera cameras = 1;
+}
+
+message GetCameraRequest {
+  string id = 1;
+}
+
+message CreateCameraRequest {
+  string name = 1;
+  CameraType type = 2;
+}
+
+message UpdateCameraRequest {
+  string id = 1;
+  string name = 2;
+}
+
+message DeleteCameraRequest {
+  string id = 1;
+}
+
+message DeleteCameraResponse {}
+
+message WebRTCSignalRequest {
+  string id = 1;
+  string sdp_offer = 2; // WebRTC SDP Offer from browser
+}
+
+message WebRTCSignalResponse {
+  string sdp_answer = 1; // WebRTC SDP Answer from Pion
+}
+
+message GetSnapshotRequest {
+  string id = 1;
+}
+
+message GetSnapshotResponse {
+  bytes jpeg_data    = 1;
+  int64 timestamp_ms = 2;
+}
+
+message SubscribeEventsRequest {
+  repeated string camera_ids = 1; // Empty for all cameras
+}
+
+message LiveEvent {
+  string id    = 1;
+  int64  timestamp_ms = 2;
+  enum EventType {
+    EVENT_TYPE_UNSPECIFIED     = 0;
+    EVENT_TYPE_MOTION_START    = 1;
+    EVENT_TYPE_MOTION_STOP     = 2;
+    EVENT_TYPE_OBJECT_DETECTED = 3;
+  }
+  EventType type       = 3;
+  string    label      = 4; // e.g. "person"
+  float     confidence = 5;
+}
+
+message ListRecordingsRequest {
+  string id     = 1;
+  int64  start_time_ms = 2;
+  int64  end_time_ms   = 3;
+}
+
+message RecordingSegment {
+  string          id               = 1;
+  string          camera_id        = 2;
+  int64           start_time_ms    = 3;
+  int64           end_time_ms      = 4;
+  int64           size_bytes       = 5;
+  bool            has_motion       = 6;
+  repeated string detected_objects = 7;
+}
+
+message ListRecordingsResponse {
+  repeated RecordingSegment recordings = 1;
+}
+
+message GetRecordingDownloadUrlRequest {
+  string recording_id = 1;
+}
+
+message GetRecordingDownloadUrlResponse {
+  string url = 1; // Pre-signed MinIO / S3 URL for HTML5 <video> streaming
+}
+
+enum CameraType {
+  CAMERA_TYPE_UNSPECIFIED = 0;
+  CAMERA_TYPE_IP          = 1;
+  CAMERA_TYPE_USB         = 2;
+}

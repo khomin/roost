@@ -1,0 +1,35 @@
+{
+    "YOLO": {
+        "model_path": "/Users/panic/Downloads/yolo11n.onnx",
+        "input_width": 640,
+        "input_height": 640,
+        "conf_threshold": 0.50,
+        "nms_threshold": 0.50,
+        "inference_skip": 4
+    },
+
+    "Tracker": {
+        "match_iou_threshold": 0.3,
+        "max_missed_frames": 10,
+        "allowed_classes": [
+            "dog",
+            "cat",
+            "person"
+        ],
+        "camera_id": 0
+    },
+
+    "Networking": {
+        "signal_ip": "127.0.0.1",
+        "signal_port": 8082,
+        "archive_ip": "127.0.0.1",
+        "archive_port": 8083,
+        "jpeg_quality": 85,
+        "webrtc_ip": "127.0.0.1",
+        "webrtc_port": 8084
+    },
+
+    "camera_id": 0,
+
+    "CocoNames": "person,bicycle,car,motorcycle,airplane,bus,train,truck,boat,trafficlight,firehydrant,stopsign,parkingmeter,bench,bird,cat,dog,horse,sheep,cow,elephant,bear,zebra,giraffe,backpack,umbrella,handbag,tie,suitcase,frisbee,skis,snowboard,sportsball,kite,baseballbat,baseballglove,skateboard,surfboard,tennisracket,bottle,wineglass,cup,fork,knife,spoon,bowl,banana,apple,sandwich,orange,broccoli,carrot,hotdog,pizza,donut,cake,chair,couch,pottedplant,bed,diningtable,toilet,tv,laptop,mouse,remote,keyboard,cellphone,microwave,oven,toaster,sink,refrigerator,book,clock,vase,scissors,teddybear,hairdrier,toothbrush"
+}

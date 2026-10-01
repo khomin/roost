@@ -1,0 +1,60 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: github-deployer-traefik
+rules:
+  - apiGroups:
+      - traefik.io
+    resources:
+      - middlewares
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: github-deployer-traefik
+subjects:
+  - kind: ServiceAccount
+    name: github-deployer
+    namespace: roost-prod
+roleRef:
+  kind: ClusterRole
+  name: github-deployer-traefik
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: grafana-serviceaccount
+  namespace: roost-prod
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: grafana-configmap-watcher
+  namespace: roost-prod
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: grafana-configmap-watcher-binding
+  namespace: roost-prod
+subjects:
+  - kind: ServiceAccount
+    name: grafana-serviceaccount
+    namespace: roost-prod
+roleRef:
+  kind: Role
+  name: grafana-configmap-watcher
+  apiGroup: rbac.authorization.k8s.io

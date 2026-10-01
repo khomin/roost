@@ -1,0 +1,20 @@
+kernel-panic.mooo.com {
+    # keycloak
+    handle /realms/* {
+        reverse_proxy keycloak_server:8080
+    }
+    handle /resources/* {
+        reverse_proxy keycloak_server:8080
+    }
+
+    # api
+    handle /api/* {
+        uri strip_prefix /api
+        reverse_proxy host.docker.internal:8080 {
+            # Disable buffering so SSE events stream instantly to the client
+            flush_interval -1
+        }
+    }
+
+    reverse_proxy whale-frontend:80
+}

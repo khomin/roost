@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package roost.ingest.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "rooster/gen/ingest/v1;ingestv1";
+
+service CameraService {
+  rpc ListCameras (ListCamerasRequest) returns (ListCamerasResponse);
+  rpc StartStream (StartStreamRequest) returns (stream FrameChunk);
+  rpc StopStream (StopStreamRequest) returns (StopStreamResponse);
+}
+
+message Camera {
+  string id   = 1;
+  string name = 2;
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_USB         = 1;
+    TYPE_RTSP        = 2;
+  }
+  Type   type        = 3;
+  string source_path = 4; // e.g. "/dev/video0" or "rtsp://..."
+}
+
+message ListCamerasRequest {}
+
+message ListCamerasResponse {
+  repeated Camera cameras = 1;
+}
+
+message StartStreamRequest {
+  string camera_id = 1;
+  int32  width     = 2;
+  int32  height    = 3;
+  int32  fps       = 4;
+}
+
+message FrameChunk {
+  string camera_id    = 1;
+  int64  timestamp_ms = 2;
+  int64  frame_id     = 3;
+  bytes  data         = 4;           // Encoded (H264/MJPEG) or memory handle
+  string shm_path     = 5;       // Shared memory key if local zero-copy
+}
+
+message StopStreamRequest {
+  string camera_id = 1;
+}
+
+message StopStreamResponse {
+  bool success = 1;
+}

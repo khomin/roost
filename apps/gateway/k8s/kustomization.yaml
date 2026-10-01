@@ -1,0 +1,61 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: roost-prod
+
+resources:
+  - postgres-pvc.yaml
+  - databases.yaml
+  - rabbitmq.yaml
+  - keycloak.yaml
+  - backend.yaml
+  - web.yaml
+  - infra-services.yaml
+  - strip-api-prefix.yaml
+  - ingress.yaml
+  - deployer-rbac.yaml
+  - monitoring-k3s.yaml
+
+configMapGenerator:
+  - name: domain-config
+    envs:
+      - ./env-context/.env
+
+  - name: keycloak-realm-import
+    files:
+      - realm-export.json=./env-context/realm-export.json
+      
+  - name: keycloak-theme-jar
+    files:
+      - ./env-context/fintech-theme.jar
+
+  - name: prometheus-config
+    files:
+      - grafana/prometheus.yml
+
+  - name: grafana-datasources
+    files:
+      - grafana/datasources.yaml
+
+  - name: grafana-dashboards-provider
+    files:
+      - grafana/dashboards-provider.yaml
+
+  - name: grafana-dashboards-custom
+    files:
+      - dashboard1.json=./grafana/dashboards/dashboard_api.json
+      - dashboard2.json=./grafana/dashboards/dashboard_go.json
+
+
+replacements:
+  - source:
+      kind: ConfigMap
+      name: domain-config
+      fieldPath: data.HOSTNAME
+    targets:
+      - select:
+          kind: Ingress
+          name: roost-ingress
+        fieldPaths:
+          - spec.rules.0.host
+          - spec.tls.0.hosts.0

@@ -1,0 +1,9 @@
+[submodule "cpp/external/config-cxx"]
+	path = cpp/external/config-cxx
+	url = https://github.com/cieslarmichal/config-cxx.git
+[submodule "cpp/external/grpc"]
+	path = cpp/external/grpc
+	url = https://github.com/grpc/grpc
+[submodule "resources/ultralytics"]
+	path = resources/ultralytics
+	url = https://github.com/ultralytics/yolov5

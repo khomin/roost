@@ -1,0 +1,180 @@
+server:
+  port_http: 8080
+  port_grpc: 50051
+  environment: "development"
+  log_path: "/var/log/roost/app.log"
+
+authorization:
+  issuer_url: ""
+  client_id: "roost-app"
+
+database:
+  host: ""
+  port: 5432
+  user: ""
+  password: ""
+  name: ""
+
+redis:
+  addr: ""
+  password: ""
+  db: 0
+
+rabbit:
+  url: 	""
+
+email:
+  api_key: ""
+  from: ""
+
+alchemy:
+  api_key: ""
+
+coingecko:
+   api_key: ""
+   price_fetcher: "30s"
+
+blockchain:
+  rate_limit:
+    rps: 2
+    burst: 1
+  ethereum_mainnet_rpc: "https://eth.drpc.org"
+  ethereum_arbitrum_rpc: "https://arb1.arbitrum.io/rpc"
+  ethereum_base_rpc: "https://rpc.baseazul.dev"
+  polygon_mainnet: "https://polygon.gateway.tenderly.co"
+  bnb: "https://bsc-mainnet.public.blastapi.io"
+  solana_rpc: "https://api.mainnet-beta.solana.com"
+  tron_grpc: "grpc.trongrid.io:50051"
+  tron_api_key: ""
+  riplle_mainnet_rpc: "https://s1.ripple.com:51234"
+  bitcoin:
+    host: "https://mempool.space/api"
+    user: ""
+    pass: ""
+
+token_registry:
+  tokens:
+      - symbol: "BTC"
+        name: "Bitcoin"
+        native: { chain: "BTC", decimals: 8 }
+
+      - symbol: "ETH"
+        name: "Ethereum"
+        native: { chain: "ETH", decimals: 18 }
+
+      - symbol: "ARB"
+        name: "Arbitrum"
+        native: { chain: "ARB", decimals: 18 }
+
+      - symbol: "SOL"
+        name: "Solana"
+        native: { chain: "SOL", decimals: 18 }
+
+      - symbol: "TRX"
+        name: "Tron"
+        native: { chain: "TRX", decimals: 18 }
+
+      - symbol: "POL"
+        name: "Polygon"
+        native: { chain: "POL", decimals: 18 }
+
+      - symbol: "BNB"
+        name: "BNB Chain Native"
+        native: { chain: "BSC", decimals: 18 }
+
+      - symbol: "XRP"
+        name: "XRP Ledger Native"
+        native: { chain: "XRP", decimals: 6 }
+
+      - symbol: "XAUt"
+        name: "Tether Gold"
+        deployments:
+          ETH: { address: "0x68749665FF8D2d112Fa859AA293F07A622782F38", decimals: 18 }
+          SOL: { address: "AymATz4TCL9sWNEEV9Kvyz45CHVhDZ6kUgjTJPzLpU9P", decimals: 9 }
+      
+      - symbol: "PAXG"
+        name: "Paxos Gold"
+        deployments:
+          ETH: { address: "0x45804880De22913dAFE09f4980848ECE6EcbAf78", decimals: 18 }
+
+      - symbol: "USDC"
+        name: "USDC"
+        deployments:
+          ETH: { address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", decimals: 18 }
+          POL: { address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", decimals: 6 }
+
+      - symbol: "USDT"
+        name: "Tether USD"
+        deployments:
+          ETH: { address: "0xdAC17F958D2ee523a2206206994597C13D831ec7", decimals: 18 }
+          TRX: { address: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", decimals: 6 }
+
+      - symbol: "RLUSD"
+        name: "Ripple USD"
+        deployments:
+          ETH: { address: "0x0A2A1e2336D08FA5F61E2e89640954b0CD8C380d", decimals: 18 }
+          XRP: { address: "rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De", decimals: 15 }
+
+      - symbol: "WBTC"
+        name: "Wrapped Bitcoin"
+        deployments:
+          ETH: { address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", decimals: 8 }
+
+      - symbol: "AAPLx"
+        name: "Apple xStock"
+        deployments:
+          ETH: { address: "0xE5f6d3b2405ABdfE6F660e63202B25D23763160d", decimals: 18 }
+          ARB: { address: "0xE5f6d3b2405ABdfE6F660e63202B25D23763160d", decimals: 18 }
+          SOL: { address: "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp", decimals: 9 }
+
+      - symbol: "GLDx"
+        name: "Gold xStock"
+        deployments:
+          ETH: { address: "0x2380F2673C640fB67E2d6B55B44C62F0E0e69DA9", decimals: 18 }
+
+      - symbol: "GOOGLx"
+        name: "Alphabet xStock"
+        deployments:
+          ETH: { address: "0xe92f673Ca36C5E2Efd2DE7628f815f84807e803F", decimals: 18 }
+          ARB: { address: "0xe92f673Ca36C5E2Efd2DE7628f815f84807e803F", decimals: 18 }
+          SOL: { address: "XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN", decimals: 9 }
+      
+      - symbol: "TSLAx"
+        name: "Tesla xStock"
+        deployments:
+          SOL: { address: "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB", decimals: 9 }
+
+      - symbol: "SPYx"
+        name: "S&P500 ETF xStock"
+        deployments:
+          SOL: { address: "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W", decimals: 9 }
+
+      - symbol: "QQQx"
+        name: "Nasdaq ETF xStock"
+        deployments:
+          SOL: { address: "Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ", decimals: 9 }
+
+      - symbol: "NVDAx"
+        name: "NVIDIA xStock"
+        deployments:
+          SOL: { address: "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh", decimals: 9 }
+
+      - symbol: "MSTRx"
+        name: "MicroStrategy xStock"
+        deployments:
+          SOL: { address: "XsP7xzNPvEHS1m6qfanPUGjNmdnmsLKEoNAnHjdxxyZ", decimals: 9 }
+
+      - symbol: "HOODx"
+        name: "Robinhood xStock"
+        deployments:
+          SOL: { address: "XsvNBAYkrDRNhA7wPHQfX3ZUXZyZLdnCQDfHZ56bzpg", decimals: 9 }
+
+      - symbol: "METAx"
+        name: "Meta xStock"
+        deployments:
+          SOL: { address: "Xsa62P5mvPszXL1krVUnU5ar38bBSVcWAB6fmPCo5Zu", decimals: 9 }
+
+      - symbol: "CRCLx"
+        name: "Circle xStock"
+        deployments:
+          SOL: { address: "XsueG8BtpquVJX9LVLLEGuViXUungE6WmK5YZ3p3bd1", decimals: 9 }

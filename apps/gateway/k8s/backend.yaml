@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whale-backend
+  namespace: roost-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whale-backend
+  template:
+    metadata:
+      labels:
+        app: whale-backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/khomin/whale-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_HOST
+              value: "postgres"
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DATABASE_USER
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DATABASE_PASSWORD
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DATABASE_NAME
+
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "5672"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: RABBITMQ_USER
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: RABBITMQ_PASSWORD
+
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+
+            - name: AUTHORIZATION_ISSUER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: AUTHORIZATION_ISSUER_URL
+
+          envFrom:
+            - secretRef:
+                name: app-secrets
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whale-backend
+  namespace: roost-prod
+spec:
+  type: NodePort
+  selector:
+    app: whale-backend
+  ports:
+    - name: api
+      port: 8080
+      targetPort: 8080
+      nodePort:
+    - name: metrics
+      port: 9092
+      targetPort: 9092
+      nodePort:

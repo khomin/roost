@@ -1,0 +1,22 @@
+info:
+  name: new-camera
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{url}}/v1/cameras"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "test",
+        "type": "CAMERA_TYPE_IP"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

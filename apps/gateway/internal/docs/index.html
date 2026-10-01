@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>API Documentation</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+</head>
+
+<body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+    <script>
+        window.onload = function () {
+            SwaggerUIBundle({
+                urls: [
+                    { url: '/docs/openapiv2/wallet/v1/wallet.swagger.json', name: 'Wallet Service' },
+                    { url: '/docs/openapiv2/price/v1/price.swagger.json', name: 'Price Service' }
+                ],
+                "urls.primaryName": "Price Service",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset // <--- Needed for multi-spec handling
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout" // <--- CRITICAL for `urls` to work!
+            });
+        };
+    </script>
+</body>
+
+</html>

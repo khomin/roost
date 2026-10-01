@@ -1,0 +1,24 @@
+info:
+  name: protected
+  type: folder
+  seq: 1
+
+request:
+  auth:
+    type: oauth2
+    flow: authorization_code
+    authorizationUrl: http://localhost:8081/realms/roost/protocol/openid-connect/auth
+    accessTokenUrl: http://localhost:8081/realms/roost/protocol/openid-connect/token
+    callbackUrl: http://localhost:5173/callback
+    credentials:
+      clientId: "{{client-id}}"
+      placement: body
+    scope: openid profile email
+    pkce: {}
+    tokenConfig:
+      placement:
+        header: Bearer
+      source: access_token
+    settings:
+      autoFetchToken: true
+      autoRefreshToken: false

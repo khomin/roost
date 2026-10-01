@@ -1,0 +1,44 @@
+ 
+https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading/#silence-outputs
+https://github.com/ultralytics/yolov5
+
+
+# build opencv for x86_64 linux desktop
+
+cmake ../ -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/home/khomin/Documents/PROJECTS/YOLO_detector/cpp/build_linux_x86 -D CMAKE_POSITION_INDEPENDENT_CODE=ON -D WITH_TBB=ON -D BUILD_TBB=ON -D BUILD_SHARED_LIBS=ON -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D OPENCV_ENABLE_NONFREE=ON -D OPENCV_GENERATE_PKGCONFIG=ON -D OPENCV_EXTRA_MODULES_PATH=/home/khomin/Documents/PROJECTS/YOLO_detector/opencv_contrib/modules/ -D BUILD_opencv_python3=ON -D INSTALL_PYTHON_EXAMPLES=OFF -D BUILD_opencv_xphoto=OFF
+
+
+cmake ../ \
+-D CMAKE_BUILD_TYPE=RELEASE \
+-D CMAKE_INSTALL_PREFIX=/home/khomin/Documents/PROJECTS/YOLO_detector/opencv/build_linux_x86/ \
+-D CMAKE_POSITION_INDEPENDENT_CODE=ON \
+-D WITH_TBB=ON \
+-D BUILD_TBB=ON \
+-D BUILD_SHARED_LIBS=ON \
+-D BUILD_TESTS=OFF \
+-D BUILD_PERF_TESTS=OFF \
+-D OPENCV_ENABLE_NONFREE=ON \
+-D OPENCV_GENERATE_PKGCONFIG=ON \
+-D OPENCV_EXTRA_MODULES_PATH=/home/khomin/Documents/PROJECTS/YOLO_detector/opencv_contrib/modules/ \
+-D BUILD_opencv_python3=ON \
+-D INSTALL_PYTHON_EXAMPLES=OFF
+
+make -j32
+cmake --install . --prefix ${INSTALL_PATH_PREFIX}/x86_64
+
+
+# gemini
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+      -D CMAKE_INSTALL_PREFIX=/usr/local \
+      -D WITH_TBB=ON \
+      -D BUILD_TBB=ON \
+      -D BUILD_SHARED_LIBS=ON \
+      -D BUILD_TESTS=OFF \
+      -D BUILD_PERF_TESTS=OFF \
+      -D ENABLE_NEON=ON \
+      -D ENABLE_VFPV3=ON \
+      -D WITH_OPENMP=ON \
+      -D OPENCV_GENERATE_PKGCONFIG=ON \
+      -D OPENCV_ENABLE_NONFREE=ON \
+      -D OPENCV_EXTRA_MODULES_PATH=~/opencv_build/opencv_contrib/modules \
+      ..

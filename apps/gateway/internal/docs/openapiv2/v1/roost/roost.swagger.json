@@ -1,0 +1,564 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/roost/roost.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "RoostService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/cameras": {
+      "get": {
+        "operationId": "RoostService_ListCameras",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCamerasResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "RoostService"
+        ]
+      },
+      "post": {
+        "operationId": "RoostService_CreateCamera",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Camera"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateCameraRequest"
+            }
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      }
+    },
+    "/v1/cameras/events": {
+      "get": {
+        "operationId": "RoostService_SubscribeLiveEvents",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1LiveEvent"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of v1LiveEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cameraIds",
+            "description": "Empty for all cameras",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      }
+    },
+    "/v1/cameras/recordings": {
+      "get": {
+        "operationId": "RoostService_ListRecordings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListRecordingsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "startTimeMs",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "endTimeMs",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      }
+    },
+    "/v1/cameras/recordings/url": {
+      "get": {
+        "operationId": "RoostService_GetRecordingDownloadUrl",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetRecordingDownloadUrlResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "recordingId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      }
+    },
+    "/v1/cameras/signal": {
+      "get": {
+        "operationId": "RoostService_SignalWebRTC",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1WebRTCSignalResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sdpOffer",
+            "description": "WebRTC SDP Offer from browser",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      }
+    },
+    "/v1/cameras/snapshot": {
+      "get": {
+        "operationId": "RoostService_GetSnapshot",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetSnapshotResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      }
+    },
+    "/v1/cameras/{id}": {
+      "get": {
+        "operationId": "RoostService_GetCamera",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Camera"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      },
+      "delete": {
+        "operationId": "RoostService_DeleteCamera",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteCameraResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      },
+      "patch": {
+        "operationId": "RoostService_UpdateCamera",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Camera"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RoostServiceUpdateCameraBody"
+            }
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "LiveEventEventType": {
+      "type": "string",
+      "enum": [
+        "EVENT_TYPE_UNSPECIFIED",
+        "EVENT_TYPE_MOTION_START",
+        "EVENT_TYPE_MOTION_STOP",
+        "EVENT_TYPE_OBJECT_DETECTED"
+      ],
+      "default": "EVENT_TYPE_UNSPECIFIED"
+    },
+    "RoostServiceUpdateCameraBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Camera": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/v1CameraType"
+        },
+        "isOnline": {
+          "type": "boolean"
+        },
+        "isRecording": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fps": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1CameraType": {
+      "type": "string",
+      "enum": [
+        "CAMERA_TYPE_UNSPECIFIED",
+        "CAMERA_TYPE_IP",
+        "CAMERA_TYPE_USB"
+      ],
+      "default": "CAMERA_TYPE_UNSPECIFIED"
+    },
+    "v1CreateCameraRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/v1CameraType"
+        }
+      }
+    },
+    "v1DeleteCameraResponse": {
+      "type": "object"
+    },
+    "v1GetRecordingDownloadUrlResponse": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "title": "Pre-signed MinIO / S3 URL for HTML5 \u003cvideo\u003e streaming"
+        }
+      }
+    },
+    "v1GetSnapshotResponse": {
+      "type": "object",
+      "properties": {
+        "jpegData": {
+          "type": "string",
+          "format": "byte"
+        },
+        "timestampMs": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1ListCamerasResponse": {
+      "type": "object",
+      "properties": {
+        "cameras": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Camera"
+          }
+        }
+      }
+    },
+    "v1ListRecordingsResponse": {
+      "type": "object",
+      "properties": {
+        "recordings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1RecordingSegment"
+          }
+        }
+      }
+    },
+    "v1LiveEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "timestampMs": {
+          "type": "string",
+          "format": "int64"
+        },
+        "type": {
+          "$ref": "#/definitions/LiveEventEventType"
+        },
+        "label": {
+          "type": "string",
+          "title": "e.g. \"person\""
+        },
+        "confidence": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "v1RecordingSegment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "cameraId": {
+          "type": "string"
+        },
+        "startTimeMs": {
+          "type": "string",
+          "format": "int64"
+        },
+        "endTimeMs": {
+          "type": "string",
+          "format": "int64"
+        },
+        "sizeBytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "hasMotion": {
+          "type": "boolean"
+        },
+        "detectedObjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1WebRTCSignalResponse": {
+      "type": "object",
+      "properties": {
+        "sdpAnswer": {
+          "type": "string",
+          "title": "WebRTC SDP Answer from Pion"
+        }
+      }
+    }
+  }
+}
