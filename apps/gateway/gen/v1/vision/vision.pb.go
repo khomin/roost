@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.12
 // 	protoc        (unknown)
-// source: v1/ingest/ingest.proto
+// source: v1/vision/vision.proto
 
-package ingestv1
+package visionv1
 
 import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -55,11 +55,11 @@ func (x Camera_Type) String() string {
 }
 
 func (Camera_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_v1_ingest_ingest_proto_enumTypes[0].Descriptor()
+	return file_v1_vision_vision_proto_enumTypes[0].Descriptor()
 }
 
 func (Camera_Type) Type() protoreflect.EnumType {
-	return &file_v1_ingest_ingest_proto_enumTypes[0]
+	return &file_v1_vision_vision_proto_enumTypes[0]
 }
 
 func (x Camera_Type) Number() protoreflect.EnumNumber {
@@ -68,14 +68,14 @@ func (x Camera_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Camera_Type.Descriptor instead.
 func (Camera_Type) EnumDescriptor() ([]byte, []int) {
-	return file_v1_ingest_ingest_proto_rawDescGZIP(), []int{0, 0}
+	return file_v1_vision_vision_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type Camera struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Type          Camera_Type            `protobuf:"varint,3,opt,name=type,proto3,enum=roost.ingest.v1.Camera_Type" json:"type,omitempty"`
+	Type          Camera_Type            `protobuf:"varint,3,opt,name=type,proto3,enum=vision.v1.Camera_Type" json:"type,omitempty"`
 	SourcePath    string                 `protobuf:"bytes,4,opt,name=source_path,json=sourcePath,proto3" json:"source_path,omitempty"` // e.g. "/dev/video0" or "rtsp://..."
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -83,7 +83,7 @@ type Camera struct {
 
 func (x *Camera) Reset() {
 	*x = Camera{}
-	mi := &file_v1_ingest_ingest_proto_msgTypes[0]
+	mi := &file_v1_vision_vision_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -95,7 +95,7 @@ func (x *Camera) String() string {
 func (*Camera) ProtoMessage() {}
 
 func (x *Camera) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_ingest_ingest_proto_msgTypes[0]
+	mi := &file_v1_vision_vision_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -108,7 +108,7 @@ func (x *Camera) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Camera.ProtoReflect.Descriptor instead.
 func (*Camera) Descriptor() ([]byte, []int) {
-	return file_v1_ingest_ingest_proto_rawDescGZIP(), []int{0}
+	return file_v1_vision_vision_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Camera) GetId() string {
@@ -147,7 +147,7 @@ type ListCamerasRequest struct {
 
 func (x *ListCamerasRequest) Reset() {
 	*x = ListCamerasRequest{}
-	mi := &file_v1_ingest_ingest_proto_msgTypes[1]
+	mi := &file_v1_vision_vision_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -159,7 +159,7 @@ func (x *ListCamerasRequest) String() string {
 func (*ListCamerasRequest) ProtoMessage() {}
 
 func (x *ListCamerasRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_ingest_ingest_proto_msgTypes[1]
+	mi := &file_v1_vision_vision_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -172,7 +172,7 @@ func (x *ListCamerasRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCamerasRequest.ProtoReflect.Descriptor instead.
 func (*ListCamerasRequest) Descriptor() ([]byte, []int) {
-	return file_v1_ingest_ingest_proto_rawDescGZIP(), []int{1}
+	return file_v1_vision_vision_proto_rawDescGZIP(), []int{1}
 }
 
 type ListCamerasResponse struct {
@@ -184,7 +184,7 @@ type ListCamerasResponse struct {
 
 func (x *ListCamerasResponse) Reset() {
 	*x = ListCamerasResponse{}
-	mi := &file_v1_ingest_ingest_proto_msgTypes[2]
+	mi := &file_v1_vision_vision_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -196,7 +196,7 @@ func (x *ListCamerasResponse) String() string {
 func (*ListCamerasResponse) ProtoMessage() {}
 
 func (x *ListCamerasResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_ingest_ingest_proto_msgTypes[2]
+	mi := &file_v1_vision_vision_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -209,7 +209,7 @@ func (x *ListCamerasResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCamerasResponse.ProtoReflect.Descriptor instead.
 func (*ListCamerasResponse) Descriptor() ([]byte, []int) {
-	return file_v1_ingest_ingest_proto_rawDescGZIP(), []int{2}
+	return file_v1_vision_vision_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ListCamerasResponse) GetCameras() []*Camera {
@@ -231,7 +231,7 @@ type StartStreamRequest struct {
 
 func (x *StartStreamRequest) Reset() {
 	*x = StartStreamRequest{}
-	mi := &file_v1_ingest_ingest_proto_msgTypes[3]
+	mi := &file_v1_vision_vision_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -243,7 +243,7 @@ func (x *StartStreamRequest) String() string {
 func (*StartStreamRequest) ProtoMessage() {}
 
 func (x *StartStreamRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_ingest_ingest_proto_msgTypes[3]
+	mi := &file_v1_vision_vision_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -256,7 +256,7 @@ func (x *StartStreamRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartStreamRequest.ProtoReflect.Descriptor instead.
 func (*StartStreamRequest) Descriptor() ([]byte, []int) {
-	return file_v1_ingest_ingest_proto_rawDescGZIP(), []int{3}
+	return file_v1_vision_vision_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *StartStreamRequest) GetCameraId() string {
@@ -300,7 +300,7 @@ type FrameChunk struct {
 
 func (x *FrameChunk) Reset() {
 	*x = FrameChunk{}
-	mi := &file_v1_ingest_ingest_proto_msgTypes[4]
+	mi := &file_v1_vision_vision_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -312,7 +312,7 @@ func (x *FrameChunk) String() string {
 func (*FrameChunk) ProtoMessage() {}
 
 func (x *FrameChunk) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_ingest_ingest_proto_msgTypes[4]
+	mi := &file_v1_vision_vision_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -325,7 +325,7 @@ func (x *FrameChunk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FrameChunk.ProtoReflect.Descriptor instead.
 func (*FrameChunk) Descriptor() ([]byte, []int) {
-	return file_v1_ingest_ingest_proto_rawDescGZIP(), []int{4}
+	return file_v1_vision_vision_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *FrameChunk) GetCameraId() string {
@@ -372,7 +372,7 @@ type StopStreamRequest struct {
 
 func (x *StopStreamRequest) Reset() {
 	*x = StopStreamRequest{}
-	mi := &file_v1_ingest_ingest_proto_msgTypes[5]
+	mi := &file_v1_vision_vision_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -384,7 +384,7 @@ func (x *StopStreamRequest) String() string {
 func (*StopStreamRequest) ProtoMessage() {}
 
 func (x *StopStreamRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_ingest_ingest_proto_msgTypes[5]
+	mi := &file_v1_vision_vision_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -397,7 +397,7 @@ func (x *StopStreamRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopStreamRequest.ProtoReflect.Descriptor instead.
 func (*StopStreamRequest) Descriptor() ([]byte, []int) {
-	return file_v1_ingest_ingest_proto_rawDescGZIP(), []int{5}
+	return file_v1_vision_vision_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *StopStreamRequest) GetCameraId() string {
@@ -416,7 +416,7 @@ type StopStreamResponse struct {
 
 func (x *StopStreamResponse) Reset() {
 	*x = StopStreamResponse{}
-	mi := &file_v1_ingest_ingest_proto_msgTypes[6]
+	mi := &file_v1_vision_vision_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -428,7 +428,7 @@ func (x *StopStreamResponse) String() string {
 func (*StopStreamResponse) ProtoMessage() {}
 
 func (x *StopStreamResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_ingest_ingest_proto_msgTypes[6]
+	mi := &file_v1_vision_vision_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -441,7 +441,7 @@ func (x *StopStreamResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopStreamResponse.ProtoReflect.Descriptor instead.
 func (*StopStreamResponse) Descriptor() ([]byte, []int) {
-	return file_v1_ingest_ingest_proto_rawDescGZIP(), []int{6}
+	return file_v1_vision_vision_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *StopStreamResponse) GetSuccess() bool {
@@ -451,24 +451,24 @@ func (x *StopStreamResponse) GetSuccess() bool {
 	return false
 }
 
-var File_v1_ingest_ingest_proto protoreflect.FileDescriptor
+var File_v1_vision_vision_proto protoreflect.FileDescriptor
 
-const file_v1_ingest_ingest_proto_rawDesc = "" +
+const file_v1_vision_vision_proto_rawDesc = "" +
 	"\n" +
-	"\x16v1/ingest/ingest.proto\x12\x0froost.ingest.v1\x1a\x1cgoogle/api/annotations.proto\"\xba\x01\n" +
+	"\x16v1/vision/vision.proto\x12\tvision.v1\x1a\x1cgoogle/api/annotations.proto\"\xb4\x01\n" +
 	"\x06Camera\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x120\n" +
-	"\x04type\x18\x03 \x01(\x0e2\x1c.roost.ingest.v1.Camera.TypeR\x04type\x12\x1f\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12*\n" +
+	"\x04type\x18\x03 \x01(\x0e2\x16.vision.v1.Camera.TypeR\x04type\x12\x1f\n" +
 	"\vsource_path\x18\x04 \x01(\tR\n" +
 	"sourcePath\"9\n" +
 	"\x04Type\x12\x14\n" +
 	"\x10TYPE_UNSPECIFIED\x10\x00\x12\f\n" +
 	"\bTYPE_USB\x10\x01\x12\r\n" +
 	"\tTYPE_RTSP\x10\x02\"\x14\n" +
-	"\x12ListCamerasRequest\"H\n" +
-	"\x13ListCamerasResponse\x121\n" +
-	"\acameras\x18\x01 \x03(\v2\x17.roost.ingest.v1.CameraR\acameras\"q\n" +
+	"\x12ListCamerasRequest\"B\n" +
+	"\x13ListCamerasResponse\x12+\n" +
+	"\acameras\x18\x01 \x03(\v2\x11.vision.v1.CameraR\acameras\"q\n" +
 	"\x12StartStreamRequest\x12\x1b\n" +
 	"\tcamera_id\x18\x01 \x01(\tR\bcameraId\x12\x14\n" +
 	"\x05width\x18\x02 \x01(\x05R\x05width\x12\x16\n" +
@@ -484,46 +484,46 @@ const file_v1_ingest_ingest_proto_rawDesc = "" +
 	"\x11StopStreamRequest\x12\x1b\n" +
 	"\tcamera_id\x18\x01 \x01(\tR\bcameraId\".\n" +
 	"\x12StopStreamResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\x93\x02\n" +
-	"\rCameraService\x12X\n" +
-	"\vListCameras\x12#.roost.ingest.v1.ListCamerasRequest\x1a$.roost.ingest.v1.ListCamerasResponse\x12Q\n" +
-	"\vStartStream\x12#.roost.ingest.v1.StartStreamRequest\x1a\x1b.roost.ingest.v1.FrameChunk0\x01\x12U\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xef\x01\n" +
+	"\rCameraService\x12L\n" +
+	"\vListCameras\x12\x1d.vision.v1.ListCamerasRequest\x1a\x1e.vision.v1.ListCamerasResponse\x12E\n" +
+	"\vStartStream\x12\x1d.vision.v1.StartStreamRequest\x1a\x15.vision.v1.FrameChunk0\x01\x12I\n" +
 	"\n" +
-	"StopStream\x12\".roost.ingest.v1.StopStreamRequest\x1a#.roost.ingest.v1.StopStreamResponseB Z\x1erooster/gen/ingest/v1;ingestv1b\x06proto3"
+	"StopStream\x12\x1c.vision.v1.StopStreamRequest\x1a\x1d.vision.v1.StopStreamResponseB Z\x1erooster/gen/vision/v1;visionv1b\x06proto3"
 
 var (
-	file_v1_ingest_ingest_proto_rawDescOnce sync.Once
-	file_v1_ingest_ingest_proto_rawDescData []byte
+	file_v1_vision_vision_proto_rawDescOnce sync.Once
+	file_v1_vision_vision_proto_rawDescData []byte
 )
 
-func file_v1_ingest_ingest_proto_rawDescGZIP() []byte {
-	file_v1_ingest_ingest_proto_rawDescOnce.Do(func() {
-		file_v1_ingest_ingest_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_v1_ingest_ingest_proto_rawDesc), len(file_v1_ingest_ingest_proto_rawDesc)))
+func file_v1_vision_vision_proto_rawDescGZIP() []byte {
+	file_v1_vision_vision_proto_rawDescOnce.Do(func() {
+		file_v1_vision_vision_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_v1_vision_vision_proto_rawDesc), len(file_v1_vision_vision_proto_rawDesc)))
 	})
-	return file_v1_ingest_ingest_proto_rawDescData
+	return file_v1_vision_vision_proto_rawDescData
 }
 
-var file_v1_ingest_ingest_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_v1_ingest_ingest_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_v1_ingest_ingest_proto_goTypes = []any{
-	(Camera_Type)(0),            // 0: roost.ingest.v1.Camera.Type
-	(*Camera)(nil),              // 1: roost.ingest.v1.Camera
-	(*ListCamerasRequest)(nil),  // 2: roost.ingest.v1.ListCamerasRequest
-	(*ListCamerasResponse)(nil), // 3: roost.ingest.v1.ListCamerasResponse
-	(*StartStreamRequest)(nil),  // 4: roost.ingest.v1.StartStreamRequest
-	(*FrameChunk)(nil),          // 5: roost.ingest.v1.FrameChunk
-	(*StopStreamRequest)(nil),   // 6: roost.ingest.v1.StopStreamRequest
-	(*StopStreamResponse)(nil),  // 7: roost.ingest.v1.StopStreamResponse
+var file_v1_vision_vision_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_v1_vision_vision_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_v1_vision_vision_proto_goTypes = []any{
+	(Camera_Type)(0),            // 0: vision.v1.Camera.Type
+	(*Camera)(nil),              // 1: vision.v1.Camera
+	(*ListCamerasRequest)(nil),  // 2: vision.v1.ListCamerasRequest
+	(*ListCamerasResponse)(nil), // 3: vision.v1.ListCamerasResponse
+	(*StartStreamRequest)(nil),  // 4: vision.v1.StartStreamRequest
+	(*FrameChunk)(nil),          // 5: vision.v1.FrameChunk
+	(*StopStreamRequest)(nil),   // 6: vision.v1.StopStreamRequest
+	(*StopStreamResponse)(nil),  // 7: vision.v1.StopStreamResponse
 }
-var file_v1_ingest_ingest_proto_depIdxs = []int32{
-	0, // 0: roost.ingest.v1.Camera.type:type_name -> roost.ingest.v1.Camera.Type
-	1, // 1: roost.ingest.v1.ListCamerasResponse.cameras:type_name -> roost.ingest.v1.Camera
-	2, // 2: roost.ingest.v1.CameraService.ListCameras:input_type -> roost.ingest.v1.ListCamerasRequest
-	4, // 3: roost.ingest.v1.CameraService.StartStream:input_type -> roost.ingest.v1.StartStreamRequest
-	6, // 4: roost.ingest.v1.CameraService.StopStream:input_type -> roost.ingest.v1.StopStreamRequest
-	3, // 5: roost.ingest.v1.CameraService.ListCameras:output_type -> roost.ingest.v1.ListCamerasResponse
-	5, // 6: roost.ingest.v1.CameraService.StartStream:output_type -> roost.ingest.v1.FrameChunk
-	7, // 7: roost.ingest.v1.CameraService.StopStream:output_type -> roost.ingest.v1.StopStreamResponse
+var file_v1_vision_vision_proto_depIdxs = []int32{
+	0, // 0: vision.v1.Camera.type:type_name -> vision.v1.Camera.Type
+	1, // 1: vision.v1.ListCamerasResponse.cameras:type_name -> vision.v1.Camera
+	2, // 2: vision.v1.CameraService.ListCameras:input_type -> vision.v1.ListCamerasRequest
+	4, // 3: vision.v1.CameraService.StartStream:input_type -> vision.v1.StartStreamRequest
+	6, // 4: vision.v1.CameraService.StopStream:input_type -> vision.v1.StopStreamRequest
+	3, // 5: vision.v1.CameraService.ListCameras:output_type -> vision.v1.ListCamerasResponse
+	5, // 6: vision.v1.CameraService.StartStream:output_type -> vision.v1.FrameChunk
+	7, // 7: vision.v1.CameraService.StopStream:output_type -> vision.v1.StopStreamResponse
 	5, // [5:8] is the sub-list for method output_type
 	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -531,27 +531,27 @@ var file_v1_ingest_ingest_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_v1_ingest_ingest_proto_init() }
-func file_v1_ingest_ingest_proto_init() {
-	if File_v1_ingest_ingest_proto != nil {
+func init() { file_v1_vision_vision_proto_init() }
+func file_v1_vision_vision_proto_init() {
+	if File_v1_vision_vision_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_ingest_ingest_proto_rawDesc), len(file_v1_ingest_ingest_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_vision_vision_proto_rawDesc), len(file_v1_vision_vision_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_v1_ingest_ingest_proto_goTypes,
-		DependencyIndexes: file_v1_ingest_ingest_proto_depIdxs,
-		EnumInfos:         file_v1_ingest_ingest_proto_enumTypes,
-		MessageInfos:      file_v1_ingest_ingest_proto_msgTypes,
+		GoTypes:           file_v1_vision_vision_proto_goTypes,
+		DependencyIndexes: file_v1_vision_vision_proto_depIdxs,
+		EnumInfos:         file_v1_vision_vision_proto_enumTypes,
+		MessageInfos:      file_v1_vision_vision_proto_msgTypes,
 	}.Build()
-	File_v1_ingest_ingest_proto = out.File
-	file_v1_ingest_ingest_proto_goTypes = nil
-	file_v1_ingest_ingest_proto_depIdxs = nil
+	File_v1_vision_vision_proto = out.File
+	file_v1_vision_vision_proto_goTypes = nil
+	file_v1_vision_vision_proto_depIdxs = nil
 }

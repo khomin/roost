@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DetectionService_SubscribeEvents_FullMethodName = "/roost.inference.v1.DetectionService/SubscribeEvents"
+	DetectionService_SubscribeEvents_FullMethodName = "/inference.v1.DetectionService/SubscribeEvents"
 )
 
 // DetectionServiceClient is the client API for DetectionService service.
@@ -108,7 +108,7 @@ type DetectionService_SubscribeEventsServer = grpc.ServerStreamingServer[Detecti
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DetectionService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "roost.inference.v1.DetectionService",
+	ServiceName: "inference.v1.DetectionService",
 	HandlerType: (*DetectionServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{

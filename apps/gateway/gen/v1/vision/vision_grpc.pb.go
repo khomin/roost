@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             (unknown)
-// source: v1/ingest/ingest.proto
+// source: v1/vision/vision.proto
 
-package ingestv1
+package visionv1
 
 import (
 	context "context"
@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CameraService_ListCameras_FullMethodName = "/roost.ingest.v1.CameraService/ListCameras"
-	CameraService_StartStream_FullMethodName = "/roost.ingest.v1.CameraService/StartStream"
-	CameraService_StopStream_FullMethodName  = "/roost.ingest.v1.CameraService/StopStream"
+	CameraService_ListCameras_FullMethodName = "/vision.v1.CameraService/ListCameras"
+	CameraService_StartStream_FullMethodName = "/vision.v1.CameraService/StartStream"
+	CameraService_StopStream_FullMethodName  = "/vision.v1.CameraService/StopStream"
 )
 
 // CameraServiceClient is the client API for CameraService service.
@@ -176,7 +176,7 @@ func _CameraService_StopStream_Handler(srv interface{}, ctx context.Context, dec
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CameraService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "roost.ingest.v1.CameraService",
+	ServiceName: "vision.v1.CameraService",
 	HandlerType: (*CameraServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -195,5 +195,5 @@ var CameraService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "v1/ingest/ingest.proto",
+	Metadata: "v1/vision/vision.proto",
 }

@@ -9,6 +9,7 @@ import (
 	"roost/bootstrap"
 	roostv1 "roost/gen/v1/roost"
 	userv1 "roost/gen/v1/user"
+	visionv1 "roost/gen/v1/vision"
 	"roost/internal/api/handlers"
 	"roost/internal/api/middleware"
 	"roost/internal/core"
@@ -30,15 +31,27 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-// TODO: set keycloak
-// TODO: camera scheme, tests
-// TODO: external grpc
+// TODO:
+// 	1. Go Gateway Starts
+//     ├── Connects to PostgreSQL & runs database migrations
+//     ├── Connects to MinIO/S3 bucket & ensures bucket existence
+//     └── Fetches active camera configurations from DB
+
+//  2. Go Gateway Establishes C++ gRPC Connection
+//     ├── Retries connection until C++ Vision Service gRPC server is ready
+//     └── Calls SyncCameras(stream CameraConfig) or StartCameraStream() RPC
+
+//  3. C++ Vision Service Configures Pipelines
+//     ├── Receives stream parameters (ID, type, RTSP URL / device path)
+//     ├── Spawns GStreamer/FFmpeg capture pipelines & shared memory buffers
+//     └── Begins continuous motion evaluation on incoming frames
+
 // TODO: foundation react
 // TODO: vision module
 
-// TODO: alert?
-
 // TODO: domain name
+// TODO: camera tests
+// TODO: alert?
 
 func main() {
 	log := slog.With("main")
@@ -116,6 +129,31 @@ func main() {
 	if err := userv1.RegisterUserServiceHandlerFromEndpoint(ctx, gwmux, grpcAddr, opts); err != nil {
 		slog.Error("failed to register endpoint", "err", err)
 	}
+
+	go func() {
+		conn, err := grpc.NewClient(
+			app.Cfg.Vision.GrpcUri,
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
+		)
+		if err != nil {
+			slog.Error("failed to connect to vision", "error", err)
+		}
+		visionClient := visionv1.NewCameraServiceClient(conn)
+
+		cameras, err := cameraRepo.List(ctx)
+		if err != nil {
+			log.Error("failed to read cameras", "err", err)
+		}
+		for _, camera := range cameras {
+			stream, err := visionClient.StartStream(ctx, &visionv1.StartStreamRequest{
+				CameraId: camera.ID,
+			})
+			if err != nil {
+				log.Error("failed to", "err", err)
+			}
+			log.Debug("stream", "stream", stream)
+		}
+	}()
 
 	httpHandler := setupHttpHandler(gwmux)
 

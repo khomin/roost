@@ -4,6 +4,9 @@ server:
   environment: "development"
   log_path: "/var/log/roost/app.log"
 
+vision:
+  grpc_uri: ":8090"
+
 authorization:
   issuer_url: ""
   client_id: "roost-app"

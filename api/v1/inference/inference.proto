@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package roost.inference.v1;
+package inference.v1;
 
 import "google/api/annotations.proto";
 

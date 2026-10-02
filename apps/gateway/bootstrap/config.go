@@ -11,6 +11,7 @@ import (
 
 type Config struct {
 	Server        ServerConfig   `mapstructure:"server"`
+	Vision        VisionConfig   `mapstructure:"vision"`
 	Authorization Authorization  `mapstructure:"authorization"`
 	Database      DatabaseConfig `mapstructure:"database"`
 	Redis         RedisConfig    `mapstructure:"redis"`
@@ -22,6 +23,10 @@ type ServerConfig struct {
 	PortGRPC    int    `mapstructure:"port_grpc"`
 	Environment string `mapstructure:"environment"`
 	LogPath     string `mapstructure:"log_path"`
+}
+
+type VisionConfig struct {
+	GrpcUri string `mapstructure:"grpc_uri"`
 }
 
 type Authorization struct {

@@ -247,7 +247,7 @@ var File_v1_inference_inference_proto protoreflect.FileDescriptor
 
 const file_v1_inference_inference_proto_rawDesc = "" +
 	"\n" +
-	"\x1cv1/inference/inference.proto\x12\x12roost.inference.v1\x1a\x1cgoogle/api/annotations.proto\"1\n" +
+	"\x1cv1/inference/inference.proto\x12\finference.v1\x1a\x1cgoogle/api/annotations.proto\"1\n" +
 	"\x10SubscribeRequest\x12\x1d\n" +
 	"\n" +
 	"camera_ids\x18\x01 \x03(\tR\tcameraIds\"\x97\x01\n" +
@@ -259,20 +259,20 @@ const file_v1_inference_inference_proto_rawDesc = "" +
 	"\n" +
 	"confidence\x18\x05 \x01(\x02R\n" +
 	"confidence\x12\x14\n" +
-	"\x05label\x18\x06 \x01(\tR\x05label\"\x8d\x02\n" +
+	"\x05label\x18\x06 \x01(\tR\x05label\"\x87\x02\n" +
 	"\x0eDetectionEvent\x12\x1b\n" +
 	"\tcamera_id\x18\x01 \x01(\tR\bcameraId\x12!\n" +
 	"\ftimestamp_ms\x18\x02 \x01(\x03R\vtimestampMs\x12\x19\n" +
 	"\bframe_id\x18\x03 \x01(\x03R\aframeId\x12'\n" +
-	"\x0fmotion_detected\x18\x04 \x01(\bR\x0emotionDetected\x12?\n" +
+	"\x0fmotion_detected\x18\x04 \x01(\bR\x0emotionDetected\x129\n" +
 	"\n" +
-	"detections\x18\x05 \x03(\v2\x1f.roost.inference.v1.BoundingBoxR\n" +
+	"detections\x18\x05 \x03(\v2\x19.inference.v1.BoundingBoxR\n" +
 	"detections\x12\x17\n" +
 	"\ashm_key\x18\x06 \x01(\tR\x06shmKey\x12\x1d\n" +
 	"\n" +
-	"shm_offset\x18\a \x01(\x04R\tshmOffset2q\n" +
-	"\x10DetectionService\x12]\n" +
-	"\x0fSubscribeEvents\x12$.roost.inference.v1.SubscribeRequest\x1a\".roost.inference.v1.DetectionEvent0\x01B&Z$rooster/gen/inference/v1;inferencev1b\x06proto3"
+	"shm_offset\x18\a \x01(\x04R\tshmOffset2e\n" +
+	"\x10DetectionService\x12Q\n" +
+	"\x0fSubscribeEvents\x12\x1e.inference.v1.SubscribeRequest\x1a\x1c.inference.v1.DetectionEvent0\x01B&Z$rooster/gen/inference/v1;inferencev1b\x06proto3"
 
 var (
 	file_v1_inference_inference_proto_rawDescOnce sync.Once
@@ -288,14 +288,14 @@ func file_v1_inference_inference_proto_rawDescGZIP() []byte {
 
 var file_v1_inference_inference_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_v1_inference_inference_proto_goTypes = []any{
-	(*SubscribeRequest)(nil), // 0: roost.inference.v1.SubscribeRequest
-	(*BoundingBox)(nil),      // 1: roost.inference.v1.BoundingBox
-	(*DetectionEvent)(nil),   // 2: roost.inference.v1.DetectionEvent
+	(*SubscribeRequest)(nil), // 0: inference.v1.SubscribeRequest
+	(*BoundingBox)(nil),      // 1: inference.v1.BoundingBox
+	(*DetectionEvent)(nil),   // 2: inference.v1.DetectionEvent
 }
 var file_v1_inference_inference_proto_depIdxs = []int32{
-	1, // 0: roost.inference.v1.DetectionEvent.detections:type_name -> roost.inference.v1.BoundingBox
-	0, // 1: roost.inference.v1.DetectionService.SubscribeEvents:input_type -> roost.inference.v1.SubscribeRequest
-	2, // 2: roost.inference.v1.DetectionService.SubscribeEvents:output_type -> roost.inference.v1.DetectionEvent
+	1, // 0: inference.v1.DetectionEvent.detections:type_name -> inference.v1.BoundingBox
+	0, // 1: inference.v1.DetectionService.SubscribeEvents:input_type -> inference.v1.SubscribeRequest
+	2, // 2: inference.v1.DetectionService.SubscribeEvents:output_type -> inference.v1.DetectionEvent
 	2, // [2:3] is the sub-list for method output_type
 	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
