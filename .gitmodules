@@ -1,9 +1,12 @@
-[submodule "cpp/external/config-cxx"]
-	path = cpp/external/config-cxx
+[submodule "apps/vision/external/config-cxx"]
+	path = apps/vision/external/config-cxx
 	url = https://github.com/cieslarmichal/config-cxx.git
-[submodule "cpp/external/grpc"]
-	path = cpp/external/grpc
+[submodule "apps/vision/external/grpc"]
+	path = apps/vision/external/grpc
 	url = https://github.com/grpc/grpc
-[submodule "resources/ultralytics"]
-	path = resources/ultralytics
+[submodule "apps/vision/external/ultralytics"]
+	path = apps/vision/external/ultralytics
 	url = https://github.com/ultralytics/yolov5
+[submodule "apps/vision/external/spdlog"]
+	path = apps/vision/external/spdlog
+	url = https://github.com/gabime/spdlog

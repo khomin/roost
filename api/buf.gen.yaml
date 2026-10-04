@@ -32,3 +32,11 @@ plugins:
     out: ../apps/web/src/gen
     opt: 
       - target=ts
+
+  # C++ Protobuf message types
+  - remote: buf.build/protocolbuffers/cpp:v33.5
+    out: ../apps/vision/gen
+
+  # C++ gRPC service stubs
+  - remote: buf.build/grpc/cpp:v1.81.1
+    out: ../apps/vision/gen

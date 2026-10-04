@@ -1,0 +1,23 @@
+{
+    "dart.analysisExcludedFolders": [
+        "**/build/**",
+        "**/external/**",
+        "**/external/grpc/third_party/**",
+    ],
+    "files.exclude": {
+        "build/**": true,
+        "external/**": true
+    },
+    "search.exclude": {
+        "build/**": true,
+        "external/**": true
+    },
+    "C_Cpp.files.exclude": {
+        "**/build": true,
+        "**/external": true
+    },
+    "C_Cpp.codeAnalysis.exclude": {
+        "**/build": true,
+        "**/external": true
+    }
+}
