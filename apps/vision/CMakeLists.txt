@@ -26,14 +26,19 @@ add_executable(${PROJECT_NAME}
     ./gen/v1/vision/vision.grpc.pb.h
     ./gen/v1/vision/vision.pb.cc
     ./gen/v1/vision/vision.pb.h
-    /Users/panic/Documents/PROJECTS/roost/apps/vision/gen/google/api/annotations.grpc.pb.cc
-    /Users/panic/Documents/PROJECTS/roost/apps/vision/gen/google/api/annotations.grpc.pb.h
-    /Users/panic/Documents/PROJECTS/roost/apps/vision/gen/google/api/annotations.pb.cc
-    /Users/panic/Documents/PROJECTS/roost/apps/vision/gen/google/api/annotations.pb.h
-    /Users/panic/Documents/PROJECTS/roost/apps/vision/gen/google/api/http.grpc.pb.cc
-    /Users/panic/Documents/PROJECTS/roost/apps/vision/gen/google/api/http.grpc.pb.h
-    /Users/panic/Documents/PROJECTS/roost/apps/vision/gen/google/api/http.pb.cc
-    /Users/panic/Documents/PROJECTS/roost/apps/vision/gen/google/api/http.pb.h
+    ./gen/google/api/annotations.grpc.pb.cc
+    ./gen/google/api/annotations.grpc.pb.h
+    ./gen/google/api/annotations.pb.cc
+    ./gen/google/api/annotations.pb.h
+    ./gen/google/api/http.grpc.pb.cc
+    ./gen/google/api/http.grpc.pb.h
+    ./gen/google/api/http.pb.cc
+    ./gen/google/api/http.pb.h
+    ./clients/vision_service.h
+)
+
+list(APPEND CMAKE_PREFIX_PATH
+    "${CMAKE_SOURCE_DIR}/../../.lib_pack/grpc"
 )
 
 if (APPLE)
@@ -41,9 +46,11 @@ if (APPLE)
         ./../../.lib_pack/grpc/lib/*.dylib
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    file(GLOB GRPC_AND_DEPS_LIBRARIES
-        ./../../.lib_pack/grpc/lib/*.so
-    )
+    # file(GLOB GRPC_AND_DEPS_LIBRARIES
+    #     ./../../.lib_pack/grpc/lib/*.so
+    # )
+    find_package(Protobuf CONFIG REQUIRED)
+    find_package(gRPC CONFIG REQUIRED)
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -51,15 +58,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ./gen/
     ./gen/v1/
     ./gen/v1/vision
-    # /../../.lib_pack/grpc/include
-    # /../../.lib_pack/grpc/include/google
-    /Users/panic/Documents/PROJECTS/roost/.lib_pack/grpc/include
+    ../../.lib_pack/grpc/include
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     config-cxx
     spdlog::spdlog_header_only
-    ${GRPC_AND_DEPS_LIBRARIES}
+    gRPC::grpc++
+    # ${GRPC_AND_DEPS_LIBRARIES}
 )
 
 # ${OPENCV_LIBRARIES}

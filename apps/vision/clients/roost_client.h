@@ -1,12 +1,11 @@
-#include "api/gen/cpp/roost/v1/roost.grpc.pb.h"
+#include "roost/roost.grpc.pb.h"
 #include <grpcpp/grpcpp.h>
 
 class RoostClient {
 public:
   RoostClient(std::shared_ptr<grpc::Channel> channel)
-      : stub_(roost::v1::Roost::NewStub(channel)) {}
+      : stub_(roost:: v1::RoostService::NewStub(channel)) {}
 
-  // Example method: Get a camera by ID
   bool GetCamera(const std::string &camera_id, roost::v1::Camera *camera) {
     roost::v1::GetCameraRequest request;
     request.set_id(camera_id);
@@ -23,5 +22,5 @@ public:
   }
 
 private:
-  std::unique_ptr<roost::v1::Roost::Stub> stub_;
+  std::unique_ptr<roost::v1::RoostService::Stub> stub_;
 };

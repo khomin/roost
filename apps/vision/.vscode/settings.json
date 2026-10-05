@@ -1,23 +1,12 @@
 {
+    "cmake.buildDirectory": "${workspaceFolder}/build",
     "dart.analysisExcludedFolders": [
-        "**/build/**",
-        "**/external/**",
-        "**/external/grpc/third_party/**",
+        "build",
+        "external"
     ],
-    "files.exclude": {
-        "build/**": true,
-        "external/**": true
-    },
+    "files.exclude": {},
     "search.exclude": {
         "build/**": true,
         "external/**": true
-    },
-    "C_Cpp.files.exclude": {
-        "**/build": true,
-        "**/external": true
-    },
-    "C_Cpp.codeAnalysis.exclude": {
-        "**/build": true,
-        "**/external": true
     }
 }

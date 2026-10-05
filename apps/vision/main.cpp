@@ -1,11 +1,14 @@
-#include <condition_variable>
+// #include <condition_variable>
 #include <csignal>
 #include <iostream>
+#include <atomic>
 
-// #include "config-cxx/config.h"
-// #include "spdlog/spdlog.h"
+#include "spdlog/spdlog.h"
+#include "config-cxx/config.h"
 
-// #include "vision/vision.grpc.pb.h"
+#include "vision/vision.grpc.pb.h"
+
+#include "clients/vision_service.h""
 
 std::mutex mtx;
 std::atomic<bool> ready_to_exit{};
@@ -20,7 +23,11 @@ void signalHandler(int signal) {
 int main() {
   std::signal(SIGINT, signalHandler);
 
-  // config::Config config;
+  config::Config config;
+
+  VisionServiceImpl visionService{};
+
+  // visionService.Start
 
   // config.get<std::string>("");
 

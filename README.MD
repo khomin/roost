@@ -19,5 +19,14 @@
 
 ### Notes
 
+```bash
+git clone https://github.com/khomin/roost.git --recurse-submodules
+cd ./roost
+
+./scripts/build_grpc.sh
+
+cd ./api
 buf dep update
-buf generate
+buf generate --include-imports
+cd ../
+```

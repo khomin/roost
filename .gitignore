@@ -26,3 +26,7 @@ apps/vision/cpp/application/build/*
 
 apps/gateway/__debug_bin*
 apps/gateway/.env
+apps/gateway/gen/**
+
+apps/vision/build/**
+apps/vision/gen/**
