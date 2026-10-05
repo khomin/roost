@@ -6,43 +6,28 @@ import "google/api/annotations.proto";
 
 option go_package = "rooster/gen/vision/v1;visionv1";
 
-service CameraService {
-  rpc ListCameras (ListCamerasRequest) returns (ListCamerasResponse);
-  rpc StartStream (StartStreamRequest) returns (stream FrameChunk);
-  rpc StopStream (StopStreamRequest) returns (StopStreamResponse);
+service VisionService {
+  rpc StartStream (StartStreamRequest) returns (StartStreamResponse);
+  rpc StopStream  (StopStreamRequest)  returns (StopStreamResponse);
 }
 
-message Camera {
-  string id   = 1;
-  string name = 2;
-  enum Type {
-    TYPE_UNSPECIFIED = 0;
-    TYPE_USB         = 1;
-    TYPE_RTSP        = 2;
-  }
-  Type   type        = 3;
-  string source_path = 4; // e.g. "/dev/video0" or "rtsp://..."
-}
-
-message ListCamerasRequest {}
-
-message ListCamerasResponse {
-  repeated Camera cameras = 1;
+enum CameraType {
+  CAMERA_TYPE_UNSPECIFIED = 0;
+  CAMERA_TYPE_USB         = 1;
+  CAMERA_TYPE_RTSP        = 2;
 }
 
 message StartStreamRequest {
-  string camera_id = 1;
-  int32  width     = 2;
-  int32  height    = 3;
-  int32  fps       = 4;
+  string     camera_id   = 1;
+  string     source_path = 2;
+  CameraType type        = 3;
 }
 
-message FrameChunk {
-  string camera_id    = 1;
-  int64  timestamp_ms = 2;
-  int64  frame_id     = 3;
-  bytes  data         = 4;       // Encoded (H264/MJPEG) or memory handle
-  string shm_path     = 5;       // Shared memory key if local zero-copy
+message StartStreamResponse {
+  string shm_name    = 1;
+  uint32 slot_count  = 2;
+  uint32 slot_size   = 3;
+  uint32 header_size = 4;
 }
 
 message StopStreamRequest {

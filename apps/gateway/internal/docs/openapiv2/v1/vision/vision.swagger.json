@@ -6,7 +6,7 @@
   },
   "tags": [
     {
-      "name": "CameraService"
+      "name": "VisionService"
     }
   ],
   "consumes": [

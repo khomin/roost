@@ -30,3 +30,5 @@ apps/gateway/gen/**
 
 apps/vision/build/**
 apps/vision/gen/**
+
+api/bruno/**

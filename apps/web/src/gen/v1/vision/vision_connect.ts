@@ -3,35 +3,26 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { FrameChunk, ListCamerasRequest, ListCamerasResponse, StartStreamRequest, StopStreamRequest, StopStreamResponse } from "./vision_pb.js";
+import { StartStreamRequest, StartStreamResponse, StopStreamRequest, StopStreamResponse } from "./vision_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
- * @generated from service vision.v1.CameraService
+ * @generated from service vision.v1.VisionService
  */
-export const CameraService = {
-  typeName: "vision.v1.CameraService",
+export const VisionService = {
+  typeName: "vision.v1.VisionService",
   methods: {
     /**
-     * @generated from rpc vision.v1.CameraService.ListCameras
-     */
-    listCameras: {
-      name: "ListCameras",
-      I: ListCamerasRequest,
-      O: ListCamerasResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc vision.v1.CameraService.StartStream
+     * @generated from rpc vision.v1.VisionService.StartStream
      */
     startStream: {
       name: "StartStream",
       I: StartStreamRequest,
-      O: FrameChunk,
-      kind: MethodKind.ServerStreaming,
+      O: StartStreamResponse,
+      kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc vision.v1.CameraService.StopStream
+     * @generated from rpc vision.v1.VisionService.StopStream
      */
     stopStream: {
       name: "StopStream",

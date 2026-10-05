@@ -11,97 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file v1/vision/vision.proto.
  */
 export const file_v1_vision_vision: GenFile = /*@__PURE__*/
-  fileDesc("ChZ2MS92aXNpb24vdmlzaW9uLnByb3RvEgl2aXNpb24udjEimAEKBkNhbWVyYRIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEiQKBHR5cGUYAyABKA4yFi52aXNpb24udjEuQ2FtZXJhLlR5cGUSEwoLc291cmNlX3BhdGgYBCABKAkiOQoEVHlwZRIUChBUWVBFX1VOU1BFQ0lGSUVEEAASDAoIVFlQRV9VU0IQARINCglUWVBFX1JUU1AQAiIUChJMaXN0Q2FtZXJhc1JlcXVlc3QiOQoTTGlzdENhbWVyYXNSZXNwb25zZRIiCgdjYW1lcmFzGAEgAygLMhEudmlzaW9uLnYxLkNhbWVyYSJTChJTdGFydFN0cmVhbVJlcXVlc3QSEQoJY2FtZXJhX2lkGAEgASgJEg0KBXdpZHRoGAIgASgFEg4KBmhlaWdodBgDIAEoBRILCgNmcHMYBCABKAUiZwoKRnJhbWVDaHVuaxIRCgljYW1lcmFfaWQYASABKAkSFAoMdGltZXN0YW1wX21zGAIgASgDEhAKCGZyYW1lX2lkGAMgASgDEgwKBGRhdGEYBCABKAwSEAoIc2htX3BhdGgYBSABKAkiJgoRU3RvcFN0cmVhbVJlcXVlc3QSEQoJY2FtZXJhX2lkGAEgASgJIiUKElN0b3BTdHJlYW1SZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIMu8BCg1DYW1lcmFTZXJ2aWNlEkwKC0xpc3RDYW1lcmFzEh0udmlzaW9uLnYxLkxpc3RDYW1lcmFzUmVxdWVzdBoeLnZpc2lvbi52MS5MaXN0Q2FtZXJhc1Jlc3BvbnNlEkUKC1N0YXJ0U3RyZWFtEh0udmlzaW9uLnYxLlN0YXJ0U3RyZWFtUmVxdWVzdBoVLnZpc2lvbi52MS5GcmFtZUNodW5rMAESSQoKU3RvcFN0cmVhbRIcLnZpc2lvbi52MS5TdG9wU3RyZWFtUmVxdWVzdBodLnZpc2lvbi52MS5TdG9wU3RyZWFtUmVzcG9uc2VCIFoecm9vc3Rlci9nZW4vdmlzaW9uL3YxO3Zpc2lvbnYxYgZwcm90bzM", [file_google_api_annotations]);
-
-/**
- * @generated from message vision.v1.Camera
- */
-export type Camera = Message<"vision.v1.Camera"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
-
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
-
-  /**
-   * @generated from field: vision.v1.Camera.Type type = 3;
-   */
-  type: Camera_Type;
-
-  /**
-   * e.g. "/dev/video0" or "rtsp://..."
-   *
-   * @generated from field: string source_path = 4;
-   */
-  sourcePath: string;
-};
-
-/**
- * Describes the message vision.v1.Camera.
- * Use `create(CameraSchema)` to create a new message.
- */
-export const CameraSchema: GenMessage<Camera> = /*@__PURE__*/
-  messageDesc(file_v1_vision_vision, 0);
-
-/**
- * @generated from enum vision.v1.Camera.Type
- */
-export enum Camera_Type {
-  /**
-   * @generated from enum value: TYPE_UNSPECIFIED = 0;
-   */
-  UNSPECIFIED = 0,
-
-  /**
-   * @generated from enum value: TYPE_USB = 1;
-   */
-  USB = 1,
-
-  /**
-   * @generated from enum value: TYPE_RTSP = 2;
-   */
-  RTSP = 2,
-}
-
-/**
- * Describes the enum vision.v1.Camera.Type.
- */
-export const Camera_TypeSchema: GenEnum<Camera_Type> = /*@__PURE__*/
-  enumDesc(file_v1_vision_vision, 0, 0);
-
-/**
- * @generated from message vision.v1.ListCamerasRequest
- */
-export type ListCamerasRequest = Message<"vision.v1.ListCamerasRequest"> & {
-};
-
-/**
- * Describes the message vision.v1.ListCamerasRequest.
- * Use `create(ListCamerasRequestSchema)` to create a new message.
- */
-export const ListCamerasRequestSchema: GenMessage<ListCamerasRequest> = /*@__PURE__*/
-  messageDesc(file_v1_vision_vision, 1);
-
-/**
- * @generated from message vision.v1.ListCamerasResponse
- */
-export type ListCamerasResponse = Message<"vision.v1.ListCamerasResponse"> & {
-  /**
-   * @generated from field: repeated vision.v1.Camera cameras = 1;
-   */
-  cameras: Camera[];
-};
-
-/**
- * Describes the message vision.v1.ListCamerasResponse.
- * Use `create(ListCamerasResponseSchema)` to create a new message.
- */
-export const ListCamerasResponseSchema: GenMessage<ListCamerasResponse> = /*@__PURE__*/
-  messageDesc(file_v1_vision_vision, 2);
+  fileDesc("ChZ2MS92aXNpb24vdmlzaW9uLnByb3RvEgl2aXNpb24udjEiYQoSU3RhcnRTdHJlYW1SZXF1ZXN0EhEKCWNhbWVyYV9pZBgBIAEoCRITCgtzb3VyY2VfcGF0aBgCIAEoCRIjCgR0eXBlGAMgASgOMhUudmlzaW9uLnYxLkNhbWVyYVR5cGUiYwoTU3RhcnRTdHJlYW1SZXNwb25zZRIQCghzaG1fbmFtZRgBIAEoCRISCgpzbG90X2NvdW50GAIgASgNEhEKCXNsb3Rfc2l6ZRgDIAEoDRITCgtoZWFkZXJfc2l6ZRgEIAEoDSImChFTdG9wU3RyZWFtUmVxdWVzdBIRCgljYW1lcmFfaWQYASABKAkiJQoSU3RvcFN0cmVhbVJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgqVAoKQ2FtZXJhVHlwZRIbChdDQU1FUkFfVFlQRV9VTlNQRUNJRklFRBAAEhMKD0NBTUVSQV9UWVBFX1VTQhABEhQKEENBTUVSQV9UWVBFX1JUU1AQAjKoAQoNVmlzaW9uU2VydmljZRJMCgtTdGFydFN0cmVhbRIdLnZpc2lvbi52MS5TdGFydFN0cmVhbVJlcXVlc3QaHi52aXNpb24udjEuU3RhcnRTdHJlYW1SZXNwb25zZRJJCgpTdG9wU3RyZWFtEhwudmlzaW9uLnYxLlN0b3BTdHJlYW1SZXF1ZXN0Gh0udmlzaW9uLnYxLlN0b3BTdHJlYW1SZXNwb25zZUIgWh5yb29zdGVyL2dlbi92aXNpb24vdjE7dmlzaW9udjFiBnByb3RvMw", [file_google_api_annotations]);
 
 /**
  * @generated from message vision.v1.StartStreamRequest
@@ -113,19 +23,14 @@ export type StartStreamRequest = Message<"vision.v1.StartStreamRequest"> & {
   cameraId: string;
 
   /**
-   * @generated from field: int32 width = 2;
+   * @generated from field: string source_path = 2;
    */
-  width: number;
+  sourcePath: string;
 
   /**
-   * @generated from field: int32 height = 3;
+   * @generated from field: vision.v1.CameraType type = 3;
    */
-  height: number;
-
-  /**
-   * @generated from field: int32 fps = 4;
-   */
-  fps: number;
+  type: CameraType;
 };
 
 /**
@@ -133,48 +38,39 @@ export type StartStreamRequest = Message<"vision.v1.StartStreamRequest"> & {
  * Use `create(StartStreamRequestSchema)` to create a new message.
  */
 export const StartStreamRequestSchema: GenMessage<StartStreamRequest> = /*@__PURE__*/
-  messageDesc(file_v1_vision_vision, 3);
+  messageDesc(file_v1_vision_vision, 0);
 
 /**
- * @generated from message vision.v1.FrameChunk
+ * @generated from message vision.v1.StartStreamResponse
  */
-export type FrameChunk = Message<"vision.v1.FrameChunk"> & {
+export type StartStreamResponse = Message<"vision.v1.StartStreamResponse"> & {
   /**
-   * @generated from field: string camera_id = 1;
+   * @generated from field: string shm_name = 1;
    */
-  cameraId: string;
+  shmName: string;
 
   /**
-   * @generated from field: int64 timestamp_ms = 2;
+   * @generated from field: uint32 slot_count = 2;
    */
-  timestampMs: bigint;
+  slotCount: number;
 
   /**
-   * @generated from field: int64 frame_id = 3;
+   * @generated from field: uint32 slot_size = 3;
    */
-  frameId: bigint;
+  slotSize: number;
 
   /**
-   * Encoded (H264/MJPEG) or memory handle
-   *
-   * @generated from field: bytes data = 4;
+   * @generated from field: uint32 header_size = 4;
    */
-  data: Uint8Array;
-
-  /**
-   * Shared memory key if local zero-copy
-   *
-   * @generated from field: string shm_path = 5;
-   */
-  shmPath: string;
+  headerSize: number;
 };
 
 /**
- * Describes the message vision.v1.FrameChunk.
- * Use `create(FrameChunkSchema)` to create a new message.
+ * Describes the message vision.v1.StartStreamResponse.
+ * Use `create(StartStreamResponseSchema)` to create a new message.
  */
-export const FrameChunkSchema: GenMessage<FrameChunk> = /*@__PURE__*/
-  messageDesc(file_v1_vision_vision, 4);
+export const StartStreamResponseSchema: GenMessage<StartStreamResponse> = /*@__PURE__*/
+  messageDesc(file_v1_vision_vision, 1);
 
 /**
  * @generated from message vision.v1.StopStreamRequest
@@ -191,7 +87,7 @@ export type StopStreamRequest = Message<"vision.v1.StopStreamRequest"> & {
  * Use `create(StopStreamRequestSchema)` to create a new message.
  */
 export const StopStreamRequestSchema: GenMessage<StopStreamRequest> = /*@__PURE__*/
-  messageDesc(file_v1_vision_vision, 5);
+  messageDesc(file_v1_vision_vision, 2);
 
 /**
  * @generated from message vision.v1.StopStreamResponse
@@ -208,30 +104,48 @@ export type StopStreamResponse = Message<"vision.v1.StopStreamResponse"> & {
  * Use `create(StopStreamResponseSchema)` to create a new message.
  */
 export const StopStreamResponseSchema: GenMessage<StopStreamResponse> = /*@__PURE__*/
-  messageDesc(file_v1_vision_vision, 6);
+  messageDesc(file_v1_vision_vision, 3);
 
 /**
- * @generated from service vision.v1.CameraService
+ * @generated from enum vision.v1.CameraType
  */
-export const CameraService: GenService<{
+export enum CameraType {
   /**
-   * @generated from rpc vision.v1.CameraService.ListCameras
+   * @generated from enum value: CAMERA_TYPE_UNSPECIFIED = 0;
    */
-  listCameras: {
-    methodKind: "unary";
-    input: typeof ListCamerasRequestSchema;
-    output: typeof ListCamerasResponseSchema;
-  },
+  UNSPECIFIED = 0,
+
   /**
-   * @generated from rpc vision.v1.CameraService.StartStream
+   * @generated from enum value: CAMERA_TYPE_USB = 1;
+   */
+  USB = 1,
+
+  /**
+   * @generated from enum value: CAMERA_TYPE_RTSP = 2;
+   */
+  RTSP = 2,
+}
+
+/**
+ * Describes the enum vision.v1.CameraType.
+ */
+export const CameraTypeSchema: GenEnum<CameraType> = /*@__PURE__*/
+  enumDesc(file_v1_vision_vision, 0);
+
+/**
+ * @generated from service vision.v1.VisionService
+ */
+export const VisionService: GenService<{
+  /**
+   * @generated from rpc vision.v1.VisionService.StartStream
    */
   startStream: {
-    methodKind: "server_streaming";
+    methodKind: "unary";
     input: typeof StartStreamRequestSchema;
-    output: typeof FrameChunkSchema;
+    output: typeof StartStreamResponseSchema;
   },
   /**
-   * @generated from rpc vision.v1.CameraService.StopStream
+   * @generated from rpc vision.v1.VisionService.StopStream
    */
   stopStream: {
     methodKind: "unary";

@@ -7,65 +7,63 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# if (MSVC)
-#     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 /permissive- /bigobj")
-# else ()
-#     set(CMAKE_CXX_FLAGS
-#         "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wconversion -Wformat"
-#     )
-# endif ()
-
 set(CONFIG_BUILD_TESTING OFF)
 
 add_subdirectory(external/config-cxx)
 add_subdirectory(external/spdlog)
 
 add_executable(${PROJECT_NAME}
-    ./main.cpp
-    ./gen/v1/vision/vision.grpc.pb.cc
-    ./gen/v1/vision/vision.grpc.pb.h
-    ./gen/v1/vision/vision.pb.cc
-    ./gen/v1/vision/vision.pb.h
-    ./gen/google/api/annotations.grpc.pb.cc
-    ./gen/google/api/annotations.grpc.pb.h
-    ./gen/google/api/annotations.pb.cc
-    ./gen/google/api/annotations.pb.h
-    ./gen/google/api/http.grpc.pb.cc
-    ./gen/google/api/http.grpc.pb.h
-    ./gen/google/api/http.pb.cc
-    ./gen/google/api/http.pb.h
-    ./clients/vision_service.h
+    main.cpp
+    gen/v1/vision/vision.grpc.pb.cc
+    gen/v1/vision/vision.grpc.pb.h
+    gen/v1/vision/vision.pb.cc
+    gen/v1/vision/vision.pb.h
+    gen/google/api/annotations.grpc.pb.cc
+    gen/google/api/annotations.grpc.pb.h
+    gen/google/api/annotations.pb.cc
+    gen/google/api/annotations.pb.h
+    gen/google/api/http.grpc.pb.cc
+    gen/google/api/http.grpc.pb.h
+    gen/google/api/http.pb.cc
+    gen/google/api/http.pb.h
+    clients/vision_service.h
+    clients/vision_service.cpp
+    camera_manager.h
+    camera_manager.cpp
+    camera_producer.h
+    camera_producer.cpp
+    shared_layout.h
 )
 
 list(APPEND CMAKE_PREFIX_PATH
     "${CMAKE_SOURCE_DIR}/../../.lib_pack/grpc"
 )
 
-if (APPLE)
-    file(GLOB GRPC_AND_DEPS_LIBRARIES
-        ./../../.lib_pack/grpc/lib/*.dylib
-    )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    # file(GLOB GRPC_AND_DEPS_LIBRARIES
-    #     ./../../.lib_pack/grpc/lib/*.so
-    # )
-    find_package(Protobuf CONFIG REQUIRED)
-    find_package(gRPC CONFIG REQUIRED)
-endif()
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GST REQUIRED gstreamer-1.0)
+pkg_check_modules(GST_APP REQUIRED gstreamer-app-1.0)
+
+find_package(Protobuf CONFIG REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ./
+    ./clients
     ./gen/
     ./gen/v1/
     ./gen/v1/vision
     ../../.lib_pack/grpc/include
+    ${GST_INCLUDE_DIRS}
+    ${GST_APP_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     config-cxx
     spdlog::spdlog_header_only
     gRPC::grpc++
-    # ${GRPC_AND_DEPS_LIBRARIES}
+    gRPC::grpc++_reflection
+    ${GST_LIBRARIES}
+    ${GST_APP_LIBRARIES}
 )
 
 # ${OPENCV_LIBRARIES}
