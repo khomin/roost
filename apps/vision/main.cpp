@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
     //
     // start grpc to received commands
 
-    const std::string address = "0.0.0.0:50051";
+    const std::string address = "0.0.0.0:50052";
 
     VisionServiceImpl service;
 
@@ -51,16 +51,7 @@ int main(int argc, char* argv[]) {
         spdlog::error("failed to start gRPC server on {}", address);
         return 1;
     }
-
     spdlog::info("vision service listening on {}", address);
-
-    //
-    // start some command hadler to run camera streams
-    // SomeCmdHandler cmdHandler{};
-    // cmdHandler.Start();
-
-    spdlog::info("Started");
-
 
     std::unique_lock<std::mutex> lock(mtx);
     cv.wait(lock, [&] { return shutdown_.load(); });

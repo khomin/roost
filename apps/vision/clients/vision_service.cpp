@@ -40,7 +40,7 @@ grpc::Status VisionServiceImpl::StartStream(
             camera_id,
             request->source_path(),
             request->type()
-            );
+        );
         producer->start();
     } catch (const std::exception& e) {
         spdlog::error("camera {} failed: {}", camera_id, e.what());

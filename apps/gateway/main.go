@@ -9,15 +9,16 @@ import (
 	"roost/bootstrap"
 	roostv1 "roost/gen/v1/roost"
 	userv1 "roost/gen/v1/user"
-	visionv1 "roost/gen/v1/vision"
 	"roost/internal/api/handlers"
 	"roost/internal/api/middleware"
 	"roost/internal/core"
 	"roost/internal/db"
 	"roost/internal/db/repositories"
 	"roost/internal/docs"
+	"roost/internal/ipc"
 	"roost/internal/metrics"
 	"strings"
+	"time"
 
 	"net/http"
 	_ "net/http/pprof"
@@ -131,27 +132,26 @@ func main() {
 	}
 
 	go func() {
-		conn, err := grpc.NewClient(
-			app.Cfg.Vision.GrpcUri,
-			grpc.WithTransportCredentials(insecure.NewCredentials()),
-		)
+		c, err := ipc.NewConsumer("/roost_cam-1")
 		if err != nil {
-			slog.Error("failed to connect to vision", "error", err)
+			log.Error("err", "err", err)
 		}
-		visionClient := visionv1.NewCameraServiceClient(conn)
+		defer c.Close()
 
-		cameras, err := cameraRepo.List(ctx)
-		if err != nil {
-			log.Error("failed to read cameras", "err", err)
-		}
-		for _, camera := range cameras {
-			stream, err := visionClient.StartStream(ctx, &visionv1.StartStreamRequest{
-				CameraId: camera.ID,
-			})
+		var count int
+		start := time.Now()
+
+		for {
+			frame, hdr, err := c.ReadFrame()
 			if err != nil {
-				log.Error("failed to", "err", err)
+				log.Error("err", "err", err)
 			}
-			log.Debug("stream", "stream", stream)
+			count++
+			if count%30 == 0 || hdr.Flags&1 == 1 {
+				fps := float64(count) / time.Since(start).Seconds()
+				fmt.Printf("frames=%d fps=%.1f size=%d keyframe=%v\n",
+					count, fps, len(frame), hdr.Flags&1 == 1)
+			}
 		}
 	}()
 

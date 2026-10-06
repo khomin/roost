@@ -54,7 +54,7 @@ type RabbitMqConfig struct {
 
 func NewConfig() *Config {
 	config := Config{}
-	log := slog.With("Config")
+	log := slog.With("component", "config")
 	if err := godotenv.Load(); err != nil {
 		log.Info(".env not found, using environment variables")
 	}
