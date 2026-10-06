@@ -1,0 +1,34 @@
+<script>
+  async function start() {
+    const pc = new RTCPeerConnection();
+    pc.addTransceiver('video', { direction: 'recvonly' });
+
+    pc.ontrack = (event) => {
+      document.getElementById('video').srcObject = event.streams[0];
+    };
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+
+    // Send SDP offer to gRPC-Gateway endpoint
+    const response = await fetch('http://localhost:8080/v1/cameras/cam-1/signal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        camera_id: 'cam-1',
+        sdp_type: 'offer',
+        sdp_offer: offer.sdp
+      })
+    });
+
+    const data = await response.json();
+    
+    // Set the returned SDP answer from Pion
+    await pc.setRemoteDescription({
+      type: 'answer',
+      sdp: data.sdp_answer
+    });
+  }
+
+  start();
+</script>

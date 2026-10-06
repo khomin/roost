@@ -36,7 +36,8 @@ service RoostService {
   }
   rpc SignalWebRTC (WebRTCSignalRequest) returns (WebRTCSignalResponse) {
     option (google.api.http) = {
-      get: "/v1/cameras/signal"
+      post: "/v1/cameras/{camera_id}/signal"
+      body: "*"
     };
   }
   rpc GetSnapshot (GetSnapshotRequest) returns (GetSnapshotResponse) {
@@ -99,12 +100,14 @@ message DeleteCameraRequest {
 message DeleteCameraResponse {}
 
 message WebRTCSignalRequest {
-  string id = 1;
-  string sdp_offer = 2; // WebRTC SDP Offer from browser
+  string camera_id = 1;
+  string sdp_type = 2;   // e.g. "offer"
+  string sdp_offer = 3;  // Raw SDP string from browser
 }
 
 message WebRTCSignalResponse {
-  string sdp_answer = 1; // WebRTC SDP Answer from Pion
+  string sdp_type = 1;   // "answer"
+  string sdp_answer = 2; // Raw SDP string from Pion with gathered ICE candidates
 }
 
 message GetSnapshotRequest {

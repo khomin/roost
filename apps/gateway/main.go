@@ -15,10 +15,8 @@ import (
 	"roost/internal/db"
 	"roost/internal/db/repositories"
 	"roost/internal/docs"
-	"roost/internal/ipc"
 	"roost/internal/metrics"
 	"strings"
-	"time"
 
 	"net/http"
 	_ "net/http/pprof"
@@ -118,7 +116,7 @@ func main() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	reflection.Register(grpcServer)
 
-	roosterService := handlers.NewCameraHandler(cameraService)
+	roosterService := handlers.NewRoostHandler(cameraService)
 	userService := handlers.NewUserHandler(userRepo)
 
 	roostv1.RegisterRoostServiceServer(grpcServer, roosterService)
@@ -131,29 +129,29 @@ func main() {
 		slog.Error("failed to register endpoint", "err", err)
 	}
 
-	go func() {
-		c, err := ipc.NewConsumer("/roost_cam-1")
-		if err != nil {
-			log.Error("err", "err", err)
-		}
-		defer c.Close()
+	// go func() {
+	// 	c, err := ipc.NewConsumer("/roost_cam-1")
+	// 	if err != nil {
+	// 		log.Error("err", "err", err)
+	// 	}
+	// 	defer c.Close()
 
-		var count int
-		start := time.Now()
+	// 	var count int
+	// 	start := time.Now()
 
-		for {
-			frame, hdr, err := c.ReadFrame()
-			if err != nil {
-				log.Error("err", "err", err)
-			}
-			count++
-			if count%30 == 0 || hdr.Flags&1 == 1 {
-				fps := float64(count) / time.Since(start).Seconds()
-				fmt.Printf("frames=%d fps=%.1f size=%d keyframe=%v\n",
-					count, fps, len(frame), hdr.Flags&1 == 1)
-			}
-		}
-	}()
+	// 	for {
+	// 		frame, hdr, err := c.ReadFrame()
+	// 		if err != nil {
+	// 			log.Error("err", "err", err)
+	// 		}
+	// 		count++
+	// 		if count%30 == 0 || hdr.Flags&1 == 1 {
+	// 			fps := float64(count) / time.Since(start).Seconds()
+	// 			fmt.Printf("frames=%d fps=%.1f size=%d keyframe=%v\n",
+	// 				count, fps, len(frame), hdr.Flags&1 == 1)
+	// 		}
+	// 	}
+	// }()
 
 	httpHandler := setupHttpHandler(gwmux)
 

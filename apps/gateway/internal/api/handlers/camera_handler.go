@@ -9,23 +9,25 @@ import (
 	roostv1 "roost/gen/v1/roost"
 
 	"github.com/google/uuid"
+	"github.com/pion/webrtc/v4"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-type CameraHandler struct {
-	service *core.CameraService
+type RoostHandler struct {
+	service    *core.CameraService
+	videoTrack *webrtc.TrackLocalStaticSample
 }
 
-func NewCameraHandler(service *core.CameraService) roostv1.RoostServiceServer {
-	return &CameraHandler{
+func NewRoostHandler(service *core.CameraService) roostv1.RoostServiceServer {
+	return &RoostHandler{
 		service: service,
 	}
 }
 
-func (s *CameraHandler) ListCameras(ctx context.Context, req *roostv1.ListCamerasRequest) (*roostv1.ListCamerasResponse, error) {
+func (s *RoostHandler) ListCameras(ctx context.Context, req *roostv1.ListCamerasRequest) (*roostv1.ListCamerasResponse, error) {
 	user, ok := middleware.GetUser(ctx)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, domain.ErrorUnauthorized.Error())
@@ -43,7 +45,7 @@ func (s *CameraHandler) ListCameras(ctx context.Context, req *roostv1.ListCamera
 	}, nil
 }
 
-func (s *CameraHandler) GetCamera(ctx context.Context, req *roostv1.GetCameraRequest) (*roostv1.Camera, error) {
+func (s *RoostHandler) GetCamera(ctx context.Context, req *roostv1.GetCameraRequest) (*roostv1.Camera, error) {
 	_, ok := middleware.GetUser(ctx)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, domain.ErrorUnauthorized.Error())
@@ -59,7 +61,7 @@ func (s *CameraHandler) GetCamera(ctx context.Context, req *roostv1.GetCameraReq
 	return res.ToGrpc(), nil
 }
 
-func (s *CameraHandler) CreateCamera(ctx context.Context, req *roostv1.CreateCameraRequest) (*roostv1.Camera, error) {
+func (s *RoostHandler) CreateCamera(ctx context.Context, req *roostv1.CreateCameraRequest) (*roostv1.Camera, error) {
 	_, ok := middleware.GetUser(ctx)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, domain.ErrorUnauthorized.Error())
@@ -71,7 +73,7 @@ func (s *CameraHandler) CreateCamera(ctx context.Context, req *roostv1.CreateCam
 	return res.ToGrpc(), nil
 }
 
-func (s *CameraHandler) UpdateCamera(ctx context.Context, req *roostv1.UpdateCameraRequest) (*roostv1.Camera, error) {
+func (s *RoostHandler) UpdateCamera(ctx context.Context, req *roostv1.UpdateCameraRequest) (*roostv1.Camera, error) {
 	_, ok := middleware.GetUser(ctx)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, domain.ErrorUnauthorized.Error())
@@ -87,7 +89,7 @@ func (s *CameraHandler) UpdateCamera(ctx context.Context, req *roostv1.UpdateCam
 	return res.ToGrpc(), nil
 }
 
-func (s *CameraHandler) DeleteCamera(ctx context.Context, req *roostv1.DeleteCameraRequest) (*roostv1.DeleteCameraResponse, error) {
+func (s *RoostHandler) DeleteCamera(ctx context.Context, req *roostv1.DeleteCameraRequest) (*roostv1.DeleteCameraResponse, error) {
 	_, ok := middleware.GetUser(ctx)
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, domain.ErrorUnauthorized.Error())
@@ -103,22 +105,81 @@ func (s *CameraHandler) DeleteCamera(ctx context.Context, req *roostv1.DeleteCam
 	return &roostv1.DeleteCameraResponse{}, nil
 }
 
-func (s *CameraHandler) GetRecordingDownloadUrl(ctx context.Context, req *roostv1.GetRecordingDownloadUrlRequest) (*roostv1.GetRecordingDownloadUrlResponse, error) {
+func (s *RoostHandler) GetRecordingDownloadUrl(ctx context.Context, req *roostv1.GetRecordingDownloadUrlRequest) (*roostv1.GetRecordingDownloadUrlResponse, error) {
 	panic("unimplemented")
 }
 
-func (s *CameraHandler) GetSnapshot(ctc context.Context, req *roostv1.GetSnapshotRequest) (*roostv1.GetSnapshotResponse, error) {
+func (s *RoostHandler) GetSnapshot(ctc context.Context, req *roostv1.GetSnapshotRequest) (*roostv1.GetSnapshotResponse, error) {
 	panic("unimplemented")
 }
 
-func (s *CameraHandler) ListRecordings(ctx context.Context, req *roostv1.ListRecordingsRequest) (*roostv1.ListRecordingsResponse, error) {
+func (s *RoostHandler) ListRecordings(ctx context.Context, req *roostv1.ListRecordingsRequest) (*roostv1.ListRecordingsResponse, error) {
 	panic("unimplemented")
 }
 
-func (s *CameraHandler) SignalWebRTC(ctx context.Context, req *roostv1.WebRTCSignalRequest) (*roostv1.WebRTCSignalResponse, error) {
-	panic("unimplemented")
+func (s *RoostHandler) SignalWebRTC(ctx context.Context, req *roostv1.WebRTCSignalRequest) (*roostv1.WebRTCSignalResponse, error) {
+	// 1. Parse the browser SDP offer
+	offer := webrtc.SessionDescription{
+		Type: webrtc.SDPTypeOffer,
+		SDP:  req.GetSdpOffer(),
+	}
+
+	// 2. Create PeerConnection
+	m := &webrtc.MediaEngine{}
+	if err := m.RegisterDefaultCodecs(); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to register codecs: %v", err)
+	}
+
+	api := webrtc.NewAPI(webrtc.WithMediaEngine(m))
+	pc, err := api.NewPeerConnection(webrtc.Configuration{})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create peer connection: %v", err)
+	}
+
+	videoTrack, err := webrtc.NewTrackLocalStaticSample(
+		webrtc.RTPCodecCapability{MimeType: webrtc.MimeTypeH264},
+		"video",
+		"roost-live-stream",
+	)
+	if err != nil {
+		return nil, status.Error(codes.Internal, domain.ErrorInternalError.Error())
+	}
+	s.videoTrack = videoTrack
+
+	// 3. Attach your H.264 video track from IPC
+	if _, err := pc.AddTrack(s.videoTrack); err != nil {
+		pc.Close()
+		return nil, status.Errorf(codes.Internal, "failed to add track: %v", err)
+	}
+
+	// 4. Set Remote Description & Create Answer
+	if err := pc.SetRemoteDescription(offer); err != nil {
+		pc.Close()
+		return nil, status.Errorf(codes.InvalidArgument, "invalid sdp offer: %v", err)
+	}
+
+	answer, err := pc.CreateAnswer(nil)
+	if err != nil {
+		pc.Close()
+		return nil, status.Errorf(codes.Internal, "failed to create answer: %v", err)
+	}
+
+	// 5. Gather ICE candidates synchronously before returning response
+	gatherComplete := webrtc.GatheringCompletePromise(pc)
+	if err := pc.SetLocalDescription(answer); err != nil {
+		pc.Close()
+		return nil, status.Errorf(codes.Internal, "failed to set local description: %v", err)
+	}
+
+	<-gatherComplete
+
+	// 6. Return the local SDP answer
+	return &roostv1.WebRTCSignalResponse{
+		SdpType:   "answer",
+		SdpAnswer: pc.LocalDescription().SDP,
+	}, nil
 }
 
-func (s *CameraHandler) SubscribeLiveEvents(ctx *roostv1.SubscribeEventsRequest, req grpc.ServerStreamingServer[roostv1.LiveEvent]) error {
+func (s *RoostHandler) SubscribeLiveEvents(ctx *roostv1.SubscribeEventsRequest, req grpc.ServerStreamingServer[roostv1.LiveEvent]) error {
 	panic("unimplemented")
 }
