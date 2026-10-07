@@ -36,11 +36,11 @@ std::string CameraProducer::buildPipeline() const {
         return "v4l2src device=" + source_path_ + " ! "
                                                   "videoconvert ! video/x-raw,format=BGR ! "
                                                   "tee name=t "
-                                                  "t. ! queue ! appsink name=raw_sink "
+                                                  "t. ! queue ! appsink name=raw_sink max-buffers=2 drop=true sync=false "
                                                   "t. ! queue ! videoconvert ! x264enc key-int-max=30 speed-preset=ultrafast ! "
                                                   "h264parse config-interval=-1 ! "
-                                                  "video/x-h264,stream-format=avc,alignment=au ! "
-                                                  "appsink name=encoded_sink async=false";
+                                                  "video/x-h264,stream-format=byte-stream,alignment=au ! "
+                                                  "appsink name=encoded_sink max-buffers=2 drop=true sync=false async=false";
     default:
         throw std::runtime_error("unknown camera type");
     }
@@ -186,7 +186,7 @@ void CameraProducer::captureLoop() {
         uint64_t ts = GST_BUFFER_PTS(gst_sample_get_buffer(raw));
 
         // cv::Mat frame = sampleToMat(raw);
-        // gst_sample_unref(raw);
+        gst_sample_unref(raw);
 
         // if (frame.empty()) continue;
 
@@ -207,9 +207,6 @@ void CameraProducer::captureLoop() {
             bool is_keyframe = !GST_BUFFER_FLAG_IS_SET(buf, GST_BUFFER_FLAG_DELTA_UNIT);
             pushFrame(map.data, map.size, ts, is_keyframe);
             gst_buffer_unmap(buf, &map);
-            if(is_keyframe) {
-                spdlog::info("got keyframe");
-            }
         }
         gst_sample_unref(enc);
 

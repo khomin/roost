@@ -2,14 +2,18 @@ package handlers
 
 import (
 	"context"
+	"log/slog"
 	"roost/internal/api/middleware"
 	"roost/internal/core"
 	"roost/internal/core/domain"
+	"roost/internal/ipc"
+	"time"
 
 	roostv1 "roost/gen/v1/roost"
 
 	"github.com/google/uuid"
 	"github.com/pion/webrtc/v4"
+	"github.com/pion/webrtc/v4/pkg/media"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -172,6 +176,37 @@ func (s *RoostHandler) SignalWebRTC(ctx context.Context, req *roostv1.WebRTCSign
 	}
 
 	<-gatherComplete
+
+	testPipe := func() {
+		c, err := ipc.NewConsumer("/roost_cam-1")
+		if err != nil {
+			slog.Error("err", "err", err)
+		}
+		defer c.Close()
+
+		var prevPTS uint64
+		var count int
+		var duration time.Duration
+		for {
+			frame, hdr, err := c.ReadFrame()
+			if err != nil {
+				slog.Error("err", "err", err)
+			}
+			count++
+			if duration.Milliseconds() == 0 {
+				duration = 33 * time.Millisecond
+			} else {
+				duration = time.Duration(hdr.TimestampNs - prevPTS)
+			}
+			prevPTS = hdr.TimestampNs
+
+			videoTrack.WriteSample(media.Sample{
+				Data:     frame,
+				Duration: duration,
+			})
+		}
+	}
+	go testPipe()
 
 	// 6. Return the local SDP answer
 	return &roostv1.WebRTCSignalResponse{

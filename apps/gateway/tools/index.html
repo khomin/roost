@@ -1,34 +1,84 @@
-<script>
-  async function start() {
-    const pc = new RTCPeerConnection();
-    pc.addTransceiver('video', { direction: 'recvonly' });
-
-    pc.ontrack = (event) => {
-      document.getElementById('video').srcObject = event.streams[0];
-    };
-
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-
-    // Send SDP offer to gRPC-Gateway endpoint
-    const response = await fetch('http://localhost:8080/v1/cameras/cam-1/signal', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        camera_id: 'cam-1',
-        sdp_type: 'offer',
-        sdp_offer: offer.sdp
-      })
-    });
-
-    const data = await response.json();
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Roost WebRTC Demo</title>
+</head>
+<body style="background: #111; color: #fff; font-family: sans-serif; text-align: center; padding-top: 50px;">
+    <h2>Roost WebRTC Live Pipeline</h2>
     
-    // Set the returned SDP answer from Pion
-    await pc.setRemoteDescription({
-      type: 'answer',
-      sdp: data.sdp_answer
-    });
-  }
+    <!-- 1. The video element MUST exist with id="video" -->
+    <video id="video" autoplay playsinline muted controls style="width: 640px; height: 480px; background: #000; border: 2px solid #333;"></video>
+    <div id="status" style="margin-top: 10px; font-weight: bold; color: #0f0;">Connecting...</div>
 
-  start();
-</script>
+    <script>
+        async function startStream() {
+            const videoElem = document.getElementById('video');
+            if (!videoElem) {
+                console.error("Video element not found!");
+                return;
+            }
+
+            const pc = new RTCPeerConnection();
+
+            // Receive video track from Pion
+            pc.ontrack = (event) => {
+                console.log("Track received!", event.track);
+                if (event.streams && event.streams[0]) {
+                    videoElem.srcObject = event.streams[0];
+                } else {
+                    videoElem.srcObject = new MediaStream([event.track]);
+                }
+                document.getElementById('status').innerText = "Streaming Active";
+            };
+
+            pc.onconnectionstatechange = () => {
+                console.log("Connection State:", pc.connectionState);
+                document.getElementById('status').innerText = "State: " + pc.connectionState;
+            };
+
+            // Force WebRTC receiver mode
+            pc.addTransceiver('video', { direction: 'recvonly' });
+
+            // Create Offer
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
+            // Send Offer to Go Server with the correct path
+            const res = await fetch('http://localhost:8080/v1/cameras/cam-1/signal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    camera_id: 'cam-1',
+                    sdp_type: 'offer',
+                    sdp_offer: offer.sdp 
+                })
+            });
+
+            // const data = await res.json();
+
+            // // Set Answer from Go Server
+            // await pc.setRemoteDescription({
+            //     type: 'answer',
+            //     sdp: data.sdp
+            // });
+
+            const data = await res.json();
+            console.log("Got answer from server:", data); // Check console to see { sdpType: "...", sdpAnswer: "..." }
+
+            // Set the returned SDP answer from Pion using camelCase
+            await pc.setRemoteDescription({
+                type: 'answer',
+                sdp: data.sdp_answer // <--- camelCase matches gRPC-Gateway output
+            });
+        }
+
+        // Run after DOM is fully loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            startStream().catch(err => {
+                console.error(err);
+                document.getElementById('status').innerText = "Error: " + err.message;
+            });
+        });
+    </script>
+</body>
+</html>
