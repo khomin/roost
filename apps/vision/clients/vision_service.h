@@ -17,8 +17,8 @@ public:
 
     grpc::Status StartStream(
         grpc::ServerContext* context,
-        const vision::v1::StartStreamRequest* request,
-        vision::v1::StartStreamResponse* response) override;
+        const ::vision::v1::StartStreamRequest* request,
+        grpc::ServerWriter< ::vision::v1::StartStreamEvent>* writer) override;
 
     grpc::Status StopStream(
         grpc::ServerContext* context,
@@ -27,5 +27,5 @@ public:
 
 private:
     std::mutex mu_;
-    std::unordered_map<std::string, std::unique_ptr<CameraProducer>> producers_;
+    std::unordered_map<std::string, std::shared_ptr<CameraProducer>> producers_;
 };

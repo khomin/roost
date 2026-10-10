@@ -23,7 +23,7 @@ type Consumer struct {
 	data  []byte
 	head  *uint64
 	tail  *uint64
-	slots unsafe.Pointer // pointer to the start of the slots array
+	slots unsafe.Pointer
 }
 
 func NewConsumer(shmName string) (*Consumer, error) {
@@ -40,7 +40,6 @@ func NewConsumer(shmName string) (*Consumer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("mmap: %w", err)
 	}
-
 	c := &Consumer{
 		data:  data,
 		head:  (*uint64)(unsafe.Pointer(&data[0])),
@@ -54,26 +53,19 @@ func (c *Consumer) Close() error {
 	return syscall.Munmap(c.data)
 }
 
-// ReadFrame blocks (busy-waits) until a frame is available.
-// Returned slice points into shm — valid only until the next ReadFrame call.
 func (c *Consumer) ReadFrame() ([]byte, FrameHeader, error) {
 	for {
 		head := atomic.LoadUint64(c.head)
 		tail := atomic.LoadUint64(c.tail)
-
 		if tail == head {
-			continue // empty — busy-wait for now
+			continue
 		}
-
 		slotIdx := tail % SlotCount
 		slotPtr := unsafe.Pointer(uintptr(c.slots) + uintptr(slotIdx)*SlotSize)
-
 		hdr := (*FrameHeader)(slotPtr)
 		payloadPtr := unsafe.Pointer(uintptr(slotPtr) + HeaderSize)
 		payload := unsafe.Slice((*byte)(payloadPtr), hdr.Size)
-
 		atomic.StoreUint64(c.tail, tail+1)
-
 		return payload, *hdr, nil
 	}
 }

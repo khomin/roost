@@ -5,7 +5,7 @@ server:
   log_path: "/var/log/roost/app.log"
 
 vision:
-  grpc_uri: ":8090"
+  grpc_uri: ":50052"
 
 authorization:
   issuer_url: ""

@@ -45,3 +45,12 @@ sudo apt-get install -y \
 sudo apt-get install gstreamer1.0-plugins-good
 sudo apt-get install gstreamer1.0-plugins-ugly
 ```
+
+## Database migration notes
+
+```bash
+go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+migrate -path $PWD/apps/gateway/internal/db/migrations \
+-database "postgres://roost:super_secure_password@localhost:5432/roost?sslmode=disable" up
+```

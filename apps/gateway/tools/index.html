@@ -44,11 +44,12 @@
             await pc.setLocalDescription(offer);
 
             // Send Offer to Go Server with the correct path
-            const res = await fetch('http://localhost:8080/v1/cameras/cam-1/signal', {
+            const id = 'roost-cam-1'
+            const res = await fetch(`http://localhost:8080/v1/cameras/${id}/signal`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    camera_id: 'cam-1',
+                    camera_id: id,
                     sdp_type: 'offer',
                     sdp_offer: offer.sdp 
                 })

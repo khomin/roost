@@ -11,19 +11,23 @@ VisionServiceImpl::~VisionServiceImpl() {
 grpc::Status VisionServiceImpl::StartStream(
     grpc::ServerContext* context,
     const vision::v1::StartStreamRequest* request,
-    vision::v1::StartStreamResponse* response)
+    grpc::ServerWriter<vision::v1::StartStreamEvent>* writer)
 {
     const std::string camera_id = request->camera_id();
 
-    // Helper: fill the response from a producer
+    // helper
     auto fill = [&](CameraProducer* p) {
-        response->set_shm_name(p->shmName());
-        response->set_slot_count(roost::ipc::SlotCount);
-        response->set_slot_size(roost::ipc::SlotSize);
-        response->set_header_size(sizeof(FrameHeader));
+        vision::v1::StartStreamEvent ev{};
+        auto result = new vision::v1::StartStreamResult();
+        ev.set_allocated_started(result);
+        result->set_shm_name(p->shmName());
+        result->set_slot_count(roost::ipc::SlotCount);
+        result->set_slot_size(roost::ipc::SlotSize);
+        result->set_header_size(sizeof(FrameHeader));
+        writer->Write(ev);
     };
 
-    // 1. Fast path: already running?
+    // if already running
     {
         std::lock_guard lock(mu_);
         auto it = producers_.find(camera_id);
@@ -33,10 +37,10 @@ grpc::Status VisionServiceImpl::StartStream(
         }
     }
 
-    // 2. Not running. Start outside the lock.
-    std::unique_ptr<CameraProducer> producer;
+    // start
+    std::shared_ptr<CameraProducer> producer;
     try {
-        producer = std::make_unique<CameraProducer>(
+        producer = std::make_shared<CameraProducer>(
             camera_id,
             request->source_path(),
             request->type()
@@ -47,15 +51,13 @@ grpc::Status VisionServiceImpl::StartStream(
         return grpc::Status(
             grpc::StatusCode::INTERNAL,
             std::string("start failed: ") + e.what()
-            );
+        );
     }
 
-    // 3. Commit. try_emplace handles the race.
+    // commit
     {
         std::lock_guard lock(mu_);
-        auto [it, inserted] = producers_.try_emplace(
-            camera_id, std::move(producer)
-        );
+        auto [it, inserted] = producers_.try_emplace(camera_id, producer);
         if (!inserted) {
             // Lost the race. Stop ours, use the winner's.
             producer->stop();
@@ -64,7 +66,19 @@ grpc::Status VisionServiceImpl::StartStream(
             fill(it->second.get());
         }
     }
+    while (!context->IsCancelled()) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 
+    // stop
+    {
+        std::lock_guard lock(mu_);
+        auto it = producers_.find(camera_id);
+        if (it != producers_.end()) {
+            producers_.erase(it);
+            return grpc::Status::OK;
+        }
+    }
     return grpc::Status::OK;
 }
 
@@ -72,5 +86,14 @@ grpc::Status VisionServiceImpl::StopStream(
     grpc::ServerContext* context,
     const vision::v1::StopStreamRequest* request,
     vision::v1::StopStreamResponse* response) {
+    const std::string camera_id = request->camera_id();
+    {
+        std::lock_guard lock(mu_);
+        auto it = producers_.find(camera_id);
+        if (it != producers_.end()) {
+            producers_.erase(it);
+            return grpc::Status::OK;
+        }
+    }
     return grpc::Status::OK;
 }

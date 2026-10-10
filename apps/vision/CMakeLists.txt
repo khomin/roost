@@ -28,8 +28,6 @@ add_executable(${PROJECT_NAME}
     gen/google/api/http.pb.h
     clients/vision_service.h
     clients/vision_service.cpp
-    camera_manager.h
-    camera_manager.cpp
     camera_producer.h
     camera_producer.cpp
     shared_layout.h

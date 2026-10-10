@@ -43,7 +43,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Camera"
+              "$ref": "#/definitions/v1CreateCameraResponse"
             }
           },
           "default": {
@@ -186,43 +186,6 @@
         ]
       }
     },
-    "/v1/cameras/signal": {
-      "get": {
-        "operationId": "RoostService_SignalWebRTC",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1WebRTCSignalResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "sdpOffer",
-            "description": "WebRTC SDP Offer from browser",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "RoostService"
-        ]
-      }
-    },
     "/v1/cameras/snapshot": {
       "get": {
         "operationId": "RoostService_GetSnapshot",
@@ -253,6 +216,44 @@
         ]
       }
     },
+    "/v1/cameras/{cameraId}/signal": {
+      "post": {
+        "operationId": "RoostService_SignalWebRTC",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SignalWebRTCResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cameraId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RoostServiceSignalWebRTCBody"
+            }
+          }
+        ],
+        "tags": [
+          "RoostService"
+        ]
+      }
+    },
     "/v1/cameras/{id}": {
       "get": {
         "operationId": "RoostService_GetCamera",
@@ -260,7 +261,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Camera"
+              "$ref": "#/definitions/v1GetCameraResponse"
             }
           },
           "default": {
@@ -316,7 +317,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Camera"
+              "$ref": "#/definitions/v1UpdateCameraResponse"
             }
           },
           "default": {
@@ -358,6 +359,19 @@
         "EVENT_TYPE_OBJECT_DETECTED"
       ],
       "default": "EVENT_TYPE_UNSPECIFIED"
+    },
+    "RoostServiceSignalWebRTCBody": {
+      "type": "object",
+      "properties": {
+        "sdpType": {
+          "type": "string",
+          "title": "e.g. \"offer\""
+        },
+        "sdpOffer": {
+          "type": "string",
+          "title": "Raw SDP string from browser"
+        }
+      }
     },
     "RoostServiceUpdateCameraBody": {
       "type": "object",
@@ -431,8 +445,8 @@
       "type": "string",
       "enum": [
         "CAMERA_TYPE_UNSPECIFIED",
-        "CAMERA_TYPE_IP",
-        "CAMERA_TYPE_USB"
+        "CAMERA_TYPE_USB",
+        "CAMERA_TYPE_RTSP"
       ],
       "default": "CAMERA_TYPE_UNSPECIFIED"
     },
@@ -444,11 +458,30 @@
         },
         "type": {
           "$ref": "#/definitions/v1CameraType"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateCameraResponse": {
+      "type": "object",
+      "properties": {
+        "camera": {
+          "$ref": "#/definitions/v1Camera"
         }
       }
     },
     "v1DeleteCameraResponse": {
       "type": "object"
+    },
+    "v1GetCameraResponse": {
+      "type": "object",
+      "properties": {
+        "camera": {
+          "$ref": "#/definitions/v1Camera"
+        }
+      }
     },
     "v1GetRecordingDownloadUrlResponse": {
       "type": "object",
@@ -551,12 +584,24 @@
         }
       }
     },
-    "v1WebRTCSignalResponse": {
+    "v1SignalWebRTCResponse": {
       "type": "object",
       "properties": {
+        "sdpType": {
+          "type": "string",
+          "title": "\"answer\""
+        },
         "sdpAnswer": {
           "type": "string",
-          "title": "WebRTC SDP Answer from Pion"
+          "title": "Raw SDP string from Pion with gathered ICE candidates"
+        }
+      }
+    },
+    "v1UpdateCameraResponse": {
+      "type": "object",
+      "properties": {
+        "camera": {
+          "$ref": "#/definitions/v1Camera"
         }
       }
     }

@@ -9,6 +9,7 @@ import (
 	"roost/bootstrap"
 	roostv1 "roost/gen/v1/roost"
 	userv1 "roost/gen/v1/user"
+	visionv1 "roost/gen/v1/vision"
 	"roost/internal/api/handlers"
 	"roost/internal/api/middleware"
 	"roost/internal/core"
@@ -75,10 +76,7 @@ func main() {
 	cameraRepo := repositories.NewCameraRepository(db)
 	userRepo := repositories.NewUserRepo(db)
 
-	cameraService := core.NewCameraService(core.CameraDeps{
-		CameraRepo: cameraRepo,
-		UserRepo:   userRepo,
-	})
+	cameraTasks := core.NewCameraTasks()
 
 	verifier, err := middleware.NewTokenVerifier(ctx, app.Cfg.Authorization.IssuerURL, app.Cfg.Authorization.ClientID)
 	if err != nil {
@@ -116,7 +114,24 @@ func main() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	reflection.Register(grpcServer)
 
-	roosterService := handlers.NewRoostHandler(cameraService)
+	conn, err := grpc.NewClient(app.Cfg.Vision.GrpcUri, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		slog.Error("failed to create client", "err", err)
+	}
+
+	streamHub := core.NewStreamHub()
+	visionClient := visionv1.NewVisionServiceClient(conn)
+
+	cameraService := core.NewCameraService(core.CameraDeps{
+		CameraRepo:   cameraRepo,
+		UserRepo:     userRepo,
+		Tasks:        cameraTasks,
+		VisionClient: visionClient,
+		Hub:          streamHub,
+	})
+	go cameraService.Start(ctx)
+
+	roosterService := handlers.NewRoostService(cameraService, streamHub)
 	userService := handlers.NewUserHandler(userRepo)
 
 	roostv1.RegisterRoostServiceServer(grpcServer, roosterService)

@@ -22,7 +22,7 @@ func NewCameraRepository(db *db.DataBase) core.CameraRepo {
 
 func (r *rep) List(ctx context.Context) ([]domain.Camera, error) {
 	query := `
-		SELECT id, name, type, updated_at
+		SELECT id, name, type, source, updated_at
 		FROM cameras 
 		ORDER BY updated_at ASC
 	`
@@ -48,7 +48,7 @@ func (r *rep) List(ctx context.Context) ([]domain.Camera, error) {
 
 func (r *rep) Get(ctx context.Context, id uuid.UUID) (*domain.Camera, error) {
 	query := `
-		SELECT id, name, type, updated_at
+		SELECT id, name, type, source, updated_at
 		FROM cameras
 		WHERE id = $1
 	`
@@ -63,17 +63,18 @@ func (r *rep) Get(ctx context.Context, id uuid.UUID) (*domain.Camera, error) {
 	return v, nil
 }
 
-func (r *rep) Create(ctx context.Context, cameraType domain.CameraType, name string) (*domain.Camera, error) {
+func (r *rep) Create(ctx context.Context, req core.CreateCameraRequest) (*domain.Camera, error) {
 	query := `
-		INSERT INTO cameras (name, type)
-		VALUES ($1, $2)
-		RETURNING id, name, type, updated_at
+		INSERT INTO cameras (name, type, source)
+		VALUES ($1, $2, $3)
+		RETURNING id, name, type, source, updated_at
 	`
 	row := r.db.Pool.QueryRow(
 		ctx,
 		query,
-		name,
-		cameraType.String(),
+		req.Name,
+		req.CameraType.String(),
+		req.Source,
 	)
 	camera, err := scanCamera2(row)
 	if err != nil {
@@ -92,7 +93,7 @@ func (r *rep) Update(ctx context.Context, id uuid.UUID, name string) (*domain.Ca
 		SET name = $2,
 		    updated_at = NOW()
 		WHERE id = $1
-		RETURNING id, name, type, updated_at
+		RETURNING id, name, type, source, updated_at
 	`
 	row := r.db.Pool.QueryRow(
 		ctx,
@@ -123,6 +124,7 @@ func scanCamera(rows pgx.Rows) (*domain.Camera, error) {
 		&i.ID,
 		&i.Name,
 		&cameraType,
+		&i.SourcePath,
 		&i.UpdatedAt,
 	)
 	i.Type = domain.CameraTypeFromString(cameraType)
@@ -136,6 +138,7 @@ func scanCamera2(row pgx.Row) (*domain.Camera, error) {
 		&i.ID,
 		&i.Name,
 		&cameraType,
+		&i.SourcePath,
 		&i.UpdatedAt,
 	)
 	i.Type = domain.CameraTypeFromString(cameraType)
