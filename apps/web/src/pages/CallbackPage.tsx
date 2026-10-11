@@ -6,42 +6,50 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { keycloakService } from '../auth/KeycloakService';
 
+type CallbackParams =
+  | { code: string; state: string; error?: undefined }
+  | { error: string; code?: undefined; state?: undefined };
+
+function readCallbackParams(): CallbackParams {
+  const params = new URLSearchParams(window.location.search);
+  const errorParam = params.get('error');
+  if (errorParam) {
+    return {
+      error: `Keycloak returned an error: ${errorParam} – ${params.get('error_description') ?? ''}`,
+    };
+  }
+  const code = params.get('code');
+  const state = params.get('state');
+  if (!code || !state) {
+    return { error: 'Missing code or state in callback URL.' };
+  }
+  return { code, state };
+}
+
 export default function CallbackPage() {
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
+  const [callback] = useState<CallbackParams>(readCallbackParams);
+  const [exchangeError, setExchangeError] = useState<string | null>(null);
   const handled = useRef(false);
 
   useEffect(() => {
-    if (handled.current) return;
+    if (!callback.code || handled.current) return;
     handled.current = true;
 
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    const returnedState = params.get('state');
-    const errorParam = params.get('error');
-
-    if (errorParam) {
-      setError(`Keycloak returned an error: ${errorParam} – ${params.get('error_description') ?? ''}`);
-      return;
-    }
-
-    if (!code || !returnedState) {
-      setError('Missing code or state in callback URL.');
-      return;
-    }
-
     keycloakService
-      .handleCallback(code, returnedState)
+      .handleCallback(callback.code, callback.state)
       .then(() => {
         // Tell AuthContext to re-read the tokens from sessionStorage
-        const sync = (keycloakService as any).__syncAfterCallback;
+        const sync = (keycloakService as unknown as Record<string, unknown>).__syncAfterCallback;
         if (typeof sync === 'function') sync();
-        navigate('/dashboard', { replace: true });
+        navigate('/live', { replace: true });
       })
       .catch((err: Error) => {
-        setError(err.message);
+        setExchangeError(err.message);
       });
-  }, [navigate]);
+  }, [callback, navigate]);
+
+  const error = callback.error ?? exchangeError;
 
   if (error) {
     return (

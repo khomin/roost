@@ -85,20 +85,40 @@ func (s *CameraService) Start(ctx context.Context) error {
 	}
 }
 
-func (s *CameraService) ListCameras(ctx context.Context) ([]domain.Camera, error) {
+func (s *CameraService) ListCameras(ctx context.Context) ([]domain.CameraWithState, error) {
 	cameras, err := s.cameraRepo.List(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return cameras, nil
+	out := []domain.CameraWithState{}
+	for _, camera := range cameras {
+		state := domain.StateStopped
+		cameraTask, ok := s.tasks.Get(camera.ID)
+		if ok {
+			state = cameraTask.State
+		}
+		out = append(out, domain.CameraWithState{
+			Camera: camera,
+			State:  state,
+		})
+	}
+	return out, nil
 }
 
-func (s *CameraService) GetCamera(ctx context.Context, id uuid.UUID) (*domain.Camera, error) {
+func (s *CameraService) GetCamera(ctx context.Context, id uuid.UUID) (*domain.CameraWithState, error) {
 	camera, err := s.cameraRepo.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	return camera, nil
+	state := domain.StateStopped
+	cameraTask, ok := s.tasks.Get(camera.ID)
+	if ok {
+		state = cameraTask.State
+	}
+	return &domain.CameraWithState{
+		Camera: *camera,
+		State:  state,
+	}, nil
 }
 
 func (s *CameraService) CreateCamera(ctx context.Context, req CreateCameraRequest) (*domain.Camera, error) {

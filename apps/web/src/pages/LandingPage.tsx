@@ -13,7 +13,7 @@ export default function LandingPage() {
   // If already logged in, skip the landing page entirely
   useEffect(() => {
     if (isInitialized && isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+      navigate('/live', { replace: true });
     }
   }, [isInitialized, isAuthenticated, navigate]);
 

@@ -13,6 +13,7 @@ const STORAGE_KEYS = {
   expiresAt: 'kc_expires_at',    // Unix timestamp (ms)
   codeVerifier: 'kc_code_verifier', // Temporary – only needed during the callback
   oauthState: 'kc_oauth_state',   // Temporary – CSRF guard
+  userInfo: 'kc_user_info',       // Cached decoded user info (for demo + real tokens)
 } as const;
 
 // ── Token payload shape (what we care about) ─────────────────────────────────
@@ -56,7 +57,6 @@ class KeycloakService {
       code_challenge: challenge,
       code_challenge_method: 'S256',
     });
-    // http://localhost:9090/realms/whale-tracker/protocol/openid-connect/auth
     window.location.href = `${OIDC_ENDPOINTS.authorization}?${params}`;
   }
 
@@ -82,8 +82,6 @@ class KeycloakService {
       scope: "openid profile email",
     });
     try {
-      console.log(`code: ${code}`)
-      console.log(`code_verifier: ${codeVerifier}`)
       const response = await fetch(OIDC_ENDPOINTS.token, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -111,6 +109,9 @@ class KeycloakService {
   async refreshToken(): Promise<boolean> {
     const refresh = sessionStorage.getItem(STORAGE_KEYS.refreshToken);
     if (!refresh) return false;
+
+    // Don't try to refresh demo tokens
+    if (refresh === 'demo_refresh_token') return false;
 
     const body = new URLSearchParams({
       grant_type: 'refresh_token',
@@ -142,6 +143,15 @@ class KeycloakService {
   // ── Logout: clear local state + redirect to Keycloak logout ──────────────
   logout(): void {
     const idToken = sessionStorage.getItem(STORAGE_KEYS.idToken);
+    const isDemo = sessionStorage.getItem(STORAGE_KEYS.accessToken) === 'demo_token';
+
+    if (isDemo) {
+      // Demo mode: just clear local storage and redirect to landing
+      this.clearTokens();
+      window.location.href = '/';
+      return;
+    }
+
     const params = new URLSearchParams({
       client_id: KEYCLOAK_CONFIG.clientId,
       post_logout_redirect_uri: window.location.origin,
@@ -158,6 +168,12 @@ class KeycloakService {
     const token = sessionStorage.getItem(STORAGE_KEYS.accessToken);
     const expiresAt = sessionStorage.getItem(STORAGE_KEYS.expiresAt);
     if (!token || !expiresAt) return false;
+
+    // Demo token is always valid until expiry
+    if (token === 'demo_token') {
+      return Date.now() < Number(expiresAt);
+    }
+
     // Give a 30-second buffer before the real expiry
     return Date.now() < Number(expiresAt) - 30_000;
   }
@@ -171,6 +187,22 @@ class KeycloakService {
   getUserInfo(): UserInfo | null {
     const token = this.getAccessToken();
     if (!token) return null;
+
+    // Try cached user info first (works for both demo and real tokens after login)
+    const cached = sessionStorage.getItem(STORAGE_KEYS.userInfo);
+    if (cached) {
+      try {
+        return JSON.parse(cached) as UserInfo;
+      } catch {
+        // Fall through to decode
+      }
+    }
+
+    // Demo token doesn't have a real JWT payload
+    if (token === 'demo_token') {
+      return { sub: 'demo-user', preferred_username: 'demo_whale', name: 'Demo Whale' };
+    }
+
     try {
       const payload = token.split('.')[1];
       const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
@@ -189,7 +221,7 @@ class KeycloakService {
   private _storeTokens(tokens: TokenResponse): void {
     sessionStorage.setItem(STORAGE_KEYS.accessToken, tokens.access_token);
     if (tokens.id_token) {
-      sessionStorage.setItem(STORAGE_KEYS.idToken, tokens.id_token); // <-- ADD THIS
+      sessionStorage.setItem(STORAGE_KEYS.idToken, tokens.id_token);
     }
     if (tokens.refresh_token) {
       sessionStorage.setItem(STORAGE_KEYS.refreshToken, tokens.refresh_token);
@@ -197,6 +229,16 @@ class KeycloakService {
     // Convert expires_in (seconds) to an absolute timestamp
     const expiresAt = Date.now() + tokens.expires_in * 1000;
     sessionStorage.setItem(STORAGE_KEYS.expiresAt, String(expiresAt));
+
+    // Decode and cache user info from the ID token (or access token fallback)
+    const idToken = tokens.id_token ?? tokens.access_token;
+    try {
+      const payload = idToken.split('.')[1];
+      const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+      sessionStorage.setItem(STORAGE_KEYS.userInfo, JSON.stringify(decoded));
+    } catch {
+      // If decode fails, don't cache
+    }
   }
 }
 

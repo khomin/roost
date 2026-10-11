@@ -20,6 +20,8 @@ interface AuthContextValue {
   isInitialized: boolean;
   /** Whether the user has a valid, non-expired access token */
   isAuthenticated: boolean;
+  /** True when using demo mode (demo_token) */
+  isDemo: boolean;
   /** Decoded JWT payload – null when logged out */
   user: UserInfo | null;
   /** Raw Bearer token – use this when calling your Go backend */
@@ -28,6 +30,8 @@ interface AuthContextValue {
   login: () => Promise<void>;
   /** Clear tokens + redirect to Keycloak logout */
   logout: () => void;
+  /** Enter demo mode */
+  startDemo: () => void;
 }
 
 // ─── Context + hook ───────────────────────────────────────────────────────────
@@ -45,14 +49,33 @@ export function useAuth(): AuthContextValue {
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isInitialized,   setIsInitialized]   = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user,            setUser]            = useState<UserInfo | null>(null);
-  const [accessToken,     setAccessToken]     = useState<string | null>(null);
+  const [isDemo, setIsDemo] = useState(false);
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   // ── Bootstrap: check existing token on first render ───────────────────────
   useEffect(() => {
     const init = async () => {
+      // Check for demo mode first
+      const token = sessionStorage.getItem('kc_access_token');
+      if (token === 'demo_token') {
+        const expiresAt = sessionStorage.getItem('kc_expires_at');
+        if (expiresAt && Date.now() < Number(expiresAt)) {
+          // Demo token is valid - use getUserInfo which reads cached user info
+          const userInfo = keycloakService.getUserInfo();
+          if (userInfo) {
+            setUser(userInfo);
+          }
+          setAccessToken('demo_token');
+          setIsAuthenticated(true);
+          setIsDemo(true);
+          setIsInitialized(true);
+          return;
+        }
+      }
+
       if (keycloakService.isAuthenticated()) {
         // Token is still valid – hydrate state
         _syncState();
@@ -69,7 +92,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // ── Token-refresh timer: refresh 60s before expiry ────────────────────────
   useEffect(() => {
-    if (!isAuthenticated) return;
+    // Skip refresh timer for demo mode
+    if (!isAuthenticated || isDemo) return;
 
     const expiresAtStr = sessionStorage.getItem('kc_expires_at');
     if (!expiresAtStr) return;
@@ -87,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, msUntilRefresh);
 
     return () => clearTimeout(timer);
-  }, [isAuthenticated, accessToken]);
+  }, [isAuthenticated, accessToken, isDemo]);
 
   // ── Actions ───────────────────────────────────────────────────────────────
   const login = useCallback(async () => {
@@ -97,6 +121,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     keycloakService.logout(); // also redirects away
     _clearState();
+  }, []);
+
+  const startDemo = useCallback(() => {
+    const now = Date.now();
+    const demoUser: UserInfo = {
+      sub: 'demo-user',
+      preferred_username: 'demo_whale',
+      name: 'Demo Whale',
+      email: 'demo@whaletracker.app',
+    };
+    sessionStorage.setItem('kc_access_token', 'demo_token');
+    sessionStorage.setItem('kc_id_token', 'demo_id_token');
+    sessionStorage.setItem('kc_expires_at', String(now + 24 * 60 * 60 * 1000)); // 24h
+    sessionStorage.setItem('kc_refresh_token', 'demo_refresh_token');
+    sessionStorage.setItem('kc_user_info', JSON.stringify(demoUser));
+    setAccessToken('demo_token');
+    setUser(demoUser);
+    setIsAuthenticated(true);
+    setIsDemo(true);
   }, []);
 
   // Called after a successful token exchange (from CallbackPage)
@@ -110,18 +153,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
     setUser(keycloakService.getUserInfo());
     setAccessToken(keycloakService.getAccessToken());
+    setIsDemo(false);
   }
 
   function _clearState() {
     setIsAuthenticated(false);
+    setIsDemo(false);
     setUser(null);
     setAccessToken(null);
   }
 
   // ─── Context value (memoized to avoid unnecessary re-renders) ─────────────
   const value = useMemo<AuthContextValue>(
-    () => ({ isInitialized, isAuthenticated, user, accessToken, login, logout }),
-    [isInitialized, isAuthenticated, user, accessToken, login, logout],
+    () => ({ isInitialized, isAuthenticated, isDemo, user, accessToken, login, logout, startDemo }),
+    [isInitialized, isAuthenticated, isDemo, user, accessToken, login, logout, startDemo],
   );
 
   // Expose syncAfterCallback on the service so CallbackPage can reach it

@@ -28,7 +28,7 @@ export default function Layout() {
   const { user, logout } = useAuth();
 
   const displayName =
-    user?.name ?? user?.preferred_username ?? user?.email ?? 'Whale';
+    user?.name ?? user?.preferred_username ?? user?.email ?? 'Roost';
 
   return (
     <div className="flex h-screen bg-[#080a12] text-white">
@@ -40,8 +40,8 @@ export default function Layout() {
             <span className="text-lg font-black tracking-tight">W</span>
           </div>
           <div>
-            <div className="text-[15px] font-semibold tracking-tight text-white">WhaleTracker</div>
-            <div className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Portfolio intelligence</div>
+            <div className="text-[15px] font-semibold tracking-tight text-white">Roost</div>
+            <div className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">Monitor</div>
           </div>
         </div>
 
@@ -84,7 +84,7 @@ export default function Layout() {
         <div className="border-t border-white/[0.07] px-4 py-5">
           <div className="flex items-center gap-2 px-2 text-[11px] text-slate-600">
             <Tag aria-hidden="true" size={13} />
-            <span>WhaleTracker v0.1.0</span>
+            <span>Roost v0.1.0</span>
           </div>
         </div>
       </aside>
