@@ -5,13 +5,15 @@
 import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import { file_google_api_annotations } from "../../google/api/annotations_pb";
+import type { CameraType } from "../vision/vision_pb";
+import { file_v1_vision_vision } from "../vision/vision_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file v1/roost/roost.proto.
  */
 export const file_v1_roost_roost: GenFile = /*@__PURE__*/
-  fileDesc("ChR2MS9yb29zdC9yb29zdC5wcm90bxIIcm9vc3QudjEimwEKBkNhbWVyYRIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEiIKBHR5cGUYAyABKA4yFC5yb29zdC52MS5DYW1lcmFUeXBlEhEKCWlzX29ubGluZRgEIAEoCBIUCgxpc19yZWNvcmRpbmcYBSABKAgSDQoFd2lkdGgYBiABKAUSDgoGaGVpZ2h0GAcgASgFEgsKA2ZwcxgIIAEoBSIUChJMaXN0Q2FtZXJhc1JlcXVlc3QiOAoTTGlzdENhbWVyYXNSZXNwb25zZRIhCgdjYW1lcmFzGAEgAygLMhAucm9vc3QudjEuQ2FtZXJhIh4KEEdldENhbWVyYVJlcXVlc3QSCgoCaWQYASABKAkiRwoTQ3JlYXRlQ2FtZXJhUmVxdWVzdBIMCgRuYW1lGAEgASgJEiIKBHR5cGUYAiABKA4yFC5yb29zdC52MS5DYW1lcmFUeXBlIi8KE1VwZGF0ZUNhbWVyYVJlcXVlc3QSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCSIhChNEZWxldGVDYW1lcmFSZXF1ZXN0EgoKAmlkGAEgASgJIhYKFERlbGV0ZUNhbWVyYVJlc3BvbnNlIjQKE1dlYlJUQ1NpZ25hbFJlcXVlc3QSCgoCaWQYASABKAkSEQoJc2RwX29mZmVyGAIgASgJIioKFFdlYlJUQ1NpZ25hbFJlc3BvbnNlEhIKCnNkcF9hbnN3ZXIYASABKAkiIAoSR2V0U25hcHNob3RSZXF1ZXN0EgoKAmlkGAEgASgJIj4KE0dldFNuYXBzaG90UmVzcG9uc2USEQoJanBlZ19kYXRhGAEgASgMEhQKDHRpbWVzdGFtcF9tcxgCIAEoAyIsChZTdWJzY3JpYmVFdmVudHNSZXF1ZXN0EhIKCmNhbWVyYV9pZHMYASADKAkigAIKCUxpdmVFdmVudBIKCgJpZBgBIAEoCRIUCgx0aW1lc3RhbXBfbXMYAiABKAMSKwoEdHlwZRgDIAEoDjIdLnJvb3N0LnYxLkxpdmVFdmVudC5FdmVudFR5cGUSDQoFbGFiZWwYBCABKAkSEgoKY29uZmlkZW5jZRgFIAEoAiKAAQoJRXZlbnRUeXBlEhoKFkVWRU5UX1RZUEVfVU5TUEVDSUZJRUQQABIbChdFVkVOVF9UWVBFX01PVElPTl9TVEFSVBABEhoKFkVWRU5UX1RZUEVfTU9USU9OX1NUT1AQAhIeChpFVkVOVF9UWVBFX09CSkVDVF9ERVRFQ1RFRBADIk8KFUxpc3RSZWNvcmRpbmdzUmVxdWVzdBIKCgJpZBgBIAEoCRIVCg1zdGFydF90aW1lX21zGAIgASgDEhMKC2VuZF90aW1lX21zGAMgASgDIp8BChBSZWNvcmRpbmdTZWdtZW50EgoKAmlkGAEgASgJEhEKCWNhbWVyYV9pZBgCIAEoCRIVCg1zdGFydF90aW1lX21zGAMgASgDEhMKC2VuZF90aW1lX21zGAQgASgDEhIKCnNpemVfYnl0ZXMYBSABKAMSEgoKaGFzX21vdGlvbhgGIAEoCBIYChBkZXRlY3RlZF9vYmplY3RzGAcgAygJIkgKFkxpc3RSZWNvcmRpbmdzUmVzcG9uc2USLgoKcmVjb3JkaW5ncxgBIAMoCzIaLnJvb3N0LnYxLlJlY29yZGluZ1NlZ21lbnQiNgoeR2V0UmVjb3JkaW5nRG93bmxvYWRVcmxSZXF1ZXN0EhQKDHJlY29yZGluZ19pZBgBIAEoCSIuCh9HZXRSZWNvcmRpbmdEb3dubG9hZFVybFJlc3BvbnNlEgsKA3VybBgBIAEoCSpSCgpDYW1lcmFUeXBlEhsKF0NBTUVSQV9UWVBFX1VOU1BFQ0lGSUVEEAASEgoOQ0FNRVJBX1RZUEVfSVAQARITCg9DQU1FUkFfVFlQRV9VU0IQAjKvCAoMUm9vc3RTZXJ2aWNlEl8KC0xpc3RDYW1lcmFzEhwucm9vc3QudjEuTGlzdENhbWVyYXNSZXF1ZXN0Gh0ucm9vc3QudjEuTGlzdENhbWVyYXNSZXNwb25zZSITgtPkkwINEgsvdjEvY2FtZXJhcxJTCglHZXRDYW1lcmESGi5yb29zdC52MS5HZXRDYW1lcmFSZXF1ZXN0GhAucm9vc3QudjEuQ2FtZXJhIhiC0+STAhISEC92MS9jYW1lcmFzL3tpZH0SVwoMQ3JlYXRlQ2FtZXJhEh0ucm9vc3QudjEuQ3JlYXRlQ2FtZXJhUmVxdWVzdBoQLnJvb3N0LnYxLkNhbWVyYSIWgtPkkwIQOgEqIgsvdjEvY2FtZXJhcxJcCgxVcGRhdGVDYW1lcmESHS5yb29zdC52MS5VcGRhdGVDYW1lcmFSZXF1ZXN0GhAucm9vc3QudjEuQ2FtZXJhIhuC0+STAhU6ASoyEC92MS9jYW1lcmFzL3tpZH0SZwoMRGVsZXRlQ2FtZXJhEh0ucm9vc3QudjEuRGVsZXRlQ2FtZXJhUmVxdWVzdBoeLnJvb3N0LnYxLkRlbGV0ZUNhbWVyYVJlc3BvbnNlIhiC0+STAhIqEC92MS9jYW1lcmFzL3tpZH0SaQoMU2lnbmFsV2ViUlRDEh0ucm9vc3QudjEuV2ViUlRDU2lnbmFsUmVxdWVzdBoeLnJvb3N0LnYxLldlYlJUQ1NpZ25hbFJlc3BvbnNlIhqC0+STAhQSEi92MS9jYW1lcmFzL3NpZ25hbBJoCgtHZXRTbmFwc2hvdBIcLnJvb3N0LnYxLkdldFNuYXBzaG90UmVxdWVzdBodLnJvb3N0LnYxLkdldFNuYXBzaG90UmVzcG9uc2UiHILT5JMCFhIUL3YxL2NhbWVyYXMvc25hcHNob3QSagoTU3Vic2NyaWJlTGl2ZUV2ZW50cxIgLnJvb3N0LnYxLlN1YnNjcmliZUV2ZW50c1JlcXVlc3QaEy5yb29zdC52MS5MaXZlRXZlbnQiGoLT5JMCFBISL3YxL2NhbWVyYXMvZXZlbnRzMAEScwoOTGlzdFJlY29yZGluZ3MSHy5yb29zdC52MS5MaXN0UmVjb3JkaW5nc1JlcXVlc3QaIC5yb29zdC52MS5MaXN0UmVjb3JkaW5nc1Jlc3BvbnNlIh6C0+STAhgSFi92MS9jYW1lcmFzL3JlY29yZGluZ3MSkgEKF0dldFJlY29yZGluZ0Rvd25sb2FkVXJsEigucm9vc3QudjEuR2V0UmVjb3JkaW5nRG93bmxvYWRVcmxSZXF1ZXN0Gikucm9vc3QudjEuR2V0UmVjb3JkaW5nRG93bmxvYWRVcmxSZXNwb25zZSIigtPkkwIcEhovdjEvY2FtZXJhcy9yZWNvcmRpbmdzL3VybEIeWhxyb29zdGVyL2dlbi9yb29zdC92MTtyb29zdHYxYgZwcm90bzM", [file_google_api_annotations]);
+  fileDesc("ChR2MS9yb29zdC9yb29zdC5wcm90bxIIcm9vc3QudjEinAEKBkNhbWVyYRIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEiMKBHR5cGUYAyABKA4yFS52aXNpb24udjEuQ2FtZXJhVHlwZRIRCglpc19vbmxpbmUYBCABKAgSFAoMaXNfcmVjb3JkaW5nGAUgASgIEg0KBXdpZHRoGAYgASgFEg4KBmhlaWdodBgHIAEoBRILCgNmcHMYCCABKAUiFAoSTGlzdENhbWVyYXNSZXF1ZXN0IjgKE0xpc3RDYW1lcmFzUmVzcG9uc2USIQoHY2FtZXJhcxgBIAMoCzIQLnJvb3N0LnYxLkNhbWVyYSIeChBHZXRDYW1lcmFSZXF1ZXN0EgoKAmlkGAEgASgJIjUKEUdldENhbWVyYVJlc3BvbnNlEiAKBmNhbWVyYRgBIAEoCzIQLnJvb3N0LnYxLkNhbWVyYSJYChNDcmVhdGVDYW1lcmFSZXF1ZXN0EgwKBG5hbWUYASABKAkSIwoEdHlwZRgCIAEoDjIVLnZpc2lvbi52MS5DYW1lcmFUeXBlEg4KBnNvdXJjZRgDIAEoCSI4ChRDcmVhdGVDYW1lcmFSZXNwb25zZRIgCgZjYW1lcmEYASABKAsyEC5yb29zdC52MS5DYW1lcmEiLwoTVXBkYXRlQ2FtZXJhUmVxdWVzdBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJIjgKFFVwZGF0ZUNhbWVyYVJlc3BvbnNlEiAKBmNhbWVyYRgBIAEoCzIQLnJvb3N0LnYxLkNhbWVyYSIhChNEZWxldGVDYW1lcmFSZXF1ZXN0EgoKAmlkGAEgASgJIhYKFERlbGV0ZUNhbWVyYVJlc3BvbnNlIk0KE1NpZ25hbFdlYlJUQ1JlcXVlc3QSEQoJY2FtZXJhX2lkGAEgASgJEhAKCHNkcF90eXBlGAIgASgJEhEKCXNkcF9vZmZlchgDIAEoCSI8ChRTaWduYWxXZWJSVENSZXNwb25zZRIQCghzZHBfdHlwZRgBIAEoCRISCgpzZHBfYW5zd2VyGAIgASgJIiAKEkdldFNuYXBzaG90UmVxdWVzdBIKCgJpZBgBIAEoCSI+ChNHZXRTbmFwc2hvdFJlc3BvbnNlEhEKCWpwZWdfZGF0YRgBIAEoDBIUCgx0aW1lc3RhbXBfbXMYAiABKAMiMAoaU3Vic2NyaWJlTGl2ZUV2ZW50c1JlcXVlc3QSEgoKY2FtZXJhX2lkcxgBIAMoCSKAAgoJTGl2ZUV2ZW50EgoKAmlkGAEgASgJEhQKDHRpbWVzdGFtcF9tcxgCIAEoAxIrCgR0eXBlGAMgASgOMh0ucm9vc3QudjEuTGl2ZUV2ZW50LkV2ZW50VHlwZRINCgVsYWJlbBgEIAEoCRISCgpjb25maWRlbmNlGAUgASgCIoABCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQRV9VTlNQRUNJRklFRBAAEhsKF0VWRU5UX1RZUEVfTU9USU9OX1NUQVJUEAESGgoWRVZFTlRfVFlQRV9NT1RJT05fU1RPUBACEh4KGkVWRU5UX1RZUEVfT0JKRUNUX0RFVEVDVEVEEAMiTwoVTGlzdFJlY29yZGluZ3NSZXF1ZXN0EgoKAmlkGAEgASgJEhUKDXN0YXJ0X3RpbWVfbXMYAiABKAMSEwoLZW5kX3RpbWVfbXMYAyABKAMinwEKEFJlY29yZGluZ1NlZ21lbnQSCgoCaWQYASABKAkSEQoJY2FtZXJhX2lkGAIgASgJEhUKDXN0YXJ0X3RpbWVfbXMYAyABKAMSEwoLZW5kX3RpbWVfbXMYBCABKAMSEgoKc2l6ZV9ieXRlcxgFIAEoAxISCgpoYXNfbW90aW9uGAYgASgIEhgKEGRldGVjdGVkX29iamVjdHMYByADKAkiSAoWTGlzdFJlY29yZGluZ3NSZXNwb25zZRIuCgpyZWNvcmRpbmdzGAEgAygLMhoucm9vc3QudjEuUmVjb3JkaW5nU2VnbWVudCI2Ch5HZXRSZWNvcmRpbmdEb3dubG9hZFVybFJlcXVlc3QSFAoMcmVjb3JkaW5nX2lkGAEgASgJIi4KH0dldFJlY29yZGluZ0Rvd25sb2FkVXJsUmVzcG9uc2USCwoDdXJsGAEgASgJMukICgxSb29zdFNlcnZpY2USXwoLTGlzdENhbWVyYXMSHC5yb29zdC52MS5MaXN0Q2FtZXJhc1JlcXVlc3QaHS5yb29zdC52MS5MaXN0Q2FtZXJhc1Jlc3BvbnNlIhOC0+STAg0SCy92MS9jYW1lcmFzEl4KCUdldENhbWVyYRIaLnJvb3N0LnYxLkdldENhbWVyYVJlcXVlc3QaGy5yb29zdC52MS5HZXRDYW1lcmFSZXNwb25zZSIYgtPkkwISEhAvdjEvY2FtZXJhcy97aWR9EmUKDENyZWF0ZUNhbWVyYRIdLnJvb3N0LnYxLkNyZWF0ZUNhbWVyYVJlcXVlc3QaHi5yb29zdC52MS5DcmVhdGVDYW1lcmFSZXNwb25zZSIWgtPkkwIQOgEqIgsvdjEvY2FtZXJhcxJqCgxVcGRhdGVDYW1lcmESHS5yb29zdC52MS5VcGRhdGVDYW1lcmFSZXF1ZXN0Gh4ucm9vc3QudjEuVXBkYXRlQ2FtZXJhUmVzcG9uc2UiG4LT5JMCFToBKjIQL3YxL2NhbWVyYXMve2lkfRJnCgxEZWxldGVDYW1lcmESHS5yb29zdC52MS5EZWxldGVDYW1lcmFSZXF1ZXN0Gh4ucm9vc3QudjEuRGVsZXRlQ2FtZXJhUmVzcG9uc2UiGILT5JMCEioQL3YxL2NhbWVyYXMve2lkfRJ4CgxTaWduYWxXZWJSVEMSHS5yb29zdC52MS5TaWduYWxXZWJSVENSZXF1ZXN0Gh4ucm9vc3QudjEuU2lnbmFsV2ViUlRDUmVzcG9uc2UiKYLT5JMCIzoBKiIeL3YxL2NhbWVyYXMve2NhbWVyYV9pZH0vc2lnbmFsEmgKC0dldFNuYXBzaG90Ehwucm9vc3QudjEuR2V0U25hcHNob3RSZXF1ZXN0Gh0ucm9vc3QudjEuR2V0U25hcHNob3RSZXNwb25zZSIcgtPkkwIWEhQvdjEvY2FtZXJhcy9zbmFwc2hvdBJuChNTdWJzY3JpYmVMaXZlRXZlbnRzEiQucm9vc3QudjEuU3Vic2NyaWJlTGl2ZUV2ZW50c1JlcXVlc3QaEy5yb29zdC52MS5MaXZlRXZlbnQiGoLT5JMCFBISL3YxL2NhbWVyYXMvZXZlbnRzMAEScwoOTGlzdFJlY29yZGluZ3MSHy5yb29zdC52MS5MaXN0UmVjb3JkaW5nc1JlcXVlc3QaIC5yb29zdC52MS5MaXN0UmVjb3JkaW5nc1Jlc3BvbnNlIh6C0+STAhgSFi92MS9jYW1lcmFzL3JlY29yZGluZ3MSkgEKF0dldFJlY29yZGluZ0Rvd25sb2FkVXJsEigucm9vc3QudjEuR2V0UmVjb3JkaW5nRG93bmxvYWRVcmxSZXF1ZXN0Gikucm9vc3QudjEuR2V0UmVjb3JkaW5nRG93bmxvYWRVcmxSZXNwb25zZSIigtPkkwIcEhovdjEvY2FtZXJhcy9yZWNvcmRpbmdzL3VybEIcWhpyb29zdC9nZW4vdjEvcm9vc3Q7cm9vc3R2MWIGcHJvdG8z", [file_google_api_annotations, file_v1_vision_vision]);
 
 /**
  * @generated from message roost.v1.Camera
@@ -28,7 +30,7 @@ export type Camera = Message<"roost.v1.Camera"> & {
   name: string;
 
   /**
-   * @generated from field: roost.v1.CameraType type = 3;
+   * @generated from field: vision.v1.CameraType type = 3;
    */
   type: CameraType;
 
@@ -113,6 +115,23 @@ export const GetCameraRequestSchema: GenMessage<GetCameraRequest> = /*@__PURE__*
   messageDesc(file_v1_roost_roost, 3);
 
 /**
+ * @generated from message roost.v1.GetCameraResponse
+ */
+export type GetCameraResponse = Message<"roost.v1.GetCameraResponse"> & {
+  /**
+   * @generated from field: roost.v1.Camera camera = 1;
+   */
+  camera?: Camera | undefined;
+};
+
+/**
+ * Describes the message roost.v1.GetCameraResponse.
+ * Use `create(GetCameraResponseSchema)` to create a new message.
+ */
+export const GetCameraResponseSchema: GenMessage<GetCameraResponse> = /*@__PURE__*/
+  messageDesc(file_v1_roost_roost, 4);
+
+/**
  * @generated from message roost.v1.CreateCameraRequest
  */
 export type CreateCameraRequest = Message<"roost.v1.CreateCameraRequest"> & {
@@ -122,9 +141,14 @@ export type CreateCameraRequest = Message<"roost.v1.CreateCameraRequest"> & {
   name: string;
 
   /**
-   * @generated from field: roost.v1.CameraType type = 2;
+   * @generated from field: vision.v1.CameraType type = 2;
    */
   type: CameraType;
+
+  /**
+   * @generated from field: string source = 3;
+   */
+  source: string;
 };
 
 /**
@@ -132,7 +156,24 @@ export type CreateCameraRequest = Message<"roost.v1.CreateCameraRequest"> & {
  * Use `create(CreateCameraRequestSchema)` to create a new message.
  */
 export const CreateCameraRequestSchema: GenMessage<CreateCameraRequest> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 4);
+  messageDesc(file_v1_roost_roost, 5);
+
+/**
+ * @generated from message roost.v1.CreateCameraResponse
+ */
+export type CreateCameraResponse = Message<"roost.v1.CreateCameraResponse"> & {
+  /**
+   * @generated from field: roost.v1.Camera camera = 1;
+   */
+  camera?: Camera | undefined;
+};
+
+/**
+ * Describes the message roost.v1.CreateCameraResponse.
+ * Use `create(CreateCameraResponseSchema)` to create a new message.
+ */
+export const CreateCameraResponseSchema: GenMessage<CreateCameraResponse> = /*@__PURE__*/
+  messageDesc(file_v1_roost_roost, 6);
 
 /**
  * @generated from message roost.v1.UpdateCameraRequest
@@ -154,7 +195,24 @@ export type UpdateCameraRequest = Message<"roost.v1.UpdateCameraRequest"> & {
  * Use `create(UpdateCameraRequestSchema)` to create a new message.
  */
 export const UpdateCameraRequestSchema: GenMessage<UpdateCameraRequest> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 5);
+  messageDesc(file_v1_roost_roost, 7);
+
+/**
+ * @generated from message roost.v1.UpdateCameraResponse
+ */
+export type UpdateCameraResponse = Message<"roost.v1.UpdateCameraResponse"> & {
+  /**
+   * @generated from field: roost.v1.Camera camera = 1;
+   */
+  camera?: Camera | undefined;
+};
+
+/**
+ * Describes the message roost.v1.UpdateCameraResponse.
+ * Use `create(UpdateCameraResponseSchema)` to create a new message.
+ */
+export const UpdateCameraResponseSchema: GenMessage<UpdateCameraResponse> = /*@__PURE__*/
+  messageDesc(file_v1_roost_roost, 8);
 
 /**
  * @generated from message roost.v1.DeleteCameraRequest
@@ -171,7 +229,7 @@ export type DeleteCameraRequest = Message<"roost.v1.DeleteCameraRequest"> & {
  * Use `create(DeleteCameraRequestSchema)` to create a new message.
  */
 export const DeleteCameraRequestSchema: GenMessage<DeleteCameraRequest> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 6);
+  messageDesc(file_v1_roost_roost, 9);
 
 /**
  * @generated from message roost.v1.DeleteCameraResponse
@@ -184,50 +242,64 @@ export type DeleteCameraResponse = Message<"roost.v1.DeleteCameraResponse"> & {
  * Use `create(DeleteCameraResponseSchema)` to create a new message.
  */
 export const DeleteCameraResponseSchema: GenMessage<DeleteCameraResponse> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 7);
+  messageDesc(file_v1_roost_roost, 10);
 
 /**
- * @generated from message roost.v1.WebRTCSignalRequest
+ * @generated from message roost.v1.SignalWebRTCRequest
  */
-export type WebRTCSignalRequest = Message<"roost.v1.WebRTCSignalRequest"> & {
+export type SignalWebRTCRequest = Message<"roost.v1.SignalWebRTCRequest"> & {
   /**
-   * @generated from field: string id = 1;
+   * @generated from field: string camera_id = 1;
    */
-  id: string;
+  cameraId: string;
 
   /**
-   * WebRTC SDP Offer from browser
+   * e.g. "offer"
    *
-   * @generated from field: string sdp_offer = 2;
+   * @generated from field: string sdp_type = 2;
+   */
+  sdpType: string;
+
+  /**
+   * Raw SDP string from browser
+   *
+   * @generated from field: string sdp_offer = 3;
    */
   sdpOffer: string;
 };
 
 /**
- * Describes the message roost.v1.WebRTCSignalRequest.
- * Use `create(WebRTCSignalRequestSchema)` to create a new message.
+ * Describes the message roost.v1.SignalWebRTCRequest.
+ * Use `create(SignalWebRTCRequestSchema)` to create a new message.
  */
-export const WebRTCSignalRequestSchema: GenMessage<WebRTCSignalRequest> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 8);
+export const SignalWebRTCRequestSchema: GenMessage<SignalWebRTCRequest> = /*@__PURE__*/
+  messageDesc(file_v1_roost_roost, 11);
 
 /**
- * @generated from message roost.v1.WebRTCSignalResponse
+ * @generated from message roost.v1.SignalWebRTCResponse
  */
-export type WebRTCSignalResponse = Message<"roost.v1.WebRTCSignalResponse"> & {
+export type SignalWebRTCResponse = Message<"roost.v1.SignalWebRTCResponse"> & {
   /**
-   * WebRTC SDP Answer from Pion
+   * "answer"
    *
-   * @generated from field: string sdp_answer = 1;
+   * @generated from field: string sdp_type = 1;
+   */
+  sdpType: string;
+
+  /**
+   * Raw SDP string from Pion with gathered ICE candidates
+   *
+   * @generated from field: string sdp_answer = 2;
    */
   sdpAnswer: string;
 };
 
 /**
- * Describes the message roost.v1.WebRTCSignalResponse.
- * Use `create(WebRTCSignalResponseSchema)` to create a new message.
+ * Describes the message roost.v1.SignalWebRTCResponse.
+ * Use `create(SignalWebRTCResponseSchema)` to create a new message.
  */
-export const WebRTCSignalResponseSchema: GenMessage<WebRTCSignalResponse> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 9);
+export const SignalWebRTCResponseSchema: GenMessage<SignalWebRTCResponse> = /*@__PURE__*/
+  messageDesc(file_v1_roost_roost, 12);
 
 /**
  * @generated from message roost.v1.GetSnapshotRequest
@@ -244,7 +316,7 @@ export type GetSnapshotRequest = Message<"roost.v1.GetSnapshotRequest"> & {
  * Use `create(GetSnapshotRequestSchema)` to create a new message.
  */
 export const GetSnapshotRequestSchema: GenMessage<GetSnapshotRequest> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 10);
+  messageDesc(file_v1_roost_roost, 13);
 
 /**
  * @generated from message roost.v1.GetSnapshotResponse
@@ -266,12 +338,12 @@ export type GetSnapshotResponse = Message<"roost.v1.GetSnapshotResponse"> & {
  * Use `create(GetSnapshotResponseSchema)` to create a new message.
  */
 export const GetSnapshotResponseSchema: GenMessage<GetSnapshotResponse> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 11);
+  messageDesc(file_v1_roost_roost, 14);
 
 /**
- * @generated from message roost.v1.SubscribeEventsRequest
+ * @generated from message roost.v1.SubscribeLiveEventsRequest
  */
-export type SubscribeEventsRequest = Message<"roost.v1.SubscribeEventsRequest"> & {
+export type SubscribeLiveEventsRequest = Message<"roost.v1.SubscribeLiveEventsRequest"> & {
   /**
    * Empty for all cameras
    *
@@ -281,11 +353,11 @@ export type SubscribeEventsRequest = Message<"roost.v1.SubscribeEventsRequest"> 
 };
 
 /**
- * Describes the message roost.v1.SubscribeEventsRequest.
- * Use `create(SubscribeEventsRequestSchema)` to create a new message.
+ * Describes the message roost.v1.SubscribeLiveEventsRequest.
+ * Use `create(SubscribeLiveEventsRequestSchema)` to create a new message.
  */
-export const SubscribeEventsRequestSchema: GenMessage<SubscribeEventsRequest> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 12);
+export const SubscribeLiveEventsRequestSchema: GenMessage<SubscribeLiveEventsRequest> = /*@__PURE__*/
+  messageDesc(file_v1_roost_roost, 15);
 
 /**
  * @generated from message roost.v1.LiveEvent
@@ -324,7 +396,7 @@ export type LiveEvent = Message<"roost.v1.LiveEvent"> & {
  * Use `create(LiveEventSchema)` to create a new message.
  */
 export const LiveEventSchema: GenMessage<LiveEvent> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 13);
+  messageDesc(file_v1_roost_roost, 16);
 
 /**
  * @generated from enum roost.v1.LiveEvent.EventType
@@ -355,7 +427,7 @@ export enum LiveEvent_EventType {
  * Describes the enum roost.v1.LiveEvent.EventType.
  */
 export const LiveEvent_EventTypeSchema: GenEnum<LiveEvent_EventType> = /*@__PURE__*/
-  enumDesc(file_v1_roost_roost, 13, 0);
+  enumDesc(file_v1_roost_roost, 16, 0);
 
 /**
  * @generated from message roost.v1.ListRecordingsRequest
@@ -382,7 +454,7 @@ export type ListRecordingsRequest = Message<"roost.v1.ListRecordingsRequest"> & 
  * Use `create(ListRecordingsRequestSchema)` to create a new message.
  */
 export const ListRecordingsRequestSchema: GenMessage<ListRecordingsRequest> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 14);
+  messageDesc(file_v1_roost_roost, 17);
 
 /**
  * @generated from message roost.v1.RecordingSegment
@@ -429,7 +501,7 @@ export type RecordingSegment = Message<"roost.v1.RecordingSegment"> & {
  * Use `create(RecordingSegmentSchema)` to create a new message.
  */
 export const RecordingSegmentSchema: GenMessage<RecordingSegment> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 15);
+  messageDesc(file_v1_roost_roost, 18);
 
 /**
  * @generated from message roost.v1.ListRecordingsResponse
@@ -446,7 +518,7 @@ export type ListRecordingsResponse = Message<"roost.v1.ListRecordingsResponse"> 
  * Use `create(ListRecordingsResponseSchema)` to create a new message.
  */
 export const ListRecordingsResponseSchema: GenMessage<ListRecordingsResponse> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 16);
+  messageDesc(file_v1_roost_roost, 19);
 
 /**
  * @generated from message roost.v1.GetRecordingDownloadUrlRequest
@@ -463,7 +535,7 @@ export type GetRecordingDownloadUrlRequest = Message<"roost.v1.GetRecordingDownl
  * Use `create(GetRecordingDownloadUrlRequestSchema)` to create a new message.
  */
 export const GetRecordingDownloadUrlRequestSchema: GenMessage<GetRecordingDownloadUrlRequest> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 17);
+  messageDesc(file_v1_roost_roost, 20);
 
 /**
  * @generated from message roost.v1.GetRecordingDownloadUrlResponse
@@ -482,33 +554,7 @@ export type GetRecordingDownloadUrlResponse = Message<"roost.v1.GetRecordingDown
  * Use `create(GetRecordingDownloadUrlResponseSchema)` to create a new message.
  */
 export const GetRecordingDownloadUrlResponseSchema: GenMessage<GetRecordingDownloadUrlResponse> = /*@__PURE__*/
-  messageDesc(file_v1_roost_roost, 18);
-
-/**
- * @generated from enum roost.v1.CameraType
- */
-export enum CameraType {
-  /**
-   * @generated from enum value: CAMERA_TYPE_UNSPECIFIED = 0;
-   */
-  UNSPECIFIED = 0,
-
-  /**
-   * @generated from enum value: CAMERA_TYPE_IP = 1;
-   */
-  IP = 1,
-
-  /**
-   * @generated from enum value: CAMERA_TYPE_USB = 2;
-   */
-  USB = 2,
-}
-
-/**
- * Describes the enum roost.v1.CameraType.
- */
-export const CameraTypeSchema: GenEnum<CameraType> = /*@__PURE__*/
-  enumDesc(file_v1_roost_roost, 0);
+  messageDesc(file_v1_roost_roost, 21);
 
 /**
  * @generated from service roost.v1.RoostService
@@ -528,7 +574,7 @@ export const RoostService: GenService<{
   getCamera: {
     methodKind: "unary";
     input: typeof GetCameraRequestSchema;
-    output: typeof CameraSchema;
+    output: typeof GetCameraResponseSchema;
   },
   /**
    * @generated from rpc roost.v1.RoostService.CreateCamera
@@ -536,7 +582,7 @@ export const RoostService: GenService<{
   createCamera: {
     methodKind: "unary";
     input: typeof CreateCameraRequestSchema;
-    output: typeof CameraSchema;
+    output: typeof CreateCameraResponseSchema;
   },
   /**
    * @generated from rpc roost.v1.RoostService.UpdateCamera
@@ -544,7 +590,7 @@ export const RoostService: GenService<{
   updateCamera: {
     methodKind: "unary";
     input: typeof UpdateCameraRequestSchema;
-    output: typeof CameraSchema;
+    output: typeof UpdateCameraResponseSchema;
   },
   /**
    * @generated from rpc roost.v1.RoostService.DeleteCamera
@@ -559,8 +605,8 @@ export const RoostService: GenService<{
    */
   signalWebRTC: {
     methodKind: "unary";
-    input: typeof WebRTCSignalRequestSchema;
-    output: typeof WebRTCSignalResponseSchema;
+    input: typeof SignalWebRTCRequestSchema;
+    output: typeof SignalWebRTCResponseSchema;
   },
   /**
    * @generated from rpc roost.v1.RoostService.GetSnapshot
@@ -575,7 +621,7 @@ export const RoostService: GenService<{
    */
   subscribeLiveEvents: {
     methodKind: "server_streaming";
-    input: typeof SubscribeEventsRequestSchema;
+    input: typeof SubscribeLiveEventsRequestSchema;
     output: typeof LiveEventSchema;
   },
   /**

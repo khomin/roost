@@ -34,3 +34,4 @@ apps/vision/gen/**
 apps/web/src/gen/**
 
 api/bruno/**
+apps/vision/.qtcreator/**

@@ -9,7 +9,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CONFIG_BUILD_TESTING OFF)
 
-add_subdirectory(external/config-cxx)
 add_subdirectory(external/spdlog)
 
 add_executable(${PROJECT_NAME}
@@ -56,20 +55,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    config-cxx
     spdlog::spdlog_header_only
     gRPC::grpc++
     gRPC::grpc++_reflection
     ${GST_LIBRARIES}
     ${GST_APP_LIBRARIES}
 )
-
-# ${OPENCV_LIBRARIES}
-# target_precompile_headers(config-cxx PUBLIC "<algorithm>")
-
-# add_custom_command(TARGET ${PROJECT} POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy
-#             "${CMAKE_CURRENT_SOURCE_DIR}/config.json"
-#             "$<TARGET_FILE_DIR:${PROJECT}>/config/config.json"
-#     COMMENT "Copying config.json to the executable directory"
-# )

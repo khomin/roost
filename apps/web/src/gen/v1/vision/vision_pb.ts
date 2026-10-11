@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file v1/vision/vision.proto.
  */
 export const file_v1_vision_vision: GenFile = /*@__PURE__*/
-  fileDesc("ChZ2MS92aXNpb24vdmlzaW9uLnByb3RvEgl2aXNpb24udjEiYQoSU3RhcnRTdHJlYW1SZXF1ZXN0EhEKCWNhbWVyYV9pZBgBIAEoCRITCgtzb3VyY2VfcGF0aBgCIAEoCRIjCgR0eXBlGAMgASgOMhUudmlzaW9uLnYxLkNhbWVyYVR5cGUiYwoTU3RhcnRTdHJlYW1SZXNwb25zZRIQCghzaG1fbmFtZRgBIAEoCRISCgpzbG90X2NvdW50GAIgASgNEhEKCXNsb3Rfc2l6ZRgDIAEoDRITCgtoZWFkZXJfc2l6ZRgEIAEoDSImChFTdG9wU3RyZWFtUmVxdWVzdBIRCgljYW1lcmFfaWQYASABKAkiJQoSU3RvcFN0cmVhbVJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgqVAoKQ2FtZXJhVHlwZRIbChdDQU1FUkFfVFlQRV9VTlNQRUNJRklFRBAAEhMKD0NBTUVSQV9UWVBFX1VTQhABEhQKEENBTUVSQV9UWVBFX1JUU1AQAjKoAQoNVmlzaW9uU2VydmljZRJMCgtTdGFydFN0cmVhbRIdLnZpc2lvbi52MS5TdGFydFN0cmVhbVJlcXVlc3QaHi52aXNpb24udjEuU3RhcnRTdHJlYW1SZXNwb25zZRJJCgpTdG9wU3RyZWFtEhwudmlzaW9uLnYxLlN0b3BTdHJlYW1SZXF1ZXN0Gh0udmlzaW9uLnYxLlN0b3BTdHJlYW1SZXNwb25zZUIgWh5yb29zdGVyL2dlbi92aXNpb24vdjE7dmlzaW9udjFiBnByb3RvMw", [file_google_api_annotations]);
+  fileDesc("ChZ2MS92aXNpb24vdmlzaW9uLnByb3RvEgl2aXNpb24udjEiYQoSU3RhcnRTdHJlYW1SZXF1ZXN0EhEKCWNhbWVyYV9pZBgBIAEoCRITCgtzb3VyY2VfcGF0aBgCIAEoCRIjCgR0eXBlGAMgASgOMhUudmlzaW9uLnYxLkNhbWVyYVR5cGUifgoQU3RhcnRTdHJlYW1FdmVudBIvCgdzdGFydGVkGAEgASgLMhwudmlzaW9uLnYxLlN0YXJ0U3RyZWFtUmVzdWx0SAASMAoKZGV0ZWN0aW9ucxgCIAEoCzIaLnZpc2lvbi52MS5GcmFtZURldGVjdGlvbnNIAEIHCgVldmVudCImChFTdG9wU3RyZWFtUmVxdWVzdBIRCgljYW1lcmFfaWQYASABKAkiJQoSU3RvcFN0cmVhbVJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgiUQoPRnJhbWVEZXRlY3Rpb25zEhQKDHRpbWVzdGFtcF9ucxgBIAEoBBIoCgpkZXRlY3Rpb25zGAIgAygLMhQudmlzaW9uLnYxLkRldGVjdGlvbiJaCglEZXRlY3Rpb24SDQoFbGFiZWwYASABKAkSEgoKY29uZmlkZW5jZRgCIAEoAhIJCgF4GAMgASgCEgkKAXkYBCABKAISCQoBdxgFIAEoAhIJCgFoGAYgASgCImEKEVN0YXJ0U3RyZWFtUmVzdWx0EhAKCHNobV9uYW1lGAEgASgJEhIKCnNsb3RfY291bnQYAiABKA0SEQoJc2xvdF9zaXplGAMgASgNEhMKC2hlYWRlcl9zaXplGAQgASgNKlQKCkNhbWVyYVR5cGUSGwoXQ0FNRVJBX1RZUEVfVU5TUEVDSUZJRUQQABITCg9DQU1FUkFfVFlQRV9VU0IQARIUChBDQU1FUkFfVFlQRV9SVFNQEAIypwEKDVZpc2lvblNlcnZpY2USSwoLU3RhcnRTdHJlYW0SHS52aXNpb24udjEuU3RhcnRTdHJlYW1SZXF1ZXN0GhsudmlzaW9uLnYxLlN0YXJ0U3RyZWFtRXZlbnQwARJJCgpTdG9wU3RyZWFtEhwudmlzaW9uLnYxLlN0b3BTdHJlYW1SZXF1ZXN0Gh0udmlzaW9uLnYxLlN0b3BTdHJlYW1SZXNwb25zZUIeWhxyb29zdC9nZW4vdjEvdmlzaW9uO3Zpc2lvbnYxYgZwcm90bzM", [file_google_api_annotations]);
 
 /**
  * @generated from message vision.v1.StartStreamRequest
@@ -41,35 +41,32 @@ export const StartStreamRequestSchema: GenMessage<StartStreamRequest> = /*@__PUR
   messageDesc(file_v1_vision_vision, 0);
 
 /**
- * @generated from message vision.v1.StartStreamResponse
+ * @generated from message vision.v1.StartStreamEvent
  */
-export type StartStreamResponse = Message<"vision.v1.StartStreamResponse"> & {
+export type StartStreamEvent = Message<"vision.v1.StartStreamEvent"> & {
   /**
-   * @generated from field: string shm_name = 1;
+   * @generated from oneof vision.v1.StartStreamEvent.event
    */
-  shmName: string;
-
-  /**
-   * @generated from field: uint32 slot_count = 2;
-   */
-  slotCount: number;
-
-  /**
-   * @generated from field: uint32 slot_size = 3;
-   */
-  slotSize: number;
-
-  /**
-   * @generated from field: uint32 header_size = 4;
-   */
-  headerSize: number;
+  event: {
+    /**
+     * @generated from field: vision.v1.StartStreamResult started = 1;
+     */
+    value: StartStreamResult;
+    case: "started";
+  } | {
+    /**
+     * @generated from field: vision.v1.FrameDetections detections = 2;
+     */
+    value: FrameDetections;
+    case: "detections";
+  } | { case: undefined; value?: undefined };
 };
 
 /**
- * Describes the message vision.v1.StartStreamResponse.
- * Use `create(StartStreamResponseSchema)` to create a new message.
+ * Describes the message vision.v1.StartStreamEvent.
+ * Use `create(StartStreamEventSchema)` to create a new message.
  */
-export const StartStreamResponseSchema: GenMessage<StartStreamResponse> = /*@__PURE__*/
+export const StartStreamEventSchema: GenMessage<StartStreamEvent> = /*@__PURE__*/
   messageDesc(file_v1_vision_vision, 1);
 
 /**
@@ -107,6 +104,102 @@ export const StopStreamResponseSchema: GenMessage<StopStreamResponse> = /*@__PUR
   messageDesc(file_v1_vision_vision, 3);
 
 /**
+ * @generated from message vision.v1.FrameDetections
+ */
+export type FrameDetections = Message<"vision.v1.FrameDetections"> & {
+  /**
+   * @generated from field: uint64 timestamp_ns = 1;
+   */
+  timestampNs: bigint;
+
+  /**
+   * @generated from field: repeated vision.v1.Detection detections = 2;
+   */
+  detections: Detection[];
+};
+
+/**
+ * Describes the message vision.v1.FrameDetections.
+ * Use `create(FrameDetectionsSchema)` to create a new message.
+ */
+export const FrameDetectionsSchema: GenMessage<FrameDetections> = /*@__PURE__*/
+  messageDesc(file_v1_vision_vision, 4);
+
+/**
+ * @generated from message vision.v1.Detection
+ */
+export type Detection = Message<"vision.v1.Detection"> & {
+  /**
+   * @generated from field: string label = 1;
+   */
+  label: string;
+
+  /**
+   * @generated from field: float confidence = 2;
+   */
+  confidence: number;
+
+  /**
+   * @generated from field: float x = 3;
+   */
+  x: number;
+
+  /**
+   * @generated from field: float y = 4;
+   */
+  y: number;
+
+  /**
+   * @generated from field: float w = 5;
+   */
+  w: number;
+
+  /**
+   * @generated from field: float h = 6;
+   */
+  h: number;
+};
+
+/**
+ * Describes the message vision.v1.Detection.
+ * Use `create(DetectionSchema)` to create a new message.
+ */
+export const DetectionSchema: GenMessage<Detection> = /*@__PURE__*/
+  messageDesc(file_v1_vision_vision, 5);
+
+/**
+ * @generated from message vision.v1.StartStreamResult
+ */
+export type StartStreamResult = Message<"vision.v1.StartStreamResult"> & {
+  /**
+   * @generated from field: string shm_name = 1;
+   */
+  shmName: string;
+
+  /**
+   * @generated from field: uint32 slot_count = 2;
+   */
+  slotCount: number;
+
+  /**
+   * @generated from field: uint32 slot_size = 3;
+   */
+  slotSize: number;
+
+  /**
+   * @generated from field: uint32 header_size = 4;
+   */
+  headerSize: number;
+};
+
+/**
+ * Describes the message vision.v1.StartStreamResult.
+ * Use `create(StartStreamResultSchema)` to create a new message.
+ */
+export const StartStreamResultSchema: GenMessage<StartStreamResult> = /*@__PURE__*/
+  messageDesc(file_v1_vision_vision, 6);
+
+/**
  * @generated from enum vision.v1.CameraType
  */
 export enum CameraType {
@@ -140,9 +233,9 @@ export const VisionService: GenService<{
    * @generated from rpc vision.v1.VisionService.StartStream
    */
   startStream: {
-    methodKind: "unary";
+    methodKind: "server_streaming";
     input: typeof StartStreamRequestSchema;
-    output: typeof StartStreamResponseSchema;
+    output: typeof StartStreamEventSchema;
   },
   /**
    * @generated from rpc vision.v1.VisionService.StopStream

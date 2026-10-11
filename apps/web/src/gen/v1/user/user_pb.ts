@@ -4,15 +4,15 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
 import { file_google_api_annotations } from "../../google/api/annotations_pb";
+import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file v1/user/user.proto.
  */
 export const file_v1_user_user: GenFile = /*@__PURE__*/
-  fileDesc("ChJ2MS91c2VyL3VzZXIucHJvdG8SB3VzZXIudjEiFwoVR2V0Q3VycmVudFVzZXJSZXF1ZXN0IjIKFkdldEN1cnJlbnRVc2VyUmVzcG9uc2USCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCTJrCgtVc2VyU2VydmljZRJcCgdHZXRVc2VyEh4udXNlci52MS5HZXRDdXJyZW50VXNlclJlcXVlc3QaHy51c2VyLnYxLkdldEN1cnJlbnRVc2VyUmVzcG9uc2UiEILT5JMCChIIL3YxL3VzZXJCHFoacm9vc3Rlci9nZW4vdXNlci92MTt1c2VydjFiBnByb3RvMw", [file_google_protobuf_empty, file_google_api_annotations]);
+  fileDesc("ChJ2MS91c2VyL3VzZXIucHJvdG8SB3VzZXIudjEiFwoVR2V0Q3VycmVudFVzZXJSZXF1ZXN0IjIKFkdldEN1cnJlbnRVc2VyUmVzcG9uc2USCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCTJrCgtVc2VyU2VydmljZRJcCgdHZXRVc2VyEh4udXNlci52MS5HZXRDdXJyZW50VXNlclJlcXVlc3QaHy51c2VyLnYxLkdldEN1cnJlbnRVc2VyUmVzcG9uc2UiEILT5JMCChIIL3YxL3VzZXJCGloYcm9vc3QvZ2VuL3VzZXIvdjE7dXNlcnYxYgZwcm90bzM", [file_google_api_annotations, file_google_protobuf_empty]);
 
 /**
  * @generated from message user.v1.GetCurrentUserRequest

@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Camera, CreateCameraRequest, DeleteCameraRequest, DeleteCameraResponse, GetCameraRequest, GetRecordingDownloadUrlRequest, GetRecordingDownloadUrlResponse, GetSnapshotRequest, GetSnapshotResponse, ListCamerasRequest, ListCamerasResponse, ListRecordingsRequest, ListRecordingsResponse, LiveEvent, SubscribeEventsRequest, UpdateCameraRequest, WebRTCSignalRequest, WebRTCSignalResponse } from "./roost_pb.js";
+import { CreateCameraRequest, CreateCameraResponse, DeleteCameraRequest, DeleteCameraResponse, GetCameraRequest, GetCameraResponse, GetRecordingDownloadUrlRequest, GetRecordingDownloadUrlResponse, GetSnapshotRequest, GetSnapshotResponse, ListCamerasRequest, ListCamerasResponse, ListRecordingsRequest, ListRecordingsResponse, LiveEvent, SignalWebRTCRequest, SignalWebRTCResponse, SubscribeLiveEventsRequest, UpdateCameraRequest, UpdateCameraResponse } from "./roost_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -27,7 +27,7 @@ export const RoostService = {
     getCamera: {
       name: "GetCamera",
       I: GetCameraRequest,
-      O: Camera,
+      O: GetCameraResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -36,7 +36,7 @@ export const RoostService = {
     createCamera: {
       name: "CreateCamera",
       I: CreateCameraRequest,
-      O: Camera,
+      O: CreateCameraResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -45,7 +45,7 @@ export const RoostService = {
     updateCamera: {
       name: "UpdateCamera",
       I: UpdateCameraRequest,
-      O: Camera,
+      O: UpdateCameraResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -62,8 +62,8 @@ export const RoostService = {
      */
     signalWebRTC: {
       name: "SignalWebRTC",
-      I: WebRTCSignalRequest,
-      O: WebRTCSignalResponse,
+      I: SignalWebRTCRequest,
+      O: SignalWebRTCResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -80,7 +80,7 @@ export const RoostService = {
      */
     subscribeLiveEvents: {
       name: "SubscribeLiveEvents",
-      I: SubscribeEventsRequest,
+      I: SubscribeLiveEventsRequest,
       O: LiveEvent,
       kind: MethodKind.ServerStreaming,
     },

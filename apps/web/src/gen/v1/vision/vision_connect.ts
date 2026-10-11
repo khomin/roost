@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { StartStreamRequest, StartStreamResponse, StopStreamRequest, StopStreamResponse } from "./vision_pb.js";
+import { StartStreamEvent, StartStreamRequest, StopStreamRequest, StopStreamResponse } from "./vision_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -18,8 +18,8 @@ export const VisionService = {
     startStream: {
       name: "StartStream",
       I: StartStreamRequest,
-      O: StartStreamResponse,
-      kind: MethodKind.Unary,
+      O: StartStreamEvent,
+      kind: MethodKind.ServerStreaming,
     },
     /**
      * @generated from rpc vision.v1.VisionService.StopStream

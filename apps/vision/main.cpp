@@ -1,15 +1,9 @@
-// #include <condition_variable>
 #include <csignal>
-// #include <iostream>
 #include <atomic>
 
 #include "spdlog/spdlog.h"
-#include "config-cxx/config.h"
-
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
-#include "vision/vision.grpc.pb.h"
-
-#include "clients/vision_service.h""
+#include "clients/vision_service.h"
 
 std::atomic<bool> shutdown_;
 std::condition_variable cv;
@@ -21,26 +15,62 @@ void signalHandler(int signal) {
     cv.notify_all();
 }
 
+struct Args {
+    std::string host = "0.0.0.0";
+    int         port = 50052;
+    std::string config_path;
+};
+
+Args parseArgs(int argc, char* argv[]) {
+    Args a;
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+
+        auto next = [&]() -> std::string {
+            if (i + 1 >= argc) {
+                throw std::runtime_error("missing value for " + arg);
+            }
+            return argv[++i];
+        };
+
+        if (arg == "--port" || arg == "-p") {
+            a.port = std::stoi(next());
+        } else if (arg == "--host") {
+            a.host = next();
+        } else if (arg == "--config" || arg == "-c") {
+            a.config_path = next();
+        } else if (arg == "--help" || arg == "-h") {
+            std::cout << "usage: vision [--host H] [--port P] [--config F]\n";
+            std::exit(0);
+        } else {
+            throw std::runtime_error("unknown flag: " + arg);
+        }
+    }
+    return a;
+}
+
 int main(int argc, char* argv[]) {
     std::signal(SIGINT,  signalHandler);
     std::signal(SIGTERM, signalHandler);
 
     spdlog::info("roost vision");
 
+    Args args;
+    try {
+        args = parseArgs(argc, argv);
+    } catch (const std::exception& e) {
+        spdlog::error("bad args: {}", e.what());
+        return 1;
+    }
+    const std::string address = args.host + ":" + std::to_string(args.port);
+
+    spdlog::info("using address {}", address);
+
     gst_init(&argc, &argv);
-
-    //
-    // read basic immutable config
-    // config::Config config;
-    // config.get<std::string>("");
-
-    //
-    // start grpc to received commands
-
-    const std::string address = "0.0.0.0:50052";
 
     VisionServiceImpl service;
 
+    // start grpc
     grpc::ServerBuilder builder;
     builder.AddListeningPort(address, grpc::InsecureServerCredentials());
     builder.RegisterService(&service);
