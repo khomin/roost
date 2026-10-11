@@ -17,8 +17,7 @@ python/.DS_Store
 
 .lib_pack/*
 
-apps/vision/application/build/*
-apps/vision/application/.qtcreator/*
+apps/vision/.qtcreator/*
 
 apps/vision/cpp/build-cpp-64bit-Debug/*
 apps/vision/cpp/CMakeLists.txt.user
