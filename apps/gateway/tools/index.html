@@ -44,7 +44,7 @@
             await pc.setLocalDescription(offer);
 
             // Send Offer to Go Server with the correct path
-            const id = 'roost-cam-1'
+            const id = '04df0f18-82c7-49b7-9c1a-e662d66068c6'
             const res = await fetch(`http://localhost:8080/v1/cameras/${id}/signal`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -54,14 +54,6 @@
                     sdp_offer: offer.sdp 
                 })
             });
-
-            // const data = await res.json();
-
-            // // Set Answer from Go Server
-            // await pc.setRemoteDescription({
-            //     type: 'answer',
-            //     sdp: data.sdp
-            // });
 
             const data = await res.json();
             console.log("Got answer from server:", data); // Check console to see { sdpType: "...", sdpAnswer: "..." }

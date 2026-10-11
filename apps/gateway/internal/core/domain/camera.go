@@ -66,7 +66,7 @@ func (s CameraState) IsActive() bool {
 func (c *Camera) ToGrpc() *roostv1.Camera {
 	return &roostv1.Camera{
 		Name:        c.Name,
-		Type:        visionv1.CameraType(c.Type),
+		Type:        c.Type.ToGrpc(),
 		Id:          c.ID,
 		IsOnline:    false,
 		IsRecording: false,
@@ -79,7 +79,7 @@ func (c *Camera) ToGrpc() *roostv1.Camera {
 func (c *CameraWithState) ToGrpc() *roostv1.Camera {
 	return &roostv1.Camera{
 		Name:        c.Name,
-		Type:        visionv1.CameraType(c.Type),
+		Type:        c.Type.ToGrpc(),
 		Id:          c.ID,
 		IsOnline:    c.State == StateRunning,
 		IsRecording: false,

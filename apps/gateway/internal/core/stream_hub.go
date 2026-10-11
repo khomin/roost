@@ -1,6 +1,7 @@
 package core
 
 import (
+	"log/slog"
 	"sync"
 	"time"
 
@@ -11,11 +12,13 @@ import (
 type StreamHub struct {
 	mu     sync.RWMutex
 	tracks map[string]*webrtc.TrackLocalStaticSample
+	log    *slog.Logger
 }
 
 func NewStreamHub() *StreamHub {
 	return &StreamHub{
 		tracks: make(map[string]*webrtc.TrackLocalStaticSample),
+		log:    slog.With("component", "StreamHub"),
 	}
 }
 
@@ -36,9 +39,12 @@ func (h *StreamHub) BroadcastFrame(frame []byte, duration time.Duration) {
 	defer h.mu.Unlock()
 
 	for _, track := range h.tracks {
-		_ = track.WriteSample(media.Sample{
+		err := track.WriteSample(media.Sample{
 			Data:     frame,
 			Duration: duration,
 		})
+		if err != nil {
+			h.log.Error("failed to write sample", "err", err)
+		}
 	}
 }

@@ -15,23 +15,23 @@ log/*
 python/.DS_Store
 .DS_Store
 
-.lib_pack/**
+.lib_pack/*
 
-apps/vision/application/build/**
-apps/vision/application/.qtcreator/**
+apps/vision/application/build/*
+apps/vision/application/.qtcreator/*
 
 apps/vision/cpp/build-cpp-64bit-Debug/*
 apps/vision/cpp/CMakeLists.txt.user
 apps/vision/cpp/application/build/*
+apps/vision/.qtcreator/*
 
 apps/gateway/__debug_bin*
 apps/gateway/.env
-apps/gateway/gen/**
+apps/gateway/gen/*
 
-apps/vision/build/**
-apps/vision/gen/**
+apps/vision/build/*
+apps/vision/gen/*
 
-apps/web/src/gen/**
+apps/web/src/gen/*
 
-api/bruno/**
-apps/vision/.qtcreator/**
+api/bruno/*

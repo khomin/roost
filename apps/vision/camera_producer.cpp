@@ -28,9 +28,14 @@ std::string CameraProducer::buildPipeline() const {
     switch (type_) {
     case vision::v1::CAMERA_TYPE_RTSP:
         return "rtspsrc location=" + source_path_ + " latency=0 ! "
+                                                    "application/x-rtp,media=video ! "
                                                     "rtph264depay ! h264parse ! "
+                                                    "tee name=t "
+                                                    "t. ! queue ! avdec_h264 ! videoconvert ! video/x-raw,format=BGR ! "
+                                                    "appsink name=raw_sink max-buffers=2 drop=true sync=false "
+                                                    "t. ! queue ! h264parse config-interval=-1 ! "
                                                     "video/x-h264,stream-format=avc,alignment=au ! "
-                                                    "appsink name=sink max-buffers=2 drop=true sync=false";
+                                                    "appsink name=encoded_sink max-buffers=2 drop=true sync=false async=false";
     case vision::v1::CAMERA_TYPE_USB:
         // USB camera, raw frames for YOLO, H.264 for output
         return "v4l2src device=" + source_path_ + " ! "

@@ -232,6 +232,8 @@ func (s *CameraService) pumpFrames(ctx context.Context, cameraID string, consume
 	defer consumer.Close()
 	var prevPTS uint64
 	var duration time.Duration
+	var started bool
+	time.Sleep(time.Second * 10)
 	for {
 		select {
 		case <-ctx.Done():
@@ -249,6 +251,18 @@ func (s *CameraService) pumpFrames(ctx context.Context, cameraID string, consume
 			duration = time.Duration(hdr.TimestampNs - prevPTS)
 		}
 		prevPTS = hdr.TimestampNs
+
+		isKeyframe := hdr.Flags&1 == 1
+
+		if !started {
+			if !isKeyframe {
+				continue
+			}
+			started = true
+			slog.Info("got first keyframe, starting WebRTC stream")
+		}
+
 		s.hub.BroadcastFrame(frame, duration)
+		// slog.Debug("pumpframes", "hdr", hdr)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -34,12 +35,12 @@ func (a *Application) NewLog() *slog.Logger {
 
 	var level slog.Level
 	var handler slog.Handler
-	if a.Cfg.Server.Environment == "dev" {
+	if strings.Contains(a.Cfg.Server.Environment, "dev") {
 		level = slog.LevelDebug
 	} else {
 		level = slog.LevelWarn
 	}
-	if a.Cfg.Server.Environment == "dev" {
+	if strings.Contains(a.Cfg.Server.Environment, "dev") {
 		handler = slog.NewTextHandler(multiWriter, &slog.HandlerOptions{
 			Level:     level,
 			AddSource: false,
