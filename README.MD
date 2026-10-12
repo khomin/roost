@@ -1,22 +1,28 @@
-+-------------------------------------------------------+
-|                  C++ Ingest Daemon                    |
-|                                                       |
-|  [Capture] ---> [Motion / Object Engine]               |
-|     |                    |                            |
-|     | (writes frame)     | (detects event)            |
-|     v                    v                            |
-|  POSIX SHM          gRPC Event Stream                 |
-+-----|--------------------|----------------------------+
-    |                    |
-    v                    v
-+-------------------------------------------------------+
-|                  Go Orchestrator                      |
-|                                                       |
-|  [Read SHM]        [Handle Event]                     |
-|  (S3 / WebRTC)     (Trigger S3 recording / Alerts)    |
-+-------------------------------------------------------+
+```mermaid
+flowchart LR
+    subgraph CPP["C++ Ingest Daemon"]
+        Capture[Capture]
+        Engine[Motion / Object Engine]
+        SHM[(POSIX SHM)]
+        GRPC[[gRPC Event Stream]]
+        Capture -->|writes frame| SHM
+        Engine -->|detects event| GRPC
+        Capture --> Engine
+    end
 
+    subgraph GO["Go Orchestrator"]
+        Read[Read SHM]
+        Handle[Handle Event]
+        S3[(S3 / WebRTC)]
+        Alerts[/Alerts/]
+        Read --> S3
+        Handle --> S3
+        Handle --> Alerts
+    end
 
+    SHM --> Read
+    GRPC --> Handle
+```
 ### Notes
 
 ```bash
