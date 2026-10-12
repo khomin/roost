@@ -1,10 +1,24 @@
 // ─── Landing Page ─────────────────────────────────────────────────────────────
 // Public page. Shown when the user is not authenticated.
-// The "Get Started" / "Log In" CTA kicks off the PKCE login flow.
+// The "Log in" CTA kicks off the PKCE login flow.
 
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Bird,
+  Camera,
+  Check,
+  Cpu,
+  MonitorPlay,
+  Server,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
+
+const REPO_URL = 'https://github.com/khomin/roost';
 
 export default function LandingPage() {
   const { login, isAuthenticated, isInitialized } = useAuth();
@@ -18,245 +32,201 @@ export default function LandingPage() {
   }, [isInitialized, isAuthenticated, navigate]);
 
   return (
-    <div className="relative min-h-screen bg-gray-950 text-white flex flex-col overflow-hidden selection:bg-purple-500/30">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#080a12] text-white selection:bg-violet-500/30">
       {/* ── Ambient background ──────────────────────────────────────────── */}
       <div className="pointer-events-none absolute inset-0 z-0">
-        {/* Top-right glow */}
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-purple-600/10 blur-[120px]" />
-        {/* Bottom-left glow */}
-        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-indigo-600/8 blur-[100px]" />
-        {/* Subtle grid */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
-            backgroundSize: '64px 64px',
-          }}
-        />
+        <div className="absolute -top-40 left-1/2 h-[480px] w-[720px] -translate-x-1/2 rounded-full bg-violet-600/10 blur-[120px]" />
       </div>
 
       {/* ── Nav ─────────────────────────────────────────────────────────── */}
-      <header className="relative z-10 flex items-center justify-between px-6 sm:px-8 py-4 border-b border-white/[0.06] backdrop-blur-sm">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/15 ring-1 ring-purple-500/30">
-            <span className="text-lg">🐋</span>
+      <header className="relative z-10 mx-auto flex w-full max-w-4xl items-center justify-between px-6 py-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-950/40">
+            <Bird aria-hidden="true" size={18} strokeWidth={2} />
           </div>
-          <span className="text-lg font-semibold tracking-tight">WhaleTracker</span>
+          <span className="text-[15px] font-semibold tracking-tight">Roost</span>
         </div>
-        <button
-          onClick={login}
-          className="group relative inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-gray-200
-                     hover:border-purple-500/40 hover:bg-purple-500/10 hover:text-purple-200 transition-all cursor-pointer"
-        >
-          Log in
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+        <div className="flex items-center gap-5 text-[13px] font-medium">
+          <a
+            href={REPO_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-slate-400 transition-colors hover:text-slate-100"
           >
-            <path
-              fillRule="evenodd"
-              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
+            GitHub
+            <ArrowUpRight aria-hidden="true" size={14} />
+          </a>
+          <button
+            onClick={login}
+            className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-slate-200 transition-colors hover:border-violet-500/40 hover:bg-violet-500/10"
+          >
+            Log in
+          </button>
+        </div>
       </header>
 
-      {/* ── Hero ────────────────────────────────────────────────────────── */}
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 text-center gap-6 pt-16 pb-8">
-        {/* Badge */}
-        <span
-          className="inline-flex items-center gap-2 rounded-full border border-purple-500/25
-                       bg-purple-500/8 px-4 py-1.5 text-xs font-medium text-purple-300
-                       ring-1 ring-purple-500/10"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inset-0 rounded-full bg-purple-400 animate-ping opacity-75" />
-            <span className="relative rounded-full h-2 w-2 bg-purple-400" />
-          </span>
-          Multi-chain portfolio tracking
-        </span>
+      <main className="relative z-10 mx-auto w-full max-w-4xl flex-1 px-6">
+        {/* ── Hero ──────────────────────────────────────────────────────── */}
+        <section className="pt-20 pb-16 sm:pt-28">
+          <p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            Self-hosted · v0.1.0
+          </p>
+          <h1 className="max-w-2xl text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl">
+            Keep an eye on home,
+            <br />
+            <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+              from your own box.
+            </span>
+          </h1>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-400">
+            Roost is a small camera monitor I'm building for my own place. A C++
+            daemon pulls frames from USB and RTSP cameras, a Go gateway relays
+            them over WebRTC, and you watch live in the browser.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <button
+              onClick={login}
+              className="group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-gray-950 transition-all hover:bg-slate-200 active:scale-[0.98]"
+            >
+              Open the dashboard
+              <ArrowRight
+                aria-hidden="true"
+                size={16}
+                className="transition-transform group-hover:translate-x-0.5"
+              />
+            </button>
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 px-6 py-3 text-sm font-medium text-slate-300 transition-colors hover:border-white/20 hover:text-white"
+            >
+              Read the source
+              <ArrowUpRight aria-hidden="true" size={16} />
+            </a>
+          </div>
+        </section>
 
-        {/* Headline */}
-        <h1 className="max-w-3xl text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08]">
-          <span className="bg-gradient-to-br from-white via-gray-100 to-gray-400 bg-clip-text text-transparent">
-            Track every wallet.
-          </span>
-          <br />
-          <span className="bg-gradient-to-r from-purple-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">
-            Across every chain.
-          </span>
-        </h1>
+        {/* ── Pipeline ──────────────────────────────────────────────────── */}
+        <section className="pb-16">
+          <SectionLabel>How a frame gets to you</SectionLabel>
+          <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+            {PIPELINE.map((step, i) => {
+              const Icon = step.icon;
 
-        {/* Sub-headline */}
-        <p className="max-w-lg text-base sm:text-lg text-gray-400 leading-relaxed">
-          WhaleTracker gives you a single dashboard for Bitcoin, Ethereum,
-          Solana, Tron and more — with live prices and portfolio history.
-        </p>
+              return (
+                <Fragment key={step.title}>
+                  {i > 0 && (
+                    <ArrowRight
+                      aria-hidden="true"
+                      size={16}
+                      className="mx-auto shrink-0 rotate-90 text-slate-700 sm:rotate-0"
+                    />
+                  )}
+                  <div className="flex-1 rounded-2xl border border-white/[0.07] bg-[#0d101a] p-5">
+                    <Icon aria-hidden="true" size={18} strokeWidth={1.8} className="mb-3 text-violet-400" />
+                    <h3 className="text-[13px] font-semibold text-white">{step.title}</h3>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-500">{step.description}</p>
+                  </div>
+                </Fragment>
+              );
+            })}
+          </div>
+        </section>
 
-        {/* CTA */}
-        <button
-          onClick={login}
-          className="group relative mt-4 inline-flex items-center gap-3 rounded-xl bg-white px-8 py-4
-                     text-base font-semibold text-gray-950
-                     shadow-[0_0_40px_-8px_rgba(168,85,247,0.4)]
-                     hover:shadow-[0_0_60px_-8px_rgba(168,85,247,0.6)]
-                     hover:bg-gray-100 active:scale-[0.97] transition-all cursor-pointer"
-        >
-          Get Started
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 group-hover:translate-x-0.5 transition-transform"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-
-        {/* Trust line */}
-        <p className="text-xs text-gray-600 flex items-center gap-3">
-          <span className="inline-flex items-center gap-1">
-            <ShieldIcon className="h-3 w-3" /> Keycloak
-          </span>
-          <span className="h-3 w-px bg-gray-800" />
-          <span>PKCE OAuth2</span>
-          <span className="h-3 w-px bg-gray-800" />
-          <span>No seed phrases stored</span>
-        </p>
+        {/* ── Status ────────────────────────────────────────────────────── */}
+        <section className="grid grid-cols-1 gap-10 pb-24 sm:grid-cols-2">
+          <div>
+            <SectionLabel>Works today</SectionLabel>
+            <ul className="space-y-3">
+              {WORKING.map((item) => (
+                <StatusItem key={item} icon={Check} iconClassName="text-emerald-400">
+                  {item}
+                </StatusItem>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <SectionLabel>Still on the bench</SectionLabel>
+            <ul className="space-y-3">
+              {IN_PROGRESS.map((item) => (
+                <StatusItem key={item} icon={Wrench} iconClassName="text-slate-500">
+                  {item}
+                </StatusItem>
+              ))}
+            </ul>
+          </div>
+        </section>
       </main>
 
-      {/* ── Supported chains ────────────────────────────────────────────── */}
-      <section className="relative z-10 px-6 pb-10 max-w-3xl mx-auto w-full">
-        <p className="text-center text-xs font-medium uppercase tracking-[0.2em] text-gray-600 mb-5">
-          Supported Chains
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          {CHAINS.map((chain) => (
-            <div
-              key={chain.name}
-              className="inline-flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02]
-                         px-3.5 py-2 text-sm text-gray-300 hover:border-white/10 hover:bg-white/[0.04] transition-colors"
-            >
-              <span className="text-base">{chain.icon}</span>
-              <span className="text-xs font-medium">{chain.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Feature cards ───────────────────────────────────────────────── */}
-      <section className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-px px-6 pb-20 max-w-4xl mx-auto w-full">
-        {FEATURES.map((f) => (
-          <div
-            key={f.title}
-            className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02]
-                       p-6 text-left hover:border-purple-500/25 hover:bg-white/[0.04]
-                       transition-all duration-300"
-          >
-            {/* Icon */}
-            <div
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl
-                         bg-purple-500/10 ring-1 ring-purple-500/20 mb-4
-                         group-hover:bg-purple-500/15 group-hover:ring-purple-500/30 transition-all"
-            >
-              {f.icon}
-            </div>
-            <h3 className="text-sm font-semibold text-white mb-2">{f.title}</h3>
-            <p className="text-xs text-gray-500 leading-relaxed">{f.description}</p>
-          </div>
-        ))}
-      </section>
-
       {/* ── Footer ──────────────────────────────────────────────────────── */}
-      <footer className="relative z-10 border-t border-white/[0.06] px-6 py-6 text-center text-xs text-gray-600">
-        © {new Date().getFullYear()} WhaleTracker. Read-only wallet monitoring.
+      <footer className="relative z-10 border-t border-white/[0.07] px-6 py-6 text-center text-xs text-slate-600">
+        Roost — built for fun, not for sale.
       </footer>
     </div>
   );
 }
 
-// ─── Icons (inline SVGs) ──────────────────────────────────────────────────────
-
-function ShieldIcon({ className }: { className?: string }) {
+function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z"
-        clipRule="evenodd"
-      />
-    </svg>
+    <h2 className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+      {children}
+    </h2>
   );
 }
 
-// ─── Feature icons (inline SVGs — cleaner than emoji) ─────────────────────────
-function PulseIcon() {
+function StatusItem({
+  icon: Icon,
+  iconClassName,
+  children,
+}: {
+  icon: LucideIcon;
+  iconClassName: string;
+  children: React.ReactNode;
+}) {
   return (
-    <svg className="h-5 w-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h2l3 5 2-4h2M9 17H7l-3-5-2 4H1" />
-    </svg>
-  );
-}
-
-function ChartIcon() {
-  return (
-    <svg className="h-5 w-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18M7 16l4-8 4 4 4-6" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg className="h-5 w-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-    </svg>
+    <li className="flex items-start gap-3 text-[13px] leading-relaxed text-slate-300">
+      <Icon aria-hidden="true" size={15} strokeWidth={2} className={`mt-0.5 shrink-0 ${iconClassName}`} />
+      <span>{children}</span>
+    </li>
   );
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const FEATURES = [
+const PIPELINE: { icon: LucideIcon; title: string; description: string }[] = [
   {
-    icon: <PulseIcon />,
-    title: 'Live Prices',
-    description:
-      'Real-time market data powered by CoinGecko and Alchemy for every asset in your portfolio.',
+    icon: Camera,
+    title: 'Camera',
+    description: 'USB webcam or any RTSP stream on your network.',
   },
   {
-    icon: <ChartIcon />,
-    title: 'Portfolio Overview',
-    description:
-      'See total balance, per-chain breakdown, and 24h change at a glance.',
+    icon: Cpu,
+    title: 'Vision daemon',
+    description: 'C++ and GStreamer. Captures, encodes H.264, writes to shared memory.',
   },
   {
-    icon: <LockIcon />,
-    title: 'Non-custodial',
-    description:
-      'Read-only wallet monitoring. We never ask for private keys or seed phrases.',
+    icon: Server,
+    title: 'Gateway',
+    description: 'Go. Reads shared memory, handles auth and WebRTC signalling.',
+  },
+  {
+    icon: MonitorPlay,
+    title: 'Browser',
+    description: 'Plain WebRTC video. No plugins, no cloud relay.',
   },
 ];
 
-const CHAINS = [
-  { name: 'Bitcoin', icon: '₿' },
-  { name: 'Ethereum', icon: 'Ξ' },
-  { name: 'Solana', icon: '◎' },
-  { name: 'Tron', icon: 'TRX' },
-  { name: 'BNB Chain', icon: 'BNB' },
-  { name: 'Polygon', icon: 'MATIC' },
-  { name: 'Arbitrum', icon: 'ARB' },
-  { name: 'Optimism', icon: 'OP' },
+const WORKING = [
+  'USB and RTSP cameras',
+  'Live view over WebRTC',
+  'Add, rename and remove cameras from the UI',
+  'Online status per camera',
+  'Login through Keycloak',
+];
+
+const IN_PROGRESS = [
+  'Motion and object detection (YOLO)',
+  'Recording clips to S3-compatible storage',
+  'Review page for browsing past events',
 ];

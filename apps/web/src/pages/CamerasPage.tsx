@@ -56,6 +56,7 @@ export default function CamerasPage() {
                   <td className="px-5 py-3">
                     <p className="font-medium text-white">{camera.name || '—'}</p>
                     <p className="mt-0.5 font-mono text-[11px] text-gray-600">{camera.id}</p>
+                    <p className="mt-0.5 font-mono text-[11px] text-gray-600">{camera.source}</p>
                   </td>
                   <td className="px-5 py-3 text-gray-300">{cameraTypeLabel(camera.type)}</td>
                   <td className="px-5 py-3">
