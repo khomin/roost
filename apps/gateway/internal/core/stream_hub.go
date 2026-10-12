@@ -22,23 +22,24 @@ func NewStreamHub() *StreamHub {
 	}
 }
 
-func (h *StreamHub) AddViewer(id string, track *webrtc.TrackLocalStaticSample) {
+func (h *StreamHub) AddViewer(cameraID string, track *webrtc.TrackLocalStaticSample) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-	h.tracks[id] = track
+	h.tracks[cameraID] = track
 }
 
-func (h *StreamHub) RemoveViewer(id string, track *webrtc.TrackLocalStaticSample) {
+func (h *StreamHub) RemoveViewer(cameraID string, track *webrtc.TrackLocalStaticSample) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-	delete(h.tracks, id)
+	delete(h.tracks, cameraID)
 }
 
-func (h *StreamHub) BroadcastFrame(frame []byte, duration time.Duration) {
+func (h *StreamHub) BroadcastFrame(cameraID string, frame []byte, duration time.Duration) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
-	for _, track := range h.tracks {
+	track, ok := h.tracks[cameraID]
+	if ok {
 		err := track.WriteSample(media.Sample{
 			Data:     frame,
 			Duration: duration,

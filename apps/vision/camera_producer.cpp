@@ -34,7 +34,7 @@ std::string CameraProducer::buildPipeline() const {
                                                     "t. ! queue ! avdec_h264 ! videoconvert ! video/x-raw,format=BGR ! "
                                                     "appsink name=raw_sink max-buffers=2 drop=true sync=false "
                                                     "t. ! queue ! h264parse config-interval=-1 ! "
-                                                    "video/x-h264,stream-format=avc,alignment=au ! "
+                                                    "video/x-h264,stream-format=byte-stream,alignment=au ! "
                                                     "appsink name=encoded_sink max-buffers=2 drop=true sync=false async=false";
     case vision::v1::CAMERA_TYPE_USB:
         // USB camera, raw frames for YOLO, H.264 for output
