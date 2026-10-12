@@ -58,6 +58,7 @@ message Camera {
   int32 width = 6;
   int32 height = 7;
   int32 fps = 8;
+  string source = 9;
 }
 
 message ListCamerasRequest {}

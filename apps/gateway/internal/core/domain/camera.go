@@ -73,6 +73,7 @@ func (c *Camera) ToGrpc() *roostv1.Camera {
 		Width:       0,
 		Height:      0,
 		Fps:         0,
+		Source:      c.SourcePath,
 	}
 }
 
@@ -86,6 +87,7 @@ func (c *CameraWithState) ToGrpc() *roostv1.Camera {
 		Width:       0,
 		Height:      0,
 		Fps:         0,
+		Source:      c.SourcePath,
 	}
 }
 
