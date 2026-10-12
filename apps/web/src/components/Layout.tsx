@@ -81,8 +81,22 @@ export default function Layout() {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-white/[0.07] px-4 py-5">
-          <div className="flex items-center gap-2 px-2 text-[11px] text-slate-600">
+        <div className="border-t border-white/[0.07] px-4 py-4">
+          <div className="flex items-center gap-3 px-2">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 text-xs font-bold">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+            <span className="min-w-0 flex-1 truncate text-[13px] text-slate-300">{displayName}</span>
+            <button
+              onClick={logout}
+              aria-label="Log out"
+              title="Log out"
+              className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-red-500/10 hover:text-red-400 cursor-pointer"
+            >
+              <LogOut aria-hidden="true" size={16} />
+            </button>
+          </div>
+          <div className="mt-4 flex items-center gap-2 px-2 text-[11px] text-slate-600">
             <Tag aria-hidden="true" size={13} />
             <span>Roost v0.1.0</span>
           </div>
@@ -91,27 +105,6 @@ export default function Layout() {
 
       {/* ── Main content area ────────────────────────────────────────── */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Top bar */}
-        <header className="flex shrink-0 items-center justify-end border-b border-white/[0.07] px-8 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 text-xs font-bold">
-                {displayName.charAt(0).toUpperCase()}
-              </div>
-              <span className="text-sm text-gray-300">{displayName}</span>
-            </div>
-
-            <button
-              onClick={logout}
-              className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-gray-400
-                         transition-colors hover:border-red-500/40 hover:text-red-400 cursor-pointer"
-            >
-              <LogOut aria-hidden="true" size={15} />
-              <span>Log out</span>
-            </button>
-          </div>
-        </header>
-
         {/* Page content injected by router */}
         <main className="flex-1 overflow-y-auto p-8">
           <Outlet />

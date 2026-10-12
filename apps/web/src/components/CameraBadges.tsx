@@ -1,5 +1,5 @@
 // ─── Camera status badges ──────────────────────────────────────────────────
-// Shared by the Live grid and the Cameras list.
+// Shared by the camera preview and the Cameras list.
 
 export function OnlineBadge({ online }: { online: boolean }) {
   return (

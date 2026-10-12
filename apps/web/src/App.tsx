@@ -3,6 +3,7 @@ import LandingPage from './pages/LandingPage';
 import CallbackPage from './pages/CallbackPage';
 import LivePage from './pages/LivePage';
 import CamerasPage from './pages/CamerasPage';
+import CameraPage from './pages/CameraPage';
 import ReviewPage from './pages/ReviewPage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -24,6 +25,7 @@ export default function App() {
         >
           <Route path="/live" element={<LivePage />} />
           <Route path="/cameras" element={<CamerasPage />} />
+          <Route path="/cameras/:id" element={<CameraPage />} />
           <Route path="/review" element={<ReviewPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>

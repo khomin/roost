@@ -1,4 +1,5 @@
 import { useState, type SubmitEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { Plus, Trash2 } from 'lucide-react';
 import { useCameras, useCreateCamera, useDeleteCamera } from '../hooks/useApi';
 import { EmptyBlock, ErrorBlock, Field, Modal, Spinner } from '../components/ui';
@@ -54,7 +55,12 @@ export default function CamerasPage() {
               {cameras.map((camera) => (
                 <tr key={camera.id}>
                   <td className="px-5 py-3">
-                    <p className="font-medium text-white">{camera.name || '—'}</p>
+                    <Link
+                      to={`/cameras/${camera.id}`}
+                      className="font-medium text-white transition-colors hover:text-purple-300"
+                    >
+                      {camera.name || '—'}
+                    </Link>
                     <p className="mt-0.5 font-mono text-[11px] text-gray-600">{camera.id}</p>
                     <p className="mt-0.5 font-mono text-[11px] text-gray-600">{camera.source}</p>
                   </td>
