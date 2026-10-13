@@ -45,7 +45,6 @@ func NewCameraService(deps CameraDeps) *CameraService {
 // so a page reload doesn't restart the pipeline.
 const onDemandGrace = 15 * time.Second
 
-// wanted reports whether anything needs this camera's stream right now.
 func (s *CameraService) wanted(camera domain.Camera) bool {
 	if camera.Paused {
 		return false
@@ -55,7 +54,6 @@ func (s *CameraService) wanted(camera domain.Camera) bool {
 
 func (s *CameraService) Start(ctx context.Context) error {
 	t := time.NewTicker(time.Second * 1)
-	// both owned by this loop
 	lastWanted := make(map[string]time.Time)
 	stop := make(map[string]context.CancelFunc)
 	for {
@@ -101,7 +99,6 @@ func (s *CameraService) Start(ctx context.Context) error {
 					s.pumpFrames(res.Ctx, camera.ID, consumer)
 				}()
 			}
-			// deleted cameras
 			for id, cancel := range stop {
 				if _, ok := seen[id]; !ok {
 					cancel()

@@ -1,41 +1,89 @@
+# Roost
+
+Self-hosted camera server. It pulls video from USB and RTSP cameras and streams it live to a web dashboard over WebRTC.
+
+![Live dashboard](docs/screenshots/live-dashboard.png)
+
+## Status
+
+Roost is a work in progress. This is what exists today:
+
+| Works | Not there yet |
+|---|---|
+| USB (V4L2) and RTSP cameras | Object detection (the pipeline has a branch for it, nothing consumes it) |
+| Live view in the browser over WebRTC, several viewers per camera | Recording and playback |
+| Add, pause, resume and delete cameras from the dashboard | Snapshots and live events |
+| Per-camera mode: always on, or on demand | A tested production deployment |
+| Cameras that die are detected and retried automatically | |
+| Login through Keycloak | |
+
+Development and testing so far has been on Linux (Ubuntu) only.
+
+## How it works
+
+Roost is three programs:
+
+- **vision** (C++, GStreamer): opens each camera, produces H.264, and writes the frames into a shared-memory ring buffer.
+- **gateway** (Go): owns the camera list in Postgres, tells vision which cameras to run, reads frames from shared memory and sends them to browsers with [Pion](https://github.com/pion/webrtc). It also serves the REST and gRPC API.
+- **web** (React): the dashboard.
+
 ```mermaid
 flowchart LR
-    subgraph CPP["C++ Ingest Daemon"]
-        Capture[Capture]
-        Engine[Motion / Object Engine]
-        SHM[(POSIX SHM)]
-        GRPC[[gRPC Event Stream]]
-        Capture -->|writes frame| SHM
-        Engine -->|detects event| GRPC
-        Capture --> Engine
+    Cam[USB / RTSP cameras]
+
+    subgraph Vision["vision (C++)"]
+        Gst[GStreamer pipeline]
     end
 
-    subgraph GO["Go Orchestrator"]
-        Read[Read SHM]
-        Handle[Handle Event]
-        S3[(S3 / WebRTC)]
-        Alerts[/Alerts/]
-        Read --> S3
-        Handle --> S3
-        Handle --> Alerts
+    subgraph Gateway["gateway (Go)"]
+        Loop[Camera control loop]
+        Pump[Frame pump]
+        Hub[WebRTC hub]
+        API[REST / gRPC API]
     end
 
-    SHM --> Read
-    GRPC --> Handle
+    DB[(Postgres)]
+    Web[web dashboard]
+
+    Cam --> Gst
+    Loop -->|gRPC: start / stop stream| Gst
+    Gst -->|H.264 frames, POSIX shared memory| Pump
+    Pump --> Hub
+    Hub -->|WebRTC video| Web
+    Web -->|REST| API
+    API --> DB
+    Loop --> DB
 ```
-### Notes
 
-```bash
-git clone https://github.com/khomin/roost.git --recurse-submodules
-cd ./roost
+Vision and gateway exchange frames through shared memory, so **they must run on the same machine**.
 
-./scripts/build_grpc.sh
+### Camera modes
 
-cd ./api
-buf dep update
-buf generate --include-imports
-cd ../
+- **Always on**: the pipeline runs around the clock.
+- **On demand**: the pipeline starts when the first viewer opens the camera and stops 15 seconds after the last one leaves.
+
+A camera can also be **paused**, which keeps it stopped whatever its mode.
+
+## Repository layout
+
 ```
+api/            Protobuf definitions and buf config (source of all generated code)
+apps/gateway/   Go gateway, DB migrations, compose files, Keycloak realm
+apps/vision/    C++ vision service
+apps/web/       React dashboard
+scripts/        Build helpers (gRPC for the C++ side)
+```
+
+## Getting started
+
+### 1. Prerequisites
+
+- Go 1.26+
+- Node.js 20+
+- CMake 3.22+ and a C++20 compiler
+- Docker with Compose
+- [buf](https://buf.build/docs/installation)
+- GStreamer development packages and plugins:
 
 ```bash
 sudo apt-get update
@@ -45,18 +93,118 @@ sudo apt-get install -y \
     libgstreamer-plugins-bad1.0-dev \
     gstreamer1.0-plugins-good \
     gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
     gstreamer1.0-libav \
     gstreamer1.0-tools
-
-sudo apt-get install gstreamer1.0-plugins-good
-sudo apt-get install gstreamer1.0-plugins-ugly
 ```
 
-## Database migration notes
+### 2. Clone with submodules
+
+gRPC and spdlog are vendored as submodules, so the clone needs `--recurse-submodules`:
+
+```bash
+git clone https://github.com/khomin/roost.git --recurse-submodules
+cd roost
+```
+
+### 3. Build gRPC for the C++ service
+
+The vision service links against a local gRPC build in `.lib_pack/`, which is not in the repository. Build it once, **from the repository root**, before building vision:
+
+```bash
+./scripts/build_grpc.sh
+```
+
+This compiles gRPC and its dependencies from source into `.lib_pack/grpc` and takes a while.
+
+### 4. Generate code from the protobuf files
+
+The generated Go, TypeScript and C++ code is not committed. Generate it after cloning and again after any change under `api/`:
+
+```bash
+cd api
+buf dep update
+buf generate --include-imports
+cd ..
+```
+
+### 5. Start the infrastructure
+
+The dev compose file starts Postgres, Keycloak, Redis, RabbitMQ, Prometheus and Grafana:
+
+```bash
+cd apps/gateway
+cp .env.dev.example .env    # then fill in the values
+docker compose -f compose.dev.yml up -d
+```
+
+Keycloak comes up on http://localhost:8081 with the `roost` realm imported. Create a user there to log in to the dashboard.
+
+> Only `compose.dev.yml` has been tested. `compose.prod.yml` and the manifests in `apps/gateway/k8s/` are untested; treat them as a starting point.
+
+### 6. Run the vision service
+
+```bash
+cd apps/vision
+cmake -S . -B build
+cmake --build build
+./build/roost_vision --port 50052
+```
+
+### 7. Run the gateway
+
+Run it from `apps/gateway`, because it loads `.env`, `config.yaml` and the migrations relative to that directory:
+
+```bash
+cd apps/gateway
+go run .
+```
+
+The gateway applies database migrations on startup. The REST API listens on port 8080 and gRPC on 50051.
+
+### 8. Run the dashboard
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+Open http://localhost:5173, log in, and add a camera on the **Cameras** page:
+
+| Type | Source example |
+|---|---|
+| USB | `/dev/video0` |
+| RTSP | `rtsp://user:pass@192.168.1.10:554/stream` |
+
+## Development notes
+
+### Running migrations by hand
+
+The gateway migrates on startup, so this is only needed to roll back or inspect:
 
 ```bash
 go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 migrate -path $PWD/apps/gateway/internal/db/migrations \
--database "postgres://roost:super_secure_password@localhost:5432/roost?sslmode=disable" up
+    -database "postgres://USER:PASSWORD@localhost:5432/DBNAME?sslmode=disable" up
 ```
+
+### WebRTC test page
+
+`apps/gateway/tools/index.html` is a single-file viewer for one camera. It is useful for checking the stream without the dashboard; set the camera ID in the file.
+
+### Ports
+
+| Service | Port |
+|---|---|
+| Dashboard (Vite dev server) | 5173 |
+| Gateway REST | 8080 |
+| Gateway gRPC | 50051 |
+| Vision gRPC | 50052 |
+| Keycloak | 8081 |
+| Postgres | 5432 |
+| Grafana | 3000 |
+| Prometheus | 9091 |
+| RabbitMQ / management UI | 5672 / 15672 |
+| Redis | 6379 |

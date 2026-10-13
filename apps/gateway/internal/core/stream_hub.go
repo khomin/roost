@@ -10,8 +10,7 @@ import (
 )
 
 type StreamHub struct {
-	mu sync.RWMutex
-	// cameraID -> one track per connected viewer
+	mu     sync.RWMutex
 	tracks map[string]map[*webrtc.TrackLocalStaticSample]struct{}
 	log    *slog.Logger
 }

@@ -18,13 +18,12 @@ const (
 	CameraTypeUSB
 )
 
-// CameraMode says when the camera pipeline runs.
 type CameraMode int
 
 const (
 	CameraModeUnspecified CameraMode = iota
-	CameraModeAlwaysOn               // runs 24/7
-	CameraModeOnDemand               // runs only while someone is watching
+	CameraModeAlwaysOn
+	CameraModeOnDemand
 )
 
 type Camera struct {
@@ -33,7 +32,7 @@ type Camera struct {
 	SourcePath string
 	Type       CameraType
 	Mode       CameraMode
-	Paused     bool // never started, whatever the mode
+	Paused     bool
 	UpdatedAt  time.Time
 }
 

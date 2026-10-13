@@ -190,8 +190,8 @@ func (s *RoostHandler) SignalWebRTC(ctx context.Context, req *roostv1.SignalWebR
 	}
 	<-gatherComplete
 
-	// The viewer counts from now until its connection goes away; on-demand
-	// cameras run only while this count is above zero.
+	// viewer counts from now until its connection goes away
+	// on-demand cameras run only while this count is above zero
 	cameraID := req.CameraId
 	s.hub.AddViewer(cameraID, track)
 	var once sync.Once
