@@ -1,6 +1,10 @@
 # Roost
 
-Self-hosted camera server. It pulls video from USB and RTSP cameras and streams it live to a web dashboard over WebRTC.
+A self-hosted camera server for RTSP/USB cameras.
+
+- **apps/vision (C++)** — captures video via GStreamer, encodes, pushes frames into IPC (`/dev/shm/roost_<camera-id>`)
+- **apps/gateway (Go)** — reads frames from shm, manages cameras, forwards to WebRTC
+- **apps/web (React)** — live grid, per-camera status, WebRTC playback
 
 ![Live dashboard](docs/screenshots/live-dashboard.png)
 
@@ -18,14 +22,6 @@ Roost is a work in progress. This is what exists today:
 | Login through Keycloak | |
 
 Development and testing so far has been on Linux (Ubuntu) only.
-
-## How it works
-
-Roost is three programs:
-
-- **vision** (C++, GStreamer): opens each camera, produces H.264, and writes the frames into a shared-memory ring buffer.
-- **gateway** (Go): owns the camera list in Postgres, tells vision which cameras to run, reads frames from shared memory and sends them to browsers with [Pion](https://github.com/pion/webrtc). It also serves the REST and gRPC API.
-- **web** (React): the dashboard.
 
 ```mermaid
 flowchart LR
@@ -206,5 +202,4 @@ migrate -path $PWD/apps/gateway/internal/db/migrations \
 | Postgres | 5432 |
 | Grafana | 3000 |
 | Prometheus | 9091 |
-| RabbitMQ / management UI | 5672 / 15672 |
 | Redis | 6379 |
