@@ -66,18 +66,25 @@ grpc::Status VisionServiceImpl::StartStream(
             fill(it->second.get());
         }
     }
-    while (!context->IsCancelled()) {
+    // Hold the stream open until the gateway hangs up or the camera dies.
+    while (!context->IsCancelled() && producer->isRunning()) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
+    const bool camera_died = !context->IsCancelled();
 
-    // stop
+    // stop (only our own producer, and destroy it outside the lock)
     {
         std::lock_guard lock(mu_);
         auto it = producers_.find(camera_id);
-        if (it != producers_.end()) {
+        if (it != producers_.end() && it->second == producer) {
             producers_.erase(it);
-            return grpc::Status::OK;
         }
+    }
+    producer.reset();
+
+    if (camera_died) {
+        spdlog::warn("camera {} stream ended", camera_id);
+        return grpc::Status(grpc::StatusCode::UNAVAILABLE, "camera stream ended");
     }
     return grpc::Status::OK;
 }

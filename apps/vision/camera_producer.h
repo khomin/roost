@@ -38,7 +38,8 @@ public:
     void stop();
 
     const std::string& shmName() const { return shm_name_; }
-    bool isRunning() const { return running_.load(); }
+    // false once the pipeline died (bus error, EOS or no frames for too long)
+    bool isRunning() const { return running_.load() && !failed_.load(); }
 
 private:
     // Setup / teardown
@@ -72,6 +73,7 @@ private:
     // Threading
     std::thread capture_thread_;
     std::atomic<bool> running_{false};
+    std::atomic<bool> failed_{false};
     bool ring_full_logged_ = false;
 
     // Detector (owned)

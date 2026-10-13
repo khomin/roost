@@ -1,9 +1,11 @@
 package ipc
 
 import (
+	"context"
 	"fmt"
 	"sync/atomic"
 	"syscall"
+	"time"
 	"unsafe"
 )
 
@@ -53,11 +55,17 @@ func (c *Consumer) Close() error {
 	return syscall.Munmap(c.data)
 }
 
-func (c *Consumer) ReadFrame() ([]byte, FrameHeader, error) {
+// ReadFrame blocks until the producer publishes a frame or ctx is cancelled.
+func (c *Consumer) ReadFrame(ctx context.Context) ([]byte, FrameHeader, error) {
 	for {
 		head := atomic.LoadUint64(c.head)
 		tail := atomic.LoadUint64(c.tail)
 		if tail == head {
+			select {
+			case <-ctx.Done():
+				return nil, FrameHeader{}, ctx.Err()
+			case <-time.After(time.Millisecond):
+			}
 			continue
 		}
 		slotIdx := tail % SlotCount

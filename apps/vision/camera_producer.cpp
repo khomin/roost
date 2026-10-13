@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <chrono>
 #include <cstring>
 #include <stdexcept>
 
@@ -115,6 +116,7 @@ std::string CameraProducer::start() {
     }
 
     // 7. Spin up the capture loop.
+    failed_ = false;
     running_ = true;
     capture_thread_ = std::thread([this] { captureLoop(); });
 
@@ -135,6 +137,10 @@ void CameraProducer::stop() {
     if (raw_sink_) {
         gst_object_unref(raw_sink_);
         raw_sink_ = nullptr;
+    }
+    if (encoded_sink_) {
+        gst_object_unref(encoded_sink_);
+        encoded_sink_ = nullptr;
     }
     if (pipeline_) {
         gst_object_unref(pipeline_);
@@ -183,7 +189,36 @@ void CameraProducer::teardownShm() {
 }
 
 void CameraProducer::captureLoop() {
+    // A dead source (camera unplugged, RTSP peer gone) doesn't always post a
+    // bus error, so also give up when no frame arrives for this long.
+    constexpr auto kStallTimeout = std::chrono::seconds(10);
+
+    GstBus* bus = gst_element_get_bus(pipeline_);
+    auto last_frame = std::chrono::steady_clock::now();
+
     while (running_.load()) {
+        if (GstMessage* msg = gst_bus_pop_filtered(
+                bus, static_cast<GstMessageType>(GST_MESSAGE_ERROR | GST_MESSAGE_EOS))) {
+            if (GST_MESSAGE_TYPE(msg) == GST_MESSAGE_ERROR) {
+                GError* err = nullptr;
+                gst_message_parse_error(msg, &err, nullptr);
+                spdlog::error("camera {} pipeline error: {}", camera_id_,
+                              err ? err->message : "unknown");
+                if (err) g_error_free(err);
+            } else {
+                spdlog::warn("camera {} end of stream", camera_id_);
+            }
+            gst_message_unref(msg);
+            failed_ = true;
+            break;
+        }
+        if (std::chrono::steady_clock::now() - last_frame > kStallTimeout) {
+            spdlog::error("camera {} stalled: no frames for {}s", camera_id_,
+                          kStallTimeout.count());
+            failed_ = true;
+            break;
+        }
+
         // 1. Raw frame for YOLO
         GstSample* raw = gst_app_sink_try_pull_sample(
             GST_APP_SINK(raw_sink_), 100 * GST_MSECOND);
@@ -212,12 +247,14 @@ void CameraProducer::captureLoop() {
             bool is_keyframe = !GST_BUFFER_FLAG_IS_SET(buf, GST_BUFFER_FLAG_DELTA_UNIT);
             pushFrame(map.data, map.size, ts, is_keyframe);
             gst_buffer_unmap(buf, &map);
+            last_frame = std::chrono::steady_clock::now();
         }
         gst_sample_unref(enc);
 
         // 4. Detections out (gRPC or whatever you pick)
         // sendDetections(dets, ts);
     }
+    gst_object_unref(bus);
 }
 
 void CameraProducer::pushFrame(const uint8_t* data, uint32_t size,

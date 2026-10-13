@@ -41,19 +41,6 @@ func NewCameraService(deps CameraDeps) *CameraService {
 	}
 }
 
-// // test part
-// cameras, _ := s.ListCameras(ctx)
-// for _, camera := range cameras {
-// 	id, _ := uuid.Parse(camera.ID)
-// 	s.DeleteCamera(ctx, id)
-// }
-// s.CreateCamera(ctx, CreateCameraRequest{
-// 	Name:       "roost-cam-1",
-// 	Source:     "/dev/video0",
-// 	CameraType: domain.CameraTypeUSB,
-// })
-//
-
 func (s *CameraService) Start(ctx context.Context) error {
 	t := time.NewTicker(time.Second * 1)
 	for {
@@ -73,14 +60,17 @@ func (s *CameraService) Start(ctx context.Context) error {
 				}
 				consumer, err := ipc.NewConsumer(res.ShmName)
 				if err != nil {
+					res.Cancel()
 					continue
 				}
 				go func() {
 					defer s.StopCamera(ctx, camera.UUID())
-					s.pumpFrames(ctx, camera.ID, consumer)
+					defer res.Cancel()
+					s.pumpFrames(res.Ctx, camera.ID, consumer)
 				}()
 			}
 		case <-ctx.Done():
+			return nil
 		}
 	}
 }
@@ -155,27 +145,33 @@ func (s *CameraService) StartCamera(ctx context.Context, camera domain.Camera) (
 	}
 	s.tasks.Set(cam.ID, domain.StateStarting, nil)
 
-	stream, err := s.visionClient.StartStream(ctx, &visionv1.StartStreamRequest{
+	streamCtx, cancel := context.WithCancel(ctx)
+	stream, err := s.visionClient.StartStream(streamCtx, &visionv1.StartStreamRequest{
 		CameraId:   cam.ID,
 		SourcePath: cam.SourcePath,
 		Type:       cam.Type.ToGrpc(),
 	})
 	if err != nil {
+		cancel()
 		s.tasks.Set(cam.ID, domain.StateFailed, err)
 		return nil, err
 	}
 	evt, err := stream.Recv()
 	if err != nil {
+		cancel()
 		s.tasks.Set(cam.ID, domain.StateFailed, err)
 		return nil, err
 	}
 	started := evt.GetStarted()
 	if started == nil {
+		cancel()
 		s.tasks.Set(cam.ID, domain.StateFailed, fmt.Errorf("expected started event"))
 		return nil, fmt.Errorf("vision: expected started event, got %T", evt.Event)
 	}
 	s.tasks.Set(cam.ID, domain.StateRunning, nil)
 	go func() {
+		// stops pumpFrames once vision reports the camera gone
+		defer cancel()
 		for {
 			evt, err := stream.Recv()
 			if err != nil {
@@ -194,6 +190,8 @@ func (s *CameraService) StartCamera(ctx context.Context, camera domain.Camera) (
 		SlotCount:  started.SlotCount,
 		SlotSize:   started.SlotSize,
 		HeaderSize: started.HeaderSize,
+		Ctx:        streamCtx,
+		Cancel:     cancel,
 	}, nil
 }
 
@@ -233,14 +231,11 @@ func (s *CameraService) pumpFrames(ctx context.Context, cameraID string, consume
 	var prevPTS uint64
 	var duration time.Duration
 	for {
-		select {
-		case <-ctx.Done():
-			return
-		default:
-		}
-		frame, hdr, err := consumer.ReadFrame()
+		frame, hdr, err := consumer.ReadFrame(ctx)
 		if err != nil {
-			slog.Error("read frame", "camera", cameraID, "err", err)
+			if ctx.Err() == nil {
+				slog.Error("read frame", "camera", cameraID, "err", err)
+			}
 			return
 		}
 		if duration.Milliseconds() == 0 {

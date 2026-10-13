@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"fmt"
 	roostv1 "roost/gen/v1/roost"
 	visionv1 "roost/gen/v1/vision"
@@ -152,4 +153,7 @@ type CameraStartResult struct {
 	SlotCount  uint32
 	SlotSize   uint32
 	HeaderSize uint32
+	// Ctx is cancelled when the vision stream for this camera ends.
+	Ctx    context.Context
+	Cancel context.CancelFunc
 }

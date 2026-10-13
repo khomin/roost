@@ -438,6 +438,9 @@
         "fps": {
           "type": "integer",
           "format": "int32"
+        },
+        "source": {
+          "type": "string"
         }
       }
     },
