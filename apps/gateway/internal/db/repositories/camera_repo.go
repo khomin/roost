@@ -22,9 +22,9 @@ func NewCameraRepository(db *db.DataBase) core.CameraRepo {
 
 func (r *rep) List(ctx context.Context) ([]domain.Camera, error) {
 	query := `
-		SELECT id, name, type, source, mode, updated_at
+		SELECT id, name, type, source, mode, paused, updated_at
 		FROM cameras 
-		ORDER BY updated_at ASC
+		ORDER BY id ASC
 	`
 	rows, err := r.db.Pool.Query(ctx, query)
 	if err != nil {
@@ -48,7 +48,7 @@ func (r *rep) List(ctx context.Context) ([]domain.Camera, error) {
 
 func (r *rep) Get(ctx context.Context, id uuid.UUID) (*domain.Camera, error) {
 	query := `
-		SELECT id, name, type, source, mode, updated_at
+		SELECT id, name, type, source, mode, paused, updated_at
 		FROM cameras
 		WHERE id = $1
 	`
@@ -67,7 +67,7 @@ func (r *rep) Create(ctx context.Context, req core.CreateCameraRequest) (*domain
 	query := `
 		INSERT INTO cameras (name, type, source, mode)
 		VALUES ($1, $2, $3, $4)
-		RETURNING id, name, type, source, mode, updated_at
+		RETURNING id, name, type, source, mode, paused, updated_at
 	`
 	row := r.db.Pool.QueryRow(
 		ctx,
@@ -93,9 +93,10 @@ func (r *rep) Update(ctx context.Context, id uuid.UUID, req core.UpdateCameraReq
 		UPDATE cameras
 		SET name = COALESCE(NULLIF($2, ''), name),
 		    mode = COALESCE(NULLIF($3, ''), mode),
+		    paused = COALESCE($4, paused),
 		    updated_at = NOW()
 		WHERE id = $1
-		RETURNING id, name, type, source, mode, updated_at
+		RETURNING id, name, type, source, mode, paused, updated_at
 	`
 	mode := ""
 	if req.Mode != domain.CameraModeUnspecified {
@@ -107,6 +108,7 @@ func (r *rep) Update(ctx context.Context, id uuid.UUID, req core.UpdateCameraReq
 		id,
 		req.Name,
 		mode,
+		req.Paused,
 	)
 	camera, err := scanCamera2(row)
 	if err != nil {
@@ -136,6 +138,7 @@ func scanCamera(rows pgx.Rows) (*domain.Camera, error) {
 		&cameraType,
 		&i.SourcePath,
 		&mode,
+		&i.Paused,
 		&i.UpdatedAt,
 	)
 	i.Type = domain.CameraTypeFromString(cameraType)
@@ -152,6 +155,7 @@ func scanCamera2(row pgx.Row) (*domain.Camera, error) {
 		&cameraType,
 		&i.SourcePath,
 		&mode,
+		&i.Paused,
 		&i.UpdatedAt,
 	)
 	i.Type = domain.CameraTypeFromString(cameraType)

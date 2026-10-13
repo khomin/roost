@@ -33,6 +33,7 @@ type Camera struct {
 	SourcePath string
 	Type       CameraType
 	Mode       CameraMode
+	Paused     bool // never started, whatever the mode
 	UpdatedAt  time.Time
 }
 
@@ -86,6 +87,7 @@ func (c *Camera) ToGrpc() *roostv1.Camera {
 		Fps:         0,
 		Source:      c.SourcePath,
 		Mode:        c.Mode.ToGrpc(),
+		Paused:      c.Paused,
 	}
 }
 
@@ -101,6 +103,7 @@ func (c *CameraWithState) ToGrpc() *roostv1.Camera {
 		Fps:         0,
 		Source:      c.SourcePath,
 		Mode:        c.Mode.ToGrpc(),
+		Paused:      c.Paused,
 	}
 }
 

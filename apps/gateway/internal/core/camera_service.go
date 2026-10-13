@@ -47,6 +47,9 @@ const onDemandGrace = 15 * time.Second
 
 // wanted reports whether anything needs this camera's stream right now.
 func (s *CameraService) wanted(camera domain.Camera) bool {
+	if camera.Paused {
+		return false
+	}
 	return camera.Mode != domain.CameraModeOnDemand || s.hub.ViewerCount(camera.ID) > 0
 }
 
@@ -70,7 +73,7 @@ func (s *CameraService) Start(ctx context.Context) error {
 					lastWanted[camera.ID] = time.Now()
 				}
 				if camera.State.IsActive() {
-					if !wanted && time.Since(lastWanted[camera.ID]) > onDemandGrace {
+					if !wanted && (camera.Paused || time.Since(lastWanted[camera.ID]) > onDemandGrace) {
 						if cancel, ok := stop[camera.ID]; ok {
 							slog.Info("stopping idle camera", "camera", camera.ID)
 							cancel()

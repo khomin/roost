@@ -3,7 +3,7 @@
 // Shared by the Live grid and the single-camera page.
 
 import { useRef } from 'react';
-import { Maximize, VideoOff } from 'lucide-react';
+import { Maximize, Pause, VideoOff } from 'lucide-react';
 import { useWebRTC } from '../hooks/useWebRTC';
 import { OnlineBadge, RecordingBadge } from './CameraBadges';
 import { isStandby } from '../utils/camera';
@@ -23,7 +23,7 @@ export function CameraPreview({
   // An on-demand camera is started by its first viewer, so connect to it
   // even while it reports offline.
   const standby = isStandby(camera);
-  const live = camera.isOnline || standby;
+  const live = !camera.paused && (camera.isOnline || standby);
   const { status, errorMsg } = useWebRTC(camera.id, videoRef, live);
   const streaming = live && status === 'streaming';
 
@@ -42,7 +42,11 @@ export function CameraPreview({
       {/* Offline placeholder */}
       {!live && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <VideoOff aria-hidden="true" size={32} strokeWidth={1.5} className="text-gray-700" />
+          {camera.paused ? (
+            <Pause aria-hidden="true" size={32} strokeWidth={1.5} className="text-gray-700" />
+          ) : (
+            <VideoOff aria-hidden="true" size={32} strokeWidth={1.5} className="text-gray-700" />
+          )}
         </div>
       )}
 
@@ -63,7 +67,7 @@ export function CameraPreview({
 
       {/* Badges – always on top */}
       <div className="absolute left-3 top-3 flex items-center gap-2">
-        <OnlineBadge online={camera.isOnline} standby={standby} />
+        <OnlineBadge online={camera.isOnline} standby={standby} paused={camera.paused} />
         {camera.isRecording && <RecordingBadge />}
       </div>
 

@@ -97,8 +97,9 @@ func (s *RoostHandler) UpdateCamera(ctx context.Context, req *roostv1.UpdateCame
 		return nil, status.Error(codes.Unauthenticated, "invalid ID")
 	}
 	res, err := s.service.UpdateCamera(ctx, id, core.UpdateCameraRequest{
-		Name: req.Name,
-		Mode: domain.CameraModeFromGrpc(req.Mode),
+		Name:   req.Name,
+		Mode:   domain.CameraModeFromGrpc(req.Mode),
+		Paused: req.Paused,
 	})
 	if err != nil {
 		return nil, domain.ToGRPCError(err)
@@ -137,6 +138,17 @@ func (s *RoostHandler) ListRecordings(ctx context.Context, req *roostv1.ListReco
 }
 
 func (s *RoostHandler) SignalWebRTC(ctx context.Context, req *roostv1.SignalWebRTCRequest) (*roostv1.SignalWebRTCResponse, error) {
+	id, err := uuid.Parse(req.CameraId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid ID")
+	}
+	camera, err := s.service.GetCamera(ctx, id)
+	if err != nil {
+		return nil, domain.ToGRPCError(err)
+	}
+	if camera.Paused {
+		return nil, status.Error(codes.FailedPrecondition, "camera is paused")
+	}
 	offer := webrtc.SessionDescription{
 		Type: webrtc.SDPTypeOffer,
 		SDP:  req.GetSdpOffer(),

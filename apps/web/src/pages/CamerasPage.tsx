@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Trash2 } from 'lucide-react';
+import { Pause, Play, Plus, Trash2 } from 'lucide-react';
 import { useCameras, useCreateCamera, useDeleteCamera, useUpdateCamera } from '../hooks/useApi';
 import { EmptyBlock, ErrorBlock, Field, Modal, Spinner } from '../components/ui';
 import { OnlineBadge, RecordingBadge } from '../components/CameraBadges';
@@ -84,12 +84,22 @@ export default function CamerasPage() {
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
-                      <OnlineBadge online={camera.isOnline} standby={isStandby(camera)} />
+                      <OnlineBadge online={camera.isOnline} standby={isStandby(camera)} paused={camera.paused} />
                       {camera.isRecording && <RecordingBadge />}
                     </div>
                   </td>
                   <td className="px-5 py-3 text-gray-400">{cameraFormatLabel(camera) ?? '—'}</td>
-                  <td className="px-5 py-3 text-right">
+                  <td className="px-5 py-3 text-right whitespace-nowrap">
+                    <button
+                      onClick={() => updateCamera.mutate({ id: camera.id, paused: !camera.paused })}
+                      disabled={updateCamera.isPending}
+                      aria-label={`${camera.paused ? 'Resume' : 'Pause'} ${camera.name || camera.id}`}
+                      title={camera.paused ? 'Resume' : 'Pause'}
+                      className="rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-white/10 hover:text-white
+                                 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                    >
+                      {camera.paused ? <Play aria-hidden="true" size={16} /> : <Pause aria-hidden="true" size={16} />}
+                    </button>
                     <button
                       onClick={() => setToDelete(camera)}
                       aria-label={`Delete ${camera.name || camera.id}`}

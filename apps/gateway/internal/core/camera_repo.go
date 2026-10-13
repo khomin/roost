@@ -16,8 +16,9 @@ type CreateCameraRequest struct {
 
 // UpdateCameraRequest: zero-value fields are left unchanged.
 type UpdateCameraRequest struct {
-	Name string
-	Mode domain.CameraMode
+	Name   string
+	Mode   domain.CameraMode
+	Paused *bool
 }
 
 type CameraRepo interface {

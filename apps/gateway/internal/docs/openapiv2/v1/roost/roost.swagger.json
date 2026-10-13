@@ -383,6 +383,10 @@
         "mode": {
           "$ref": "#/definitions/v1CameraMode",
           "title": "unspecified = keep"
+        },
+        "paused": {
+          "type": "boolean",
+          "title": "unset = keep"
         }
       }
     },
@@ -449,6 +453,10 @@
         },
         "mode": {
           "$ref": "#/definitions/v1CameraMode"
+        },
+        "paused": {
+          "type": "boolean",
+          "title": "never started, whatever the mode"
         }
       }
     },

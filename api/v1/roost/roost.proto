@@ -67,6 +67,7 @@ message Camera {
   int32 fps = 8;
   string source = 9;
   CameraMode mode = 10;
+  bool paused = 11; // never started, whatever the mode
 }
 
 message ListCamerasRequest {}
@@ -98,6 +99,7 @@ message UpdateCameraRequest {
   string id = 1;
   string name = 2; // empty = keep
   CameraMode mode = 3; // unspecified = keep
+  optional bool paused = 4; // unset = keep
 }
 
 message UpdateCameraResponse {

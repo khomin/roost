@@ -19,7 +19,7 @@ export function cameraModeLabel(mode: CameraMode): string {
 
 /** An on-demand camera that is stopped only because nobody is watching it */
 export function isStandby(camera: Camera): boolean {
-  return camera.mode === CameraMode.ON_DEMAND && !camera.isOnline;
+  return camera.mode === CameraMode.ON_DEMAND && !camera.isOnline && !camera.paused;
 }
 
 /** e.g. "1920×1080 @ 30 fps"; undefined until the camera has reported a format */
