@@ -5,6 +5,7 @@ import (
 	"roost/internal/api/middleware"
 	"roost/internal/core"
 	"roost/internal/core/domain"
+	"sync"
 
 	roostv1 "roost/gen/v1/roost"
 
@@ -76,6 +77,7 @@ func (s *RoostHandler) CreateCamera(ctx context.Context, req *roostv1.CreateCame
 		Name:       req.Name,
 		Source:     req.Source,
 		CameraType: domain.FromGrpc(req.Type),
+		Mode:       domain.CameraModeFromGrpc(req.Mode),
 	})
 	if err != nil {
 		return nil, domain.ToGRPCError(err)
@@ -94,7 +96,10 @@ func (s *RoostHandler) UpdateCamera(ctx context.Context, req *roostv1.UpdateCame
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, "invalid ID")
 	}
-	res, err := s.service.UpdateCamera(ctx, id, req.Name)
+	res, err := s.service.UpdateCamera(ctx, id, core.UpdateCameraRequest{
+		Name: req.Name,
+		Mode: domain.CameraModeFromGrpc(req.Mode),
+	})
 	if err != nil {
 		return nil, domain.ToGRPCError(err)
 	}
@@ -173,7 +178,20 @@ func (s *RoostHandler) SignalWebRTC(ctx context.Context, req *roostv1.SignalWebR
 	}
 	<-gatherComplete
 
-	s.hub.AddViewer(req.CameraId, track)
+	// The viewer counts from now until its connection goes away; on-demand
+	// cameras run only while this count is above zero.
+	cameraID := req.CameraId
+	s.hub.AddViewer(cameraID, track)
+	var once sync.Once
+	pc.OnConnectionStateChange(func(st webrtc.PeerConnectionState) {
+		if st != webrtc.PeerConnectionStateFailed && st != webrtc.PeerConnectionStateClosed {
+			return
+		}
+		once.Do(func() {
+			s.hub.RemoveViewer(cameraID, track)
+			pc.Close()
+		})
+	})
 
 	return &roostv1.SignalWebRTCResponse{
 		SdpType:   "answer",

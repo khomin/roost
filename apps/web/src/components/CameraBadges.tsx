@@ -1,7 +1,15 @@
 // ─── Camera status badges ──────────────────────────────────────────────────
 // Shared by the camera preview and the Cameras list.
 
-export function OnlineBadge({ online }: { online: boolean }) {
+export function OnlineBadge({ online, standby = false }: { online: boolean; standby?: boolean }) {
+  if (!online && standby) {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-400">
+        <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+        Standby
+      </span>
+    );
+  }
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${

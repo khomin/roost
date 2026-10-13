@@ -10,14 +10,15 @@ import (
 )
 
 type StreamHub struct {
-	mu     sync.RWMutex
-	tracks map[string]*webrtc.TrackLocalStaticSample
+	mu sync.RWMutex
+	// cameraID -> one track per connected viewer
+	tracks map[string]map[*webrtc.TrackLocalStaticSample]struct{}
 	log    *slog.Logger
 }
 
 func NewStreamHub() *StreamHub {
 	return &StreamHub{
-		tracks: make(map[string]*webrtc.TrackLocalStaticSample),
+		tracks: make(map[string]map[*webrtc.TrackLocalStaticSample]struct{}),
 		log:    slog.With("component", "StreamHub"),
 	}
 }
@@ -25,21 +26,35 @@ func NewStreamHub() *StreamHub {
 func (h *StreamHub) AddViewer(cameraID string, track *webrtc.TrackLocalStaticSample) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-	h.tracks[cameraID] = track
+	viewers, ok := h.tracks[cameraID]
+	if !ok {
+		viewers = make(map[*webrtc.TrackLocalStaticSample]struct{})
+		h.tracks[cameraID] = viewers
+	}
+	viewers[track] = struct{}{}
 }
 
 func (h *StreamHub) RemoveViewer(cameraID string, track *webrtc.TrackLocalStaticSample) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-	delete(h.tracks, cameraID)
+	viewers := h.tracks[cameraID]
+	delete(viewers, track)
+	if len(viewers) == 0 {
+		delete(h.tracks, cameraID)
+	}
+}
+
+func (h *StreamHub) ViewerCount(cameraID string) int {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+	return len(h.tracks[cameraID])
 }
 
 func (h *StreamHub) BroadcastFrame(cameraID string, frame []byte, duration time.Duration) {
-	h.mu.Lock()
-	defer h.mu.Unlock()
+	h.mu.RLock()
+	defer h.mu.RUnlock()
 
-	track, ok := h.tracks[cameraID]
-	if ok {
+	for track := range h.tracks[cameraID] {
 		err := track.WriteSample(media.Sample{
 			Data:     frame,
 			Duration: duration,

@@ -1,10 +1,11 @@
 import { useState, type SubmitEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Trash2 } from 'lucide-react';
-import { useCameras, useCreateCamera, useDeleteCamera } from '../hooks/useApi';
+import { useCameras, useCreateCamera, useDeleteCamera, useUpdateCamera } from '../hooks/useApi';
 import { EmptyBlock, ErrorBlock, Field, Modal, Spinner } from '../components/ui';
 import { OnlineBadge, RecordingBadge } from '../components/CameraBadges';
-import { cameraFormatLabel, cameraTypeLabel } from '../utils/camera';
+import { cameraFormatLabel, cameraModeLabel, cameraTypeLabel, isStandby } from '../utils/camera';
+import { CameraMode } from '../gen/v1/roost/roost_pb';
 import type { Camera } from '../gen/v1/roost/roost_pb';
 import { CameraType } from '../gen/v1/vision/vision_pb';
 
@@ -16,6 +17,7 @@ export default function CamerasPage() {
   const { data, isLoading, error, refetch } = useCameras();
   const [showAdd, setShowAdd] = useState(false);
   const [toDelete, setToDelete] = useState<Camera | null>(null);
+  const updateCamera = useUpdateCamera();
 
   const cameras = data?.cameras ?? [];
 
@@ -46,6 +48,7 @@ export default function CamerasPage() {
               <tr>
                 <th className="px-5 py-3 font-medium">Name</th>
                 <th className="px-5 py-3 font-medium">Type</th>
+                <th className="px-5 py-3 font-medium">Mode</th>
                 <th className="px-5 py-3 font-medium">Status</th>
                 <th className="px-5 py-3 font-medium">Format</th>
                 <th className="px-5 py-3" />
@@ -66,8 +69,22 @@ export default function CamerasPage() {
                   </td>
                   <td className="px-5 py-3 text-gray-300">{cameraTypeLabel(camera.type)}</td>
                   <td className="px-5 py-3">
+                    <select
+                      aria-label={`Mode for ${camera.name || camera.id}`}
+                      value={camera.mode === CameraMode.ON_DEMAND ? CameraMode.ON_DEMAND : CameraMode.ALWAYS_ON}
+                      disabled={updateCamera.isPending}
+                      onChange={(e) =>
+                        updateCamera.mutate({ id: camera.id, mode: Number(e.target.value) as CameraMode })
+                      }
+                      className="rounded-lg border border-white/10 bg-gray-900 px-2 py-1 text-xs text-gray-300
+                                 focus:outline-none focus:ring-2 focus:ring-purple-500/50 cursor-pointer"
+                    >
+                      <ModeOptions />
+                    </select>
+                  </td>
+                  <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
-                      <OnlineBadge online={camera.isOnline} />
+                      <OnlineBadge online={camera.isOnline} standby={isStandby(camera)} />
                       {camera.isRecording && <RecordingBadge />}
                     </div>
                   </td>
@@ -94,6 +111,15 @@ export default function CamerasPage() {
   );
 }
 
+function ModeOptions() {
+  return (
+    <>
+      <option value={CameraMode.ALWAYS_ON}>{cameraModeLabel(CameraMode.ALWAYS_ON)}</option>
+      <option value={CameraMode.ON_DEMAND}>{cameraModeLabel(CameraMode.ON_DEMAND)}</option>
+    </>
+  );
+}
+
 // ── Add camera ────────────────────────────────────────────────────────────
 
 function AddCameraModal({ onClose }: { onClose: () => void }) {
@@ -101,6 +127,7 @@ function AddCameraModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState('');
   const [type, setType] = useState<CameraType>(CameraType.RTSP);
   const [source, setSource] = useState('');
+  const [mode, setMode] = useState<CameraMode>(CameraMode.ALWAYS_ON);
 
   const canSubmit = name.trim() !== '' && source.trim() !== '' && !createCamera.isPending;
 
@@ -108,7 +135,7 @@ function AddCameraModal({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     if (!canSubmit) return;
     createCamera.mutate(
-      { name: name.trim(), type, source: source.trim() },
+      { name: name.trim(), type, source: source.trim(), mode },
       { onSuccess: onClose },
     );
   };
@@ -144,6 +171,21 @@ function AddCameraModal({ onClose }: { onClose: () => void }) {
             placeholder={type === CameraType.USB ? '/dev/video0' : 'rtsp://user:pass@192.168.1.10:554/stream'}
             className={`${INPUT_CLASS} font-mono`}
           />
+        </Field>
+
+        <Field label="Mode">
+          <select
+            value={mode}
+            onChange={(e) => setMode(Number(e.target.value) as CameraMode)}
+            className={INPUT_CLASS}
+          >
+            <ModeOptions />
+          </select>
+          <p className="mt-1 text-xs text-gray-500">
+            {mode === CameraMode.ON_DEMAND
+              ? 'Runs only while someone is watching the live view.'
+              : 'Runs around the clock.'}
+          </p>
         </Field>
 
         {createCamera.error && (

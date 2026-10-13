@@ -377,7 +377,12 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "title": "empty = keep"
+        },
+        "mode": {
+          "$ref": "#/definitions/v1CameraMode",
+          "title": "unspecified = keep"
         }
       }
     },
@@ -441,8 +446,21 @@
         },
         "source": {
           "type": "string"
+        },
+        "mode": {
+          "$ref": "#/definitions/v1CameraMode"
         }
       }
+    },
+    "v1CameraMode": {
+      "type": "string",
+      "enum": [
+        "CAMERA_MODE_UNSPECIFIED",
+        "CAMERA_MODE_ALWAYS_ON",
+        "CAMERA_MODE_ON_DEMAND"
+      ],
+      "default": "CAMERA_MODE_UNSPECIFIED",
+      "description": "When the camera pipeline runs.\n\n - CAMERA_MODE_ALWAYS_ON: runs 24/7\n - CAMERA_MODE_ON_DEMAND: runs only while someone is watching"
     },
     "v1CameraType": {
       "type": "string",
@@ -464,6 +482,10 @@
         },
         "source": {
           "type": "string"
+        },
+        "mode": {
+          "$ref": "#/definitions/v1CameraMode",
+          "title": "unspecified = always on"
         }
       }
     },

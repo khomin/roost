@@ -49,6 +49,13 @@ service RoostService {
   }
 }
 
+// When the camera pipeline runs.
+enum CameraMode {
+  CAMERA_MODE_UNSPECIFIED = 0;
+  CAMERA_MODE_ALWAYS_ON = 1; // runs 24/7
+  CAMERA_MODE_ON_DEMAND = 2; // runs only while someone is watching
+}
+
 message Camera {
   string id = 1;
   string name = 2;
@@ -59,6 +66,7 @@ message Camera {
   int32 height = 7;
   int32 fps = 8;
   string source = 9;
+  CameraMode mode = 10;
 }
 
 message ListCamerasRequest {}
@@ -79,6 +87,7 @@ message CreateCameraRequest {
   string name = 1;
   vision.v1.CameraType type = 2;
   string source = 3;
+  CameraMode mode = 4; // unspecified = always on
 }
 
 message CreateCameraResponse {
@@ -87,7 +96,8 @@ message CreateCameraResponse {
 
 message UpdateCameraRequest {
   string id = 1;
-  string name = 2;
+  string name = 2; // empty = keep
+  CameraMode mode = 3; // unspecified = keep
 }
 
 message UpdateCameraResponse {

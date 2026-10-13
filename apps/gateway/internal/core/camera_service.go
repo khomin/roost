@@ -41,8 +41,20 @@ func NewCameraService(deps CameraDeps) *CameraService {
 	}
 }
 
+// How long an on-demand camera keeps running after its last viewer leaves,
+// so a page reload doesn't restart the pipeline.
+const onDemandGrace = 15 * time.Second
+
+// wanted reports whether anything needs this camera's stream right now.
+func (s *CameraService) wanted(camera domain.Camera) bool {
+	return camera.Mode != domain.CameraModeOnDemand || s.hub.ViewerCount(camera.ID) > 0
+}
+
 func (s *CameraService) Start(ctx context.Context) error {
 	t := time.NewTicker(time.Second * 1)
+	// both owned by this loop
+	lastWanted := make(map[string]time.Time)
+	stop := make(map[string]context.CancelFunc)
 	for {
 		select {
 		case <-t.C:
@@ -50,8 +62,24 @@ func (s *CameraService) Start(ctx context.Context) error {
 			if err != nil {
 				return err
 			}
+			seen := make(map[string]struct{}, len(cameras))
 			for _, camera := range cameras {
+				seen[camera.ID] = struct{}{}
+				wanted := s.wanted(camera.Camera)
+				if wanted {
+					lastWanted[camera.ID] = time.Now()
+				}
 				if camera.State.IsActive() {
+					if !wanted && time.Since(lastWanted[camera.ID]) > onDemandGrace {
+						if cancel, ok := stop[camera.ID]; ok {
+							slog.Info("stopping idle camera", "camera", camera.ID)
+							cancel()
+							delete(stop, camera.ID)
+						}
+					}
+					continue
+				}
+				if !wanted {
 					continue
 				}
 				res, err := s.StartCamera(ctx, camera.Camera)
@@ -63,11 +91,20 @@ func (s *CameraService) Start(ctx context.Context) error {
 					res.Cancel()
 					continue
 				}
+				stop[camera.ID] = res.Cancel
 				go func() {
 					defer s.StopCamera(ctx, camera.UUID())
 					defer res.Cancel()
 					s.pumpFrames(res.Ctx, camera.ID, consumer)
 				}()
+			}
+			// deleted cameras
+			for id, cancel := range stop {
+				if _, ok := seen[id]; !ok {
+					cancel()
+					delete(stop, id)
+					delete(lastWanted, id)
+				}
 			}
 		case <-ctx.Done():
 			return nil
@@ -115,6 +152,9 @@ func (s *CameraService) CreateCamera(ctx context.Context, req CreateCameraReques
 	if req.CameraType == domain.CameraTypeUnspecified {
 		return nil, domain.ErrorInvalidArgument
 	}
+	if req.Mode == domain.CameraModeUnspecified {
+		req.Mode = domain.CameraModeAlwaysOn
+	}
 	camera, err := s.cameraRepo.Create(ctx, req)
 	if err != nil {
 		return nil, err
@@ -122,8 +162,8 @@ func (s *CameraService) CreateCamera(ctx context.Context, req CreateCameraReques
 	return camera, nil
 }
 
-func (s *CameraService) UpdateCamera(ctx context.Context, id uuid.UUID, name string) (*domain.Camera, error) {
-	v, err := s.cameraRepo.Update(ctx, id, name)
+func (s *CameraService) UpdateCamera(ctx context.Context, id uuid.UUID, req UpdateCameraRequest) (*domain.Camera, error) {
+	v, err := s.cameraRepo.Update(ctx, id, req)
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +216,12 @@ func (s *CameraService) StartCamera(ctx context.Context, camera domain.Camera) (
 			evt, err := stream.Recv()
 			if err != nil {
 				slog.Info("vision stream closed", "camera", cam.ID, "err", err)
-				s.tasks.Set(cam.ID, domain.StateFailed, err)
+				if streamCtx.Err() != nil {
+					// we stopped it ourselves
+					s.tasks.Set(cam.ID, domain.StateStopped, nil)
+				} else {
+					s.tasks.Set(cam.ID, domain.StateFailed, err)
+				}
 				return
 			}
 			switch e := evt.Event.(type) {

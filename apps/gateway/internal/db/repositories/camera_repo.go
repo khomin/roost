@@ -22,7 +22,7 @@ func NewCameraRepository(db *db.DataBase) core.CameraRepo {
 
 func (r *rep) List(ctx context.Context) ([]domain.Camera, error) {
 	query := `
-		SELECT id, name, type, source, updated_at
+		SELECT id, name, type, source, mode, updated_at
 		FROM cameras 
 		ORDER BY updated_at ASC
 	`
@@ -48,7 +48,7 @@ func (r *rep) List(ctx context.Context) ([]domain.Camera, error) {
 
 func (r *rep) Get(ctx context.Context, id uuid.UUID) (*domain.Camera, error) {
 	query := `
-		SELECT id, name, type, source, updated_at
+		SELECT id, name, type, source, mode, updated_at
 		FROM cameras
 		WHERE id = $1
 	`
@@ -65,9 +65,9 @@ func (r *rep) Get(ctx context.Context, id uuid.UUID) (*domain.Camera, error) {
 
 func (r *rep) Create(ctx context.Context, req core.CreateCameraRequest) (*domain.Camera, error) {
 	query := `
-		INSERT INTO cameras (name, type, source)
-		VALUES ($1, $2, $3)
-		RETURNING id, name, type, source, updated_at
+		INSERT INTO cameras (name, type, source, mode)
+		VALUES ($1, $2, $3, $4)
+		RETURNING id, name, type, source, mode, updated_at
 	`
 	row := r.db.Pool.QueryRow(
 		ctx,
@@ -75,6 +75,7 @@ func (r *rep) Create(ctx context.Context, req core.CreateCameraRequest) (*domain
 		req.Name,
 		req.CameraType.String(),
 		req.Source,
+		req.Mode.String(),
 	)
 	camera, err := scanCamera2(row)
 	if err != nil {
@@ -87,22 +88,31 @@ func (r *rep) Create(ctx context.Context, req core.CreateCameraRequest) (*domain
 	return camera, nil
 }
 
-func (r *rep) Update(ctx context.Context, id uuid.UUID, name string) (*domain.Camera, error) {
+func (r *rep) Update(ctx context.Context, id uuid.UUID, req core.UpdateCameraRequest) (*domain.Camera, error) {
 	query := `
 		UPDATE cameras
-		SET name = $2,
+		SET name = COALESCE(NULLIF($2, ''), name),
+		    mode = COALESCE(NULLIF($3, ''), mode),
 		    updated_at = NOW()
 		WHERE id = $1
-		RETURNING id, name, type, source, updated_at
+		RETURNING id, name, type, source, mode, updated_at
 	`
+	mode := ""
+	if req.Mode != domain.CameraModeUnspecified {
+		mode = req.Mode.String()
+	}
 	row := r.db.Pool.QueryRow(
 		ctx,
 		query,
 		id,
-		name,
+		req.Name,
+		mode,
 	)
 	camera, err := scanCamera2(row)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, domain.ErrorNotFound
+		}
 		return nil, err
 	}
 	return camera, nil
@@ -119,28 +129,32 @@ func (r *rep) Delete(ctx context.Context, id uuid.UUID) error {
 
 func scanCamera(rows pgx.Rows) (*domain.Camera, error) {
 	var i domain.Camera
-	var cameraType string
+	var cameraType, mode string
 	err := rows.Scan(
 		&i.ID,
 		&i.Name,
 		&cameraType,
 		&i.SourcePath,
+		&mode,
 		&i.UpdatedAt,
 	)
 	i.Type = domain.CameraTypeFromString(cameraType)
+	i.Mode = domain.CameraModeFromString(mode)
 	return &i, err
 }
 
 func scanCamera2(row pgx.Row) (*domain.Camera, error) {
 	var i domain.Camera
-	var cameraType string
+	var cameraType, mode string
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
 		&cameraType,
 		&i.SourcePath,
+		&mode,
 		&i.UpdatedAt,
 	)
 	i.Type = domain.CameraTypeFromString(cameraType)
+	i.Mode = domain.CameraModeFromString(mode)
 	return &i, err
 }

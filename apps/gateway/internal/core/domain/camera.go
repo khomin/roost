@@ -18,11 +18,21 @@ const (
 	CameraTypeUSB
 )
 
+// CameraMode says when the camera pipeline runs.
+type CameraMode int
+
+const (
+	CameraModeUnspecified CameraMode = iota
+	CameraModeAlwaysOn               // runs 24/7
+	CameraModeOnDemand               // runs only while someone is watching
+)
+
 type Camera struct {
 	ID         string
 	Name       string
 	SourcePath string
 	Type       CameraType
+	Mode       CameraMode
 	UpdatedAt  time.Time
 }
 
@@ -75,6 +85,7 @@ func (c *Camera) ToGrpc() *roostv1.Camera {
 		Height:      0,
 		Fps:         0,
 		Source:      c.SourcePath,
+		Mode:        c.Mode.ToGrpc(),
 	}
 }
 
@@ -89,6 +100,7 @@ func (c *CameraWithState) ToGrpc() *roostv1.Camera {
 		Height:      0,
 		Fps:         0,
 		Source:      c.SourcePath,
+		Mode:        c.Mode.ToGrpc(),
 	}
 }
 
@@ -146,6 +158,46 @@ func CameraTypeFromString(v string) CameraType {
 		return CameraTypeUSB
 	}
 	return CameraTypeUnspecified
+}
+
+func (m CameraMode) String() string {
+	switch m {
+	case CameraModeAlwaysOn:
+		return "always_on"
+	case CameraModeOnDemand:
+		return "on_demand"
+	}
+	return "unspecified"
+}
+
+func (m CameraMode) ToGrpc() roostv1.CameraMode {
+	switch m {
+	case CameraModeAlwaysOn:
+		return roostv1.CameraMode_CAMERA_MODE_ALWAYS_ON
+	case CameraModeOnDemand:
+		return roostv1.CameraMode_CAMERA_MODE_ON_DEMAND
+	}
+	return roostv1.CameraMode_CAMERA_MODE_UNSPECIFIED
+}
+
+func CameraModeFromGrpc(m roostv1.CameraMode) CameraMode {
+	switch m {
+	case roostv1.CameraMode_CAMERA_MODE_ALWAYS_ON:
+		return CameraModeAlwaysOn
+	case roostv1.CameraMode_CAMERA_MODE_ON_DEMAND:
+		return CameraModeOnDemand
+	}
+	return CameraModeUnspecified
+}
+
+func CameraModeFromString(v string) CameraMode {
+	switch v {
+	case "always_on":
+		return CameraModeAlwaysOn
+	case "on_demand":
+		return CameraModeOnDemand
+	}
+	return CameraModeUnspecified
 }
 
 type CameraStartResult struct {

@@ -4,6 +4,8 @@ import {
   ListCamerasResponseSchema,
   CreateCameraRequestSchema,
   CreateCameraResponseSchema,
+  UpdateCameraRequestSchema,
+  UpdateCameraResponseSchema,
   DeleteCameraResponseSchema,
   SignalWebRTCRequestSchema,
   SignalWebRTCResponseSchema,
@@ -20,6 +22,15 @@ export const roostService = {
       CreateCameraRequestSchema,
       req,
       CreateCameraResponseSchema,
+    ),
+
+  updateCamera: (req: MessageShape<typeof UpdateCameraRequestSchema>) =>
+    requestJsonWithBody(
+      'PATCH',
+      `/v1/cameras/${encodeURIComponent(req.id)}`,
+      UpdateCameraRequestSchema,
+      req,
+      UpdateCameraResponseSchema,
     ),
 
   deleteCamera: (id: string) =>

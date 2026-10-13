@@ -1,0 +1,1 @@
+ALTER TABLE cameras ADD COLUMN mode TEXT NOT NULL DEFAULT 'always_on';
