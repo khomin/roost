@@ -31,28 +31,6 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-// TODO:
-// 	1. Go Gateway Starts
-//     ├── Connects to PostgreSQL & runs database migrations
-//     ├── Connects to MinIO/S3 bucket & ensures bucket existence
-//     └── Fetches active camera configurations from DB
-
-//  2. Go Gateway Establishes C++ gRPC Connection
-//     ├── Retries connection until C++ Vision Service gRPC server is ready
-//     └── Calls SyncCameras(stream CameraConfig) or StartCameraStream() RPC
-
-//  3. C++ Vision Service Configures Pipelines
-//     ├── Receives stream parameters (ID, type, RTSP URL / device path)
-//     ├── Spawns GStreamer/FFmpeg capture pipelines & shared memory buffers
-//     └── Begins continuous motion evaluation on incoming frames
-
-// TODO: foundation react
-// TODO: vision module
-
-// TODO: domain name
-// TODO: camera tests
-// TODO: alert?
-
 func main() {
 	log := slog.With("main")
 	ctx, cancel := context.WithCancel(context.Background())
@@ -61,17 +39,12 @@ func main() {
 	g, ctx := errgroup.WithContext(ctx)
 
 	app := bootstrap.App()
+
 	db, err := db.NewDatabase(app.Cfg.DSN())
 	if err != nil {
 		log.Error("failed to connect to Postgres", "err", err)
 	}
 	defer db.Close()
-
-	// redisClient := cache.NewRedisClient(
-	// 	app.Cfg.Redis.Addr,
-	// 	app.Cfg.Redis.Password,
-	// 	app.Cfg.Redis.DB,
-	// )
 
 	cameraRepo := repositories.NewCameraRepository(db)
 	userRepo := repositories.NewUserRepo(db)

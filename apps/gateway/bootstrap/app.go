@@ -38,7 +38,7 @@ func (a *Application) NewLog() *slog.Logger {
 	if strings.Contains(a.Cfg.Server.Environment, "dev") {
 		level = slog.LevelDebug
 	} else {
-		level = slog.LevelWarn
+		level = slog.LevelInfo
 	}
 	if strings.Contains(a.Cfg.Server.Environment, "dev") {
 		handler = slog.NewTextHandler(multiWriter, &slog.HandlerOptions{

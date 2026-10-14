@@ -10,6 +10,8 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -70,12 +72,17 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    ports:
+      - "6379:6379"
     volumes:
       - redis_data:/data
 
   rabbitmq:
     image: rabbitmq:4-management-alpine
     restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
@@ -88,19 +95,19 @@ services:
     build:
       context: ./apps/gateway
     restart: unless-stopped
-    ports:
-      - "8080:8080"
+    network_mode: host
+    ipc: host
     environment:
       SERVER_ENVIRONMENT: production
-      DATABASE_HOST: postgres
+      DATABASE_HOST: localhost
       DATABASE_PORT: 5432
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
-      REDIS_ADDR: redis:6379
-      RABBIT_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672/
-      AUTHORIZATION_ISSUER_URL: http://${KEYCLOAK_HOST}:8081/realms/roost
-      VISION_GRPC_URI: vision:50052
+      REDIS_ADDR: localhost:6379
+      RABBIT_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost:5672/
+      AUTHORIZATION_ISSUER_URL: http://localhost:8081/realms/roost
+      VISION_GRPC_URI: localhost:50052
     depends_on:
       postgres:
         condition: service_healthy
@@ -128,15 +135,13 @@ services:
       context: .
       dockerfile: apps/vision/Dockerfile
     restart: unless-stopped
+    ipc: host
     ports:
       - "50052:50052"
-    # USB camera device passthrough — adjust if you have multiple cameras
-    devices:
-      - /dev/video0:/dev/video0
-    # Allow access to all V4L2 devices dynamically (comment out `devices` above
-    # and use this instead if cameras appear/disappear at runtime)
-    # device_cgroup_rules:
-    #   - 'c 81:* rmw'
+    device_cgroup_rules:
+      - 'c 81:* rmw'
+    volumes:
+      - /dev:/dev
     depends_on:
       - gateway
 

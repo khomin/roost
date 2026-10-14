@@ -31,6 +31,8 @@ COPY --from=builder /app/server .
 # Copy your configuration file
 COPY config.yaml ./config.yaml
 
+COPY .env ./.env
+
 # Copy migration
 COPY ./internal/db/migrations ./internal/db/migrations
 

@@ -17,7 +17,7 @@ Roost is a work in progress. This is what exists today:
 | USB (V4L2) and RTSP cameras | Object detection (the pipeline has a branch for it, nothing consumes it) |
 | Live view in the browser over WebRTC, several viewers per camera | Recording and playback |
 | Add, pause, resume and delete cameras from the dashboard | Snapshots and live events |
-| Per-camera mode: always on, or on demand | A tested production deployment |
+| Per-camera mode: always on, or on demand | |
 | Cameras that die are detected and retried automatically | |
 | Login through Keycloak | |
 
