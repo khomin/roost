@@ -136,7 +136,43 @@ docker compose -f compose.dev.yml up -d
 
 Keycloak comes up on http://localhost:8081 with the `roost` realm imported. Create a user there to log in to the dashboard.
 
-> Only `compose.dev.yml` has been tested. `compose.prod.yml` and the manifests in `apps/gateway/k8s/` are untested; treat them as a starting point.
+### Production deploy (Docker Compose)
+
+`compose.prod.yml` at the repo root builds and runs all three services plus infrastructure in Docker. It is meant for a single-machine deploy (e.g. an Intel NUC on your LAN) and does **not** need Kubernetes.
+
+#### Prerequisites
+
+- Docker with Compose
+- Git submodules initialised (`git submodule update --init`)
+- `.lib_pack/grpc` built (step 3 above)
+
+#### Build and run
+
+```bash
+cp apps/gateway/.env.example apps/gateway/.env
+# Edit .env — set real passwords and:
+#   KEYCLOAK_HOST  = machine's LAN IP (e.g. 192.168.31.100)
+#   NUC_HOST       = same IP (baked into the web bundle for API/auth URLs)
+
+docker compose -f compose.prod.yml --env-file apps/gateway/.env up -d --build
+```
+
+The web dashboard will be at `http://<NUC_HOST>`, the gateway API at `:8080` and Keycloak at `:8081`.
+
+#### How it works
+
+- **gateway** runs with `network_mode: host` so it can reach all services via `localhost`, matching the dev setup. It also needs host IPC to read shared memory from vision.
+- **vision** runs with `ipc: host` so its POSIX shared memory (`/dev/shm/roost_*`) is visible to the gateway. USB cameras are accessible via `device_cgroup_rules` — cameras can be plugged and unplugged at runtime.
+- **web** is a static Vite build served by nginx. `VITE_API_URL` and `VITE_KEYCLOAK_URL` are baked at image build time from `NUC_HOST`.
+
+#### Sending to another machine
+
+```bash
+rsync -avz --exclude node_modules --exclude apps/vision/build --exclude .git \
+  ~/Documents/PROJECTS/roost/ user@host:~/roost/
+```
+
+Then SSH in and run the build commands above.
 
 ### 6. Run the vision service
 
