@@ -106,7 +106,7 @@ services:
       DATABASE_NAME: ${DATABASE_NAME}
       REDIS_ADDR: localhost:6379
       RABBIT_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost:5672/
-      AUTHORIZATION_ISSUER_URL: http://localhost:8081/realms/roost
+      AUTHORIZATION_ISSUER_URL: ${AUTHORIZATION_ISSUER_URL}
       VISION_GRPC_URI: localhost:50052
     depends_on:
       postgres:
