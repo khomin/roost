@@ -1,0 +1,16 @@
+# Node modules — massive, not needed by any Dockerfile
+apps/web/node_modules/
+
+# Vision build artifacts and unused submodules
+apps/vision/build/
+apps/vision/external/grpc/
+apps/vision/external/ultralytics/
+
+# gRPC build tree (only the install prefix .lib_pack/grpc is needed)
+.lib_pack/grpc_build/
+
+# Secrets
+apps/gateway/.env
+
+# Git history
+.git/
